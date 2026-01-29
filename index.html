@@ -3,143 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROBOT AI v19.1 - TIE INTEGRATED</title>
+    <title>ROBOT AI v19 - OCR INTELLIGENCE</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --blue: #00f2fe; --pink: #ff416c; --tie: #00ff87; --bg: #0d0f12; }
+        :root { --blue: #00f2fe; --pink: #ff416c; --bg: #0d0f12; }
         body { background: var(--bg); color: #fff; font-family: 'Roboto Condensed', sans-serif; margin: 0; padding: 10px; text-transform: uppercase; }
-        .app { width: 100%; max-width: 350px; margin: auto; border: 1px solid #333; border-radius: 15px; padding: 15px; background: #161a20; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .app { width: 100%; max-width: 350px; margin: auto; border: 1px solid #333; border-radius: 15px; padding: 15px; background: #161a20; }
         
+        /* Header & Energy */
         .header { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 15px; }
         .energy-box { background: #fcc21b; color: #000; font-weight: bold; padding: 2px 10px; border-radius: 5px; font-size: 11px; }
 
-        .ocr-monitor { background: #000; border: 1px solid var(--blue); border-radius: 10px; padding: 10px; margin-bottom: 15px; text-align: center; }
-        .timer-val { font-size: 35px; font-weight: bold; color: var(--blue); transition: 0.3s; }
+        /* OCR Display */
+        .ocr-monitor { background: #000; border: 1px solid var(--blue); border-radius: 10px; padding: 10px; margin-bottom: 15px; position: relative; overflow: hidden; }
+        .ocr-label { font-size: 9px; color: var(--blue); margin-bottom: 5px; letter-spacing: 1px; }
+        #ocr-status { font-size: 10px; color: #00ff87; float: right; }
+        .timer-val { font-size: 32px; font-weight: bold; color: var(--blue); text-shadow: 0 0 10px var(--blue); }
 
+        /* Scan Progress */
         .scan-container { margin: 15px 0; }
-        .bar-bg { width: 100%; height: 5px; background: #222; border-radius: 3px; }
-        #bar-fill { width: 0%; height: 100%; background: var(--blue); transition: 0.2s; box-shadow: 0 0 10px var(--blue); }
+        .bar-bg { width: 100%; height: 4px; background: #222; border-radius: 2px; }
+        #bar-fill { width: 0%; height: 100%; background: var(--blue); transition: 0.3s; box-shadow: 0 0 10px var(--blue); }
 
-        /* Nút bấm 3 cửa chuẩn sảnh BCR */
-        .grid-btn { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .btn { border: none; padding: 15px 5px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 12px; transition: 0.2s; }
-        .btn:active { transform: scale(0.95); opacity: 0.8; }
-        .b-pink { background: var(--pink); box-shadow: 0 4px 0 #b32d4b; }
-        .b-blue { background: #0081cf; box-shadow: 0 4px 0 #005a91; }
-        .b-green { background: var(--tie); color: #000; box-shadow: 0 4px 0 #00b35f; }
+        /* Buttons */
+        .grid-btn { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn { border: none; padding: 12px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; }
+        .b-pink { background: var(--pink); }
+        .b-blue { background: #0081cf; }
         
-        .log-box { font-size: 9px; color: #555; margin-top: 15px; border-top: 1px solid #222; padding-top: 10px; }
+        .log-box { font-size: 9px; color: #555; margin-top: 15px; height: 40px; overflow: hidden; border-top: 1px solid #222; padding-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="app">
     <div class="header">
-        <div style="color:var(--blue); font-weight:bold">ROBOT AI v19.1 PREMIUM</div>
-        <div class="energy-box">OCR: ONLINE</div>
+        <div style="color:var(--blue); font-weight:bold">ROBOT AI v19.0</div>
+        <div class="energy-box">OCR: ACTIVE</div>
     </div>
 
     <div class="ocr-monitor">
-        <div style="font-size: 9px; color: var(--blue); margin-bottom: 5px;">DỮ LIỆU ĐANG QUÉT (GIÂY)</div>
-        <div class="timer-val" id="clock">00.00</div>
-        <div style="font-size: 10px; color: #444; margin-top: 5px;">AI PREDICTION: <span id="work">STAY BY</span></div>
+        <span id="ocr-status">● STREAMING</span>
+        <div class="ocr-label">REAL-TIME DATA (SEC)</div>
+        <div class="timer-val" id="clock">--.--</div>
+        <div style="font-size: 10px; color: #666; margin-top: 5px;">
+            AI CONFIDENCE: <span id="conf">89.4%</span> | STATUS: <span id="work">WAITING</span>
+        </div>
     </div>
 
     <div class="scan-container">
-        <div style="font-size: 11px; margin-bottom: 5px;">HỆ THỐNG PHÂN TÍCH: <span id="perc">0</span>%</div>
+        <div style="font-size: 11px; margin-bottom: 5px;">SCANNING CLOUD DATA: <span id="perc">0</span>%</div>
         <div class="bar-bg"><div id="bar-fill"></div></div>
     </div>
 
     <div class="grid-btn">
-        <button class="btn b-blue" onclick="manualInput('PLAYER')">PLAYER</button>
-        <button class="btn b-green" onclick="manualInput('TIE')">HÒA (TIE)</button>
-        <button class="btn b-pink" onclick="manualInput('BANKER')">BANKER</button>
+        <button class="btn b-pink" onclick="manualScan('BANKER')">BANKER</button>
+        <button class="btn b-blue" onclick="manualScan('PLAYER')">PLAYER</button>
     </div>
 
-    <div class="log-box" id="logs">> Đang kết nối API sảnh RR88...<br>> Thuật toán Hòa (Tie) đã sẵn sàng.</div>
+    <div class="log-box" id="logs">
+        > System initialized...<br>
+        > OCR Engine ready for RR88...
+    </div>
 </div>
 
 <script>
-    let isRunning = false;
-    let history = [];
+    let isScanning = false;
 
-    // Khởi động đồng hồ OCR giả lập (Sẽ đọc từ màn hình thật khi chạy Extension)
-    function ocrHeartbeat() {
+    // GIẢ LẬP OCR - Trong thực tế, hàm này sẽ quét Canvas từ trình duyệt
+    function startOcr() {
         setInterval(() => {
-            if(!isRunning) {
-                let time = (Math.random() * 30).toFixed(2);
+            if(!isScanning) {
+                let time = (Math.random() * 25).toFixed(2);
                 document.getElementById('clock').innerText = time;
                 
-                // Tự động quét khi ván mới sắp bắt đầu (còn dưới 5 giây)
-                if(time < 5.00 && time > 4.50) startAnalysis();
+                // Tự động kích hoạt khi đồng hồ về < 5 giây
+                if(time < 5.00 && time > 4.50) {
+                    autoAnalyze();
+                }
             }
         }, 100);
     }
 
-    function startAnalysis() {
-        isRunning = true;
+    function autoAnalyze() {
+        isScanning = true;
+        document.getElementById('work').innerText = "INJECTING";
+        document.getElementById('work').style.color = "var(--pink)";
+        
         let p = 0;
-        document.getElementById('work').innerText = "CALCULATING";
-        document.getElementById('work').style.color = "var(--blue)";
-
         let iv = setInterval(() => {
-            p += Math.floor(Math.random() * 10) + 5;
-            if(p > 100) p = 100;
+            p += 5;
             document.getElementById('perc').innerText = p;
             document.getElementById('bar-fill').style.width = p + "%";
             
             if(p >= 100) {
                 clearInterval(iv);
-                renderPrediction();
+                showResult();
             }
-        }, 800 / 10);
+        }, 50);
     }
 
-    function renderPrediction() {
-        // Thuật toán tính xác suất Hòa (1/8 cơ hội)
-        const rand = Math.random() * 100;
-        let result = "";
-        let color = "";
-
-        if(rand < 12) { // 12% tỉ lệ ra Hòa
-            result = "TIE (HÒA)";
-            color = "var(--tie)";
-        } else if (rand < 56) {
-            result = "BANKER";
-            color = "var(--pink)";
-        } else {
-            result = "PLAYER";
-            color = "var(--blue)";
-        }
-
-        const clock = document.getElementById('clock');
-        clock.innerText = result;
-        clock.style.color = color;
+    function showResult() {
+        const res = Math.random() > 0.5 ? "BANKER" : "PLAYER";
+        const log = document.getElementById('logs');
+        log.innerHTML = `> AI Detected: ${res}<br>` + log.innerHTML;
         
-        updateLogs(result);
-
+        document.getElementById('clock').innerText = res;
+        document.getElementById('clock').style.color = res === "BANKER" ? "var(--pink)" : "var(--blue)";
+        
         setTimeout(() => {
-            isRunning = false;
-            clock.style.color = "var(--blue)";
+            isScanning = false;
+            document.getElementById('work').innerText = "WAITING";
+            document.getElementById('work').style.color = "#666";
+            document.getElementById('clock').style.color = "var(--blue)";
             document.getElementById('bar-fill').style.width = "0%";
             document.getElementById('perc').innerText = "0";
-            document.getElementById('work').innerText = "STAY BY";
-            document.getElementById('work').style.color = "#444";
-        }, 6000);
+        }, 5000);
     }
 
-    function updateLogs(msg) {
-        const l = document.getElementById('logs');
-        l.innerHTML = `> AI Dự đoán: ${msg}<br>` + l.innerHTML;
+    function manualScan(type) {
+        if(!isScanning) autoAnalyze();
     }
 
-    function manualInput(type) {
-        if(!isRunning) startAnalysis();
-    }
-
-    window.onload = ocrHeartbeat;
+    // Khởi động bộ não AI khi trang load
+    window.onload = startOcr;
 </script>
 </body>
-            </html>
-    
+        </html>
+        
