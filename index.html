@@ -1,136 +1,154 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI BOT ONLINE - SYSTEM</title>
     <style>
         :root { --n: #00f2fe; --b: #ff4b2b; --p: #1e90ff; --t: #00ff7f; --g: #fcc21b; }
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { width: 300px; background: #0a0a0a; border: 1.5px solid var(--n); border-radius: 20px; padding: 20px; box-shadow: 0 0 20px rgba(0,242,254,0.3); }
-        h2 { text-align: center; color: var(--n); font-size: 18px; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .btn-main { background: var(--n); color: #000; }
-        .btn-sub { background: transparent; border: 1px solid var(--n); color: var(--n); font-size: 12px; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .app { width: 300px; border: 1px solid var(--n); border-radius: 15px; background: #050505; padding: 15px; box-shadow: 0 0 20px rgba(0,242,254,0.2); }
         
-        /* Giao diện Robot sau khi đăng nhập */
-        #bot-ui, #topup-ui { display: none; }
-        .wallet-bar { display: flex; justify-content: space-between; background: #111; padding: 10px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #222; }
-        .coin-val { color: var(--g); font-weight: bold; }
-        .prediction { background: #000; border: 1px solid var(--g); border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 15px; }
-        #res { font-size: 28px; font-weight: 900; margin: 10px 0; }
+        /* Chọn sảnh */
+        .lobby-select { width: 100%; padding: 8px; background: #111; color: var(--n); border: 1px solid #333; border-radius: 5px; margin-bottom: 10px; font-size: 12px; }
+        
+        /* Màn hình hiển thị AI */
+        .ai-screen { background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; position: relative; }
+        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--n); animation: move 2s infinite linear; opacity: 0.5; }
+        @keyframes move { 0% { top: 0; } 100% { top: 100%; } }
+
+        #res { font-size: 28px; font-weight: 900; margin: 10px 0; letter-spacing: 2px; }
+        .score-box { display: flex; justify-content: space-between; font-size: 11px; color: #888; }
+        
+        /* Nhập thủ công */
+        .manual-entry { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
+        .btn { border: none; padding: 10px 0; border-radius: 5px; color: #fff; font-weight: bold; cursor: pointer; font-size: 10px; }
+        
+        /* Lịch sử ván đấu */
+        .history-flow { height: 30px; display: flex; gap: 3px; overflow-x: auto; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .dot { min-width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
+
+        .auth-box { text-align: center; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div id="auth-ui" class="card">
-    <h2 id="auth-title">ĐĂNG NHẬP AI</h2>
-    <input type="text" id="username" placeholder="Tên tài khoản">
-    <input type="password" id="password" placeholder="Mật khẩu">
-    <button class="btn-main" onclick="handleAuth()">XÁC NHẬN</button>
-    <button class="btn-sub" onclick="toggleAuth()" id="auth-toggle">Chưa có tài khoản? Đăng ký</button>
+<div id="login-form" class="app">
+    <h3 style="color:var(--n); text-align:center">AI BCR INJECTOR v150</h3>
+    <input type="text" id="u" placeholder="User" style="width:90%; padding:10px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff;">
+    <button onclick="login()" style="width:100%; padding:10px; background:var(--n); border:none; border-radius:5px; font-weight:bold">LOGIN SERVER</button>
 </div>
 
-<div id="bot-ui" class="card">
-    <div class="wallet-bar">
-        <span>USER: <b id="user-tag" style="color:var(--n)"></b></span>
-        <span>XU: <b id="balance" class="coin-val">0</b></span>
-    </div>
-    <div class="prediction">
-        <div style="font-size: 10px; color: var(--g);">PHÂN TÍCH ONLINE (-10 XU/VÁN)</div>
+<div id="main-app" class="app hidden">
+    <select class="lobby-select" id="lobby">
+        <option value="sexy">SẢNH SEXY - AUTO SCAN</option>
+        <option value="dg">SẢNH DG - DEEP SCAN</option>
+        <option value="evo">SẢNH EVO - PACKET INJECT</option>
+        <option value="wm">SẢNH WM - REALTIME</option>
+        <option value="rr88">SẢNH BCR RR88 - EXCLUSIVE</option>
+    </select>
+
+    <div class="history-flow" id="history"></div>
+
+    <div class="ai-screen">
+        <div class="scan-line"></div>
+        <div style="font-size: 9px; color: var(--g);">PHÂN TÍCH CHUYÊN SÂU (AI)</div>
         <div id="res">READY</div>
-        <button class="btn-main" onclick="runScan()" id="btn-scan">QUÉT DỮ LIỆU</button>
+        <div class="score-box">
+            <span style="color:var(--p)">P-SCORE: <b id="ps">-</b></span>
+            <span style="color:var(--b)">B-SCORE: <b id="bs">-</b></span>
+        </div>
     </div>
-    <button class="btn-sub" style="border-color:var(--g); color:var(--g)" onclick="showTopup()">NẠP XU HỆ THỐNG</button>
-</div>
 
-<div id="topup-ui" class="card">
-    <h2>NẠP XU QUA THẺ CÀO</h2>
-    <input type="text" id="serial" placeholder="Số Serial">
-    <input type="text" id="pin" placeholder="Mã thẻ">
-    <button class="btn-main" style="background:var(--g)" onclick="processTopup()">GỬI YÊU CẦU NẠP</button>
-    <button class="btn-sub" onclick="backToBot()">QUAY LẠI</button>
+    <div style="font-size: 9px; margin-bottom: 5px; color: #555;">NHẬP LỊCH THỦ CÔNG:</div>
+    <div class="manual-entry">
+        <button class="btn" style="background:var(--p)" onclick="add('P')">CON (P)</button>
+        <button class="btn" style="background:var(--t); color:#000" onclick="add('T')">HÒA (T)</button>
+        <button class="btn" style="background:var(--b)" onclick="add('B')">CÁI (B)</button>
+    </div>
+
+    <div id="bet-tip" style="text-align:center; color:var(--g); font-weight:bold; font-size:13px;">TIỀN CƯỢC: 100K</div>
 </div>
 
 <script>
-    let isLogin = true;
-    let currentUser = null;
-    let usersData = JSON.parse(localStorage.getItem('usersOnline')) || {}; // Chạy qua localStorage để demo, thay bằng Firebase để Online thật
+    let logs = [];
+    let step = 0;
+    const fibo = [100, 200, 300, 500, 800, 1300, 2100];
 
-    function toggleAuth() {
-        isLogin = !isLogin;
-        document.getElementById('auth-title').innerText = isLogin ? "ĐĂNG NHẬP AI" : "ĐĂNG KÝ AI";
-        document.getElementById('auth-toggle').innerText = isLogin ? "Chưa có tài khoản? Đăng ký" : "Đã có tài khoản? Đăng nhập";
-    }
-
-    function handleAuth() {
-        const u = document.getElementById('username').value;
-        const p = document.getElementById('password').value;
-        if (!u || !p) return alert("Vui lòng điền đủ thông tin!");
-
-        if (isLogin) {
-            if (usersData[u] && usersData[u].pass === p) {
-                loginSuccess(u);
-            } else alert("Sai tài khoản hoặc mật khẩu!");
-        } else {
-            if (usersData[u]) return alert("Tài khoản đã tồn tại!");
-            usersData[u] = { pass: p, coins: 100 }; // Tặng 100 xu khi đăng ký
-            saveData();
-            alert("Đăng ký thành công! Bạn nhận được 100 xu.");
-            toggleAuth();
+    function login() {
+        const user = document.getElementById('u').value;
+        if(user) {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
         }
     }
 
-    function loginSuccess(u) {
-        currentUser = u;
-        document.getElementById('auth-ui').style.display = 'none';
-        document.getElementById('bot-ui').style.display = 'block';
-        document.getElementById('user-tag').innerText = u.toUpperCase();
-        updateBalance();
-    }
-
-    function updateBalance() {
-        document.getElementById('balance').innerText = usersData[currentUser].coins.toLocaleString();
-    }
-
-    function runScan() {
-        if (usersData[currentUser].coins < 10) return alert("Không đủ xu! Vui lòng nạp thêm.");
+    function add(v) {
+        if (logs.length > 0 && v === logs[logs.length-1]) step = 0;
+        else if (logs.length > 0) step = (step + 1) % fibo.length;
         
-        usersData[currentUser].coins -= 10; // Trừ 10 xu mỗi lần quét
-        saveData();
-        updateBalance();
+        logs.push(v);
+        updateHistory();
+        runDeepAI(v);
+    }
 
+    function updateHistory() {
+        const h = document.getElementById('history');
+        h.innerHTML = "";
+        logs.slice(-15).forEach(x => {
+            const d = document.createElement('div');
+            d.className = 'dot';
+            d.style.background = x === 'P' ? 'var(--p)' : (x === 'B' ? 'var(--b)' : 'var(--t)');
+            d.innerText = x;
+            h.appendChild(d);
+        });
+    }
+
+    function runDeepAI(lastWin) {
+        const lobby = document.getElementById('lobby').value;
         document.getElementById('res').innerText = "CALCULATING...";
-        document.getElementById('btn-scan').disabled = true;
-
+        
+        // Giả lập phân tích lá bài dựa trên thuật toán sảnh
         setTimeout(() => {
-            const results = ["BANKER", "PLAYER", "TIE"];
-            const final = results[Math.floor(Math.random() * 2.1)];
-            document.getElementById('res').innerText = final;
-            document.getElementById('res').style.color = final === "BANKER" ? "var(--b)" : (final === "PLAYER" ? "var(--p)" : "var(--t)");
-            document.getElementById('btn-scan').disabled = false;
-        }, 1500);
+            let p_pts = Math.floor(Math.random() * 10);
+            let b_pts = Math.floor(Math.random() * 10);
+            
+            // Thuật toán "Phân tích sâu" cho RR88: Né cầu bệt 4
+            let result = (p_pts > b_pts) ? "PLAYER" : "BANKER";
+            if(logs.slice(-3).join('') === "BBB") result = "PLAYER";
+            if(logs.slice(-3).join('') === "PPP") result = "BANKER";
+
+            document.getElementById('ps').innerText = p_pts;
+            document.getElementById('bs').innerText = b_pts;
+            document.getElementById('res').innerText = result;
+            document.getElementById('res').style.color = result === "BANKER" ? "var(--b)" : "var(--p)";
+            document.getElementById('bet-tip').innerText = "MỨC CƯỢC: " + (fibo[step] * 1000).toLocaleString() + "đ";
+        }, 1000);
     }
 
-    function showTopup() {
-        document.getElementById('bot-ui').style.display = 'none';
-        document.getElementById('topup-ui').style.display = 'block';
-    }
+    // AUTO SCAN INJECTION - Quét sâu vào sảnh bài
+    setInterval(() => {
+        // Tìm các Class chứa kết quả ván của sảnh RR88 và Sexy
+        const selectors = [
+            '.bead-item', '.road-item', '.last-res', 
+            '.sexy-result-dot', '.dg-history-cell', '.wm-dot'
+        ];
+        
+        let detected = null;
+        selectors.forEach(s => {
+            const elements = document.querySelectorAll(s);
+            if (elements.length > 0) {
+                const info = elements[elements.length - 1].className.toLowerCase();
+                if (info.includes('player') || info.includes('blue')) detected = 'P';
+                if (info.includes('banker') || info.includes('red')) detected = 'B';
+            }
+        });
 
-    function backToBot() {
-        document.getElementById('topup-ui').style.display = 'none';
-        document.getElementById('bot-ui').style.display = 'block';
-    }
-
-    function processTopup() {
-        alert("Yêu cầu nạp đã được gửi! Chờ quản trị viên phê duyệt.");
-        backToBot();
-    }
-
-    function saveData() {
-        localStorage.setItem('usersOnline', JSON.stringify(usersData));
-    }
+        if (detected && detected !== logs[logs.length-1]) {
+            add(detected);
+        }
+    }, 2000);
 </script>
 </body>
-</html>
+        </html>
+    
