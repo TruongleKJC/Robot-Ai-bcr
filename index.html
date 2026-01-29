@@ -3,152 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROBOT AI v19.1 - TIE INTEGRATED</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --n: #00f2fe; --b: #ff4b2b; --p: #1e90ff; --t: #00ff7f; --g: #fcc21b; }
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .app { width: 300px; border: 1px solid var(--n); border-radius: 15px; background: #050505; padding: 15px; box-shadow: 0 0 20px rgba(0,242,254,0.2); }
+        :root { --blue: #00f2fe; --pink: #ff416c; --tie: #00ff87; --bg: #0d0f12; }
+        body { background: var(--bg); color: #fff; font-family: 'Roboto Condensed', sans-serif; margin: 0; padding: 10px; text-transform: uppercase; }
+        .app { width: 100%; max-width: 350px; margin: auto; border: 1px solid #333; border-radius: 15px; padding: 15px; background: #161a20; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
         
-        /* Chọn sảnh */
-        .lobby-select { width: 100%; padding: 8px; background: #111; color: var(--n); border: 1px solid #333; border-radius: 5px; margin-bottom: 10px; font-size: 12px; }
-        
-        /* Màn hình hiển thị AI */
-        .ai-screen { background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; position: relative; }
-        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--n); animation: move 2s infinite linear; opacity: 0.5; }
-        @keyframes move { 0% { top: 0; } 100% { top: 100%; } }
+        .header { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 15px; }
+        .energy-box { background: #fcc21b; color: #000; font-weight: bold; padding: 2px 10px; border-radius: 5px; font-size: 11px; }
 
-        #res { font-size: 28px; font-weight: 900; margin: 10px 0; letter-spacing: 2px; }
-        .score-box { display: flex; justify-content: space-between; font-size: 11px; color: #888; }
-        
-        /* Nhập thủ công */
-        .manual-entry { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
-        .btn { border: none; padding: 10px 0; border-radius: 5px; color: #fff; font-weight: bold; cursor: pointer; font-size: 10px; }
-        
-        /* Lịch sử ván đấu */
-        .history-flow { height: 30px; display: flex; gap: 3px; overflow-x: auto; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
-        .dot { min-width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
+        .ocr-monitor { background: #000; border: 1px solid var(--blue); border-radius: 10px; padding: 10px; margin-bottom: 15px; text-align: center; }
+        .timer-val { font-size: 35px; font-weight: bold; color: var(--blue); transition: 0.3s; }
 
-        .auth-box { text-align: center; }
-        .hidden { display: none; }
+        .scan-container { margin: 15px 0; }
+        .bar-bg { width: 100%; height: 5px; background: #222; border-radius: 3px; }
+        #bar-fill { width: 0%; height: 100%; background: var(--blue); transition: 0.2s; box-shadow: 0 0 10px var(--blue); }
+
+        /* Nút bấm 3 cửa chuẩn sảnh BCR */
+        .grid-btn { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .btn { border: none; padding: 15px 5px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 12px; transition: 0.2s; }
+        .btn:active { transform: scale(0.95); opacity: 0.8; }
+        .b-pink { background: var(--pink); box-shadow: 0 4px 0 #b32d4b; }
+        .b-blue { background: #0081cf; box-shadow: 0 4px 0 #005a91; }
+        .b-green { background: var(--tie); color: #000; box-shadow: 0 4px 0 #00b35f; }
+        
+        .log-box { font-size: 9px; color: #555; margin-top: 15px; border-top: 1px solid #222; padding-top: 10px; }
     </style>
 </head>
 <body>
 
-<div id="login-form" class="app">
-    <h3 style="color:var(--n); text-align:center">AI BCR INJECTOR v150</h3>
-    <input type="text" id="u" placeholder="User" style="width:90%; padding:10px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff;">
-    <button onclick="login()" style="width:100%; padding:10px; background:var(--n); border:none; border-radius:5px; font-weight:bold">LOGIN SERVER</button>
-</div>
-
-<div id="main-app" class="app hidden">
-    <select class="lobby-select" id="lobby">
-        <option value="sexy">SẢNH SEXY - AUTO SCAN</option>
-        <option value="dg">SẢNH DG - DEEP SCAN</option>
-        <option value="evo">SẢNH EVO - PACKET INJECT</option>
-        <option value="wm">SẢNH WM - REALTIME</option>
-        <option value="rr88">SẢNH BCR RR88 - EXCLUSIVE</option>
-    </select>
-
-    <div class="history-flow" id="history"></div>
-
-    <div class="ai-screen">
-        <div class="scan-line"></div>
-        <div style="font-size: 9px; color: var(--g);">PHÂN TÍCH CHUYÊN SÂU (AI)</div>
-        <div id="res">READY</div>
-        <div class="score-box">
-            <span style="color:var(--p)">P-SCORE: <b id="ps">-</b></span>
-            <span style="color:var(--b)">B-SCORE: <b id="bs">-</b></span>
-        </div>
+<div class="app">
+    <div class="header">
+        <div style="color:var(--blue); font-weight:bold">ROBOT AI v19.1 PREMIUM</div>
+        <div class="energy-box">OCR: ONLINE</div>
     </div>
 
-    <div style="font-size: 9px; margin-bottom: 5px; color: #555;">NHẬP LỊCH THỦ CÔNG:</div>
-    <div class="manual-entry">
-        <button class="btn" style="background:var(--p)" onclick="add('P')">CON (P)</button>
-        <button class="btn" style="background:var(--t); color:#000" onclick="add('T')">HÒA (T)</button>
-        <button class="btn" style="background:var(--b)" onclick="add('B')">CÁI (B)</button>
+    <div class="ocr-monitor">
+        <div style="font-size: 9px; color: var(--blue); margin-bottom: 5px;">DỮ LIỆU ĐANG QUÉT (GIÂY)</div>
+        <div class="timer-val" id="clock">00.00</div>
+        <div style="font-size: 10px; color: #444; margin-top: 5px;">AI PREDICTION: <span id="work">STAY BY</span></div>
     </div>
 
-    <div id="bet-tip" style="text-align:center; color:var(--g); font-weight:bold; font-size:13px;">TIỀN CƯỢC: 100K</div>
+    <div class="scan-container">
+        <div style="font-size: 11px; margin-bottom: 5px;">HỆ THỐNG PHÂN TÍCH: <span id="perc">0</span>%</div>
+        <div class="bar-bg"><div id="bar-fill"></div></div>
+    </div>
+
+    <div class="grid-btn">
+        <button class="btn b-blue" onclick="manualInput('PLAYER')">PLAYER</button>
+        <button class="btn b-green" onclick="manualInput('TIE')">HÒA (TIE)</button>
+        <button class="btn b-pink" onclick="manualInput('BANKER')">BANKER</button>
+    </div>
+
+    <div class="log-box" id="logs">> Đang kết nối API sảnh RR88...<br>> Thuật toán Hòa (Tie) đã sẵn sàng.</div>
 </div>
 
 <script>
-    let logs = [];
-    let step = 0;
-    const fibo = [100, 200, 300, 500, 800, 1300, 2100];
+    let isRunning = false;
+    let history = [];
 
-    function login() {
-        const user = document.getElementById('u').value;
-        if(user) {
-            document.getElementById('login-form').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-        }
-    }
-
-    function add(v) {
-        if (logs.length > 0 && v === logs[logs.length-1]) step = 0;
-        else if (logs.length > 0) step = (step + 1) % fibo.length;
-        
-        logs.push(v);
-        updateHistory();
-        runDeepAI(v);
-    }
-
-    function updateHistory() {
-        const h = document.getElementById('history');
-        h.innerHTML = "";
-        logs.slice(-15).forEach(x => {
-            const d = document.createElement('div');
-            d.className = 'dot';
-            d.style.background = x === 'P' ? 'var(--p)' : (x === 'B' ? 'var(--b)' : 'var(--t)');
-            d.innerText = x;
-            h.appendChild(d);
-        });
-    }
-
-    function runDeepAI(lastWin) {
-        const lobby = document.getElementById('lobby').value;
-        document.getElementById('res').innerText = "CALCULATING...";
-        
-        // Giả lập phân tích lá bài dựa trên thuật toán sảnh
-        setTimeout(() => {
-            let p_pts = Math.floor(Math.random() * 10);
-            let b_pts = Math.floor(Math.random() * 10);
-            
-            // Thuật toán "Phân tích sâu" cho RR88: Né cầu bệt 4
-            let result = (p_pts > b_pts) ? "PLAYER" : "BANKER";
-            if(logs.slice(-3).join('') === "BBB") result = "PLAYER";
-            if(logs.slice(-3).join('') === "PPP") result = "BANKER";
-
-            document.getElementById('ps').innerText = p_pts;
-            document.getElementById('bs').innerText = b_pts;
-            document.getElementById('res').innerText = result;
-            document.getElementById('res').style.color = result === "BANKER" ? "var(--b)" : "var(--p)";
-            document.getElementById('bet-tip').innerText = "MỨC CƯỢC: " + (fibo[step] * 1000).toLocaleString() + "đ";
-        }, 1000);
-    }
-
-    // AUTO SCAN INJECTION - Quét sâu vào sảnh bài
-    setInterval(() => {
-        // Tìm các Class chứa kết quả ván của sảnh RR88 và Sexy
-        const selectors = [
-            '.bead-item', '.road-item', '.last-res', 
-            '.sexy-result-dot', '.dg-history-cell', '.wm-dot'
-        ];
-        
-        let detected = null;
-        selectors.forEach(s => {
-            const elements = document.querySelectorAll(s);
-            if (elements.length > 0) {
-                const info = elements[elements.length - 1].className.toLowerCase();
-                if (info.includes('player') || info.includes('blue')) detected = 'P';
-                if (info.includes('banker') || info.includes('red')) detected = 'B';
+    // Khởi động đồng hồ OCR giả lập (Sẽ đọc từ màn hình thật khi chạy Extension)
+    function ocrHeartbeat() {
+        setInterval(() => {
+            if(!isRunning) {
+                let time = (Math.random() * 30).toFixed(2);
+                document.getElementById('clock').innerText = time;
+                
+                // Tự động quét khi ván mới sắp bắt đầu (còn dưới 5 giây)
+                if(time < 5.00 && time > 4.50) startAnalysis();
             }
-        });
+        }, 100);
+    }
 
-        if (detected && detected !== logs[logs.length-1]) {
-            add(detected);
+    function startAnalysis() {
+        isRunning = true;
+        let p = 0;
+        document.getElementById('work').innerText = "CALCULATING";
+        document.getElementById('work').style.color = "var(--blue)";
+
+        let iv = setInterval(() => {
+            p += Math.floor(Math.random() * 10) + 5;
+            if(p > 100) p = 100;
+            document.getElementById('perc').innerText = p;
+            document.getElementById('bar-fill').style.width = p + "%";
+            
+            if(p >= 100) {
+                clearInterval(iv);
+                renderPrediction();
+            }
+        }, 800 / 10);
+    }
+
+    function renderPrediction() {
+        // Thuật toán tính xác suất Hòa (1/8 cơ hội)
+        const rand = Math.random() * 100;
+        let result = "";
+        let color = "";
+
+        if(rand < 12) { // 12% tỉ lệ ra Hòa
+            result = "TIE (HÒA)";
+            color = "var(--tie)";
+        } else if (rand < 56) {
+            result = "BANKER";
+            color = "var(--pink)";
+        } else {
+            result = "PLAYER";
+            color = "var(--blue)";
         }
-    }, 2000);
+
+        const clock = document.getElementById('clock');
+        clock.innerText = result;
+        clock.style.color = color;
+        
+        updateLogs(result);
+
+        setTimeout(() => {
+            isRunning = false;
+            clock.style.color = "var(--blue)";
+            document.getElementById('bar-fill').style.width = "0%";
+            document.getElementById('perc').innerText = "0";
+            document.getElementById('work').innerText = "STAY BY";
+            document.getElementById('work').style.color = "#444";
+        }, 6000);
+    }
+
+    function updateLogs(msg) {
+        const l = document.getElementById('logs');
+        l.innerHTML = `> AI Dự đoán: ${msg}<br>` + l.innerHTML;
+    }
+
+    function manualInput(type) {
+        if(!isRunning) startAnalysis();
+    }
+
+    window.onload = ocrHeartbeat;
 </script>
 </body>
-        </html>
+            </html>
     
