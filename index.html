@@ -1,136 +1,136 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI BCR REAL-TIME</title>
+    <title>AI BOT ONLINE - SYSTEM</title>
     <style>
-        :root { --neon: #00f2fe; --banker: #ff4b2b; --player: #1e90ff; --tie: #00ff7f; --bg: #0a0a0a; }
-        body { background: var(--bg); color: #fff; font-family: 'Arial', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        :root { --n: #00f2fe; --b: #ff4b2b; --p: #1e90ff; --t: #00ff7f; --g: #fcc21b; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { width: 300px; background: #0a0a0a; border: 1.5px solid var(--n); border-radius: 20px; padding: 20px; box-shadow: 0 0 20px rgba(0,242,254,0.3); }
+        h2 { text-align: center; color: var(--n); font-size: 18px; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn-main { background: var(--n); color: #000; }
+        .btn-sub { background: transparent; border: 1px solid var(--n); color: var(--n); font-size: 12px; }
         
-        .app-container { width: 280px; border: 2px solid var(--neon); border-radius: 20px; padding: 15px; background: #000; box-shadow: 0 0 20px var(--neon); position: relative; }
-        
-        /* Status Bar Real */
-        .status-bar { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 10px; color: #888; }
-        .online-dot { width: 8px; height: 8px; background: var(--tie); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 5px var(--tie); }
-
-        /* Main Display */
-        .prediction-screen { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #222; margin-bottom: 15px; }
-        .label { font-size: 10px; color: var(--neon); text-transform: uppercase; letter-spacing: 2px; }
-        #result { font-size: 32px; font-weight: bold; margin: 10px 0; transition: all 0.3s; }
-        .probability { font-size: 12px; color: var(--tie); }
-
-        /* Real-time Data Stream */
-        .data-stream { height: 40px; background: #050505; border-radius: 8px; font-family: monospace; font-size: 9px; padding: 5px; overflow: hidden; color: #444; margin-bottom: 15px; border: 1px solid #111; }
-
-        .bet-advice { background: rgba(252, 194, 27, 0.1); border: 1px solid #fcc21b; border-radius: 10px; padding: 10px; text-align: center; color: #fcc21b; font-weight: bold; font-size: 14px; }
-
-        .btn-manual { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-top: 15px; }
-        button { border: none; padding: 12px 0; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-size: 12px; }
+        /* Giao diện Robot sau khi đăng nhập */
+        #bot-ui, #topup-ui { display: none; }
+        .wallet-bar { display: flex; justify-content: space-between; background: #111; padding: 10px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #222; }
+        .coin-val { color: var(--g); font-weight: bold; }
+        .prediction { background: #000; border: 1px solid var(--g); border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 15px; }
+        #res { font-size: 28px; font-weight: 900; margin: 10px 0; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="status-bar">
-        <span><span class="online-dot"></span> SERVER: SG-LIVE-01</span>
-        <span id="ping">PING: 24ms</span>
-    </div>
+<div id="auth-ui" class="card">
+    <h2 id="auth-title">ĐĂNG NHẬP AI</h2>
+    <input type="text" id="username" placeholder="Tên tài khoản">
+    <input type="password" id="password" placeholder="Mật khẩu">
+    <button class="btn-main" onclick="handleAuth()">XÁC NHẬN</button>
+    <button class="btn-sub" onclick="toggleAuth()" id="auth-toggle">Chưa có tài khoản? Đăng ký</button>
+</div>
 
-    <div class="data-stream" id="stream">
-        > Listening to WebSocket RR88...<br>
-        > Handshake successful...
+<div id="bot-ui" class="card">
+    <div class="wallet-bar">
+        <span>USER: <b id="user-tag" style="color:var(--n)"></b></span>
+        <span>XU: <b id="balance" class="coin-val">0</b></span>
     </div>
+    <div class="prediction">
+        <div style="font-size: 10px; color: var(--g);">PHÂN TÍCH ONLINE (-10 XU/VÁN)</div>
+        <div id="res">READY</div>
+        <button class="btn-main" onclick="runScan()" id="btn-scan">QUÉT DỮ LIỆU</button>
+    </div>
+    <button class="btn-sub" style="border-color:var(--g); color:var(--g)" onclick="showTopup()">NẠP XU HỆ THỐNG</button>
+</div>
 
-    <div class="prediction-screen">
-        <div class="label">AI Cloud Dự Đoán</div>
-        <div id="result">WAITING...</div>
-        <div class="probability">Độ tin cậy: <span id="percent">0%</span></div>
-    </div>
-
-    <div class="bet-advice" id="bet">
-        MỨC CƯỢC: ---
-    </div>
-
-    <div class="btn-manual">
-        <button style="background: var(--player)" onclick="processData('P')">P</button>
-        <button style="background: var(--tie); color: #000" onclick="processData('T')">T</button>
-        <button style="background: var(--banker)" onclick="processData('B')">B</button>
-    </div>
+<div id="topup-ui" class="card">
+    <h2>NẠP XU QUA THẺ CÀO</h2>
+    <input type="text" id="serial" placeholder="Số Serial">
+    <input type="text" id="pin" placeholder="Mã thẻ">
+    <button class="btn-main" style="background:var(--g)" onclick="processTopup()">GỬI YÊU CẦU NẠP</button>
+    <button class="btn-sub" onclick="backToBot()">QUAY LẠI</button>
 </div>
 
 <script>
-    const stream = document.getElementById('stream');
-    const resultDiv = document.getElementById('result');
-    const percentDiv = document.getElementById('percent');
-    const betDiv = document.getElementById('bet');
-    
-    let history = [];
-    const fibo = [100, 200, 300, 500, 800, 1300, 2100];
-    let step = 0;
+    let isLogin = true;
+    let currentUser = null;
+    let usersData = JSON.parse(localStorage.getItem('usersOnline')) || {}; // Chạy qua localStorage để demo, thay bằng Firebase để Online thật
 
-    // 1. CHẾ ĐỘ QUÉT THẬT (REAL SCAN)
-    // Tự động tìm nạp dữ liệu từ DOM của trang web RR88 khi được nhúng hoặc chạy song song
-    function initRealScan() {
-        const observer = new MutationObserver((mutations) => {
-            // Quét các class đặc trưng của sảnh Sexy và BCR RR88
-            const selectors = ['.bead-item', '.road-item', '.last-result', '.poker-card'];
-            selectors.forEach(s => {
-                const el = document.querySelectorAll(s);
-                if (el.length > 0) {
-                    const last = el[el.length - 1].className.toLowerCase();
-                    let found = last.includes('player') ? 'P' : (last.includes('banker') ? 'B' : null);
-                    if (found && found !== history[history.length - 1]) {
-                        processData(found);
-                    }
-                }
-            });
-        });
-
-        observer.observe(document.body, { childList: true, subtree: true });
+    function toggleAuth() {
+        isLogin = !isLogin;
+        document.getElementById('auth-title').innerText = isLogin ? "ĐĂNG NHẬP AI" : "ĐĂNG KÝ AI";
+        document.getElementById('auth-toggle').innerText = isLogin ? "Chưa có tài khoản? Đăng ký" : "Đã có tài khoản? Đăng nhập";
     }
 
-    // 2. THUẬT TOÁN AI XỬ LÝ ONLINE (Markov Chain Logic)
-    function processData(val) {
-        // Ghi log luồng dữ liệu thật
-        const log = document.createElement('div');
-        log.innerText = `> Received Packet: ${val === 'P' ? 'Player_Win' : 'Banker_Win'}`;
-        stream.prepend(log);
+    function handleAuth() {
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        if (!u || !p) return alert("Vui lòng điền đủ thông tin!");
 
-        // Quản lý vốn
-        if (history.length > 0 && val === history[history.length - 1]) step = 0;
-        else if (history.length > 0) step = (step + 1) % fibo.length;
-        history.push(val);
-
-        // Phân tích AI Cloud
-        analyzeCloud();
+        if (isLogin) {
+            if (usersData[u] && usersData[u].pass === p) {
+                loginSuccess(u);
+            } else alert("Sai tài khoản hoặc mật khẩu!");
+        } else {
+            if (usersData[u]) return alert("Tài khoản đã tồn tại!");
+            usersData[u] = { pass: p, coins: 100 }; // Tặng 100 xu khi đăng ký
+            saveData();
+            alert("Đăng ký thành công! Bạn nhận được 100 xu.");
+            toggleAuth();
+        }
     }
 
-    function analyzeCloud() {
-        resultDiv.innerText = "ANALYZING...";
+    function loginSuccess(u) {
+        currentUser = u;
+        document.getElementById('auth-ui').style.display = 'none';
+        document.getElementById('bot-ui').style.display = 'block';
+        document.getElementById('user-tag').innerText = u.toUpperCase();
+        updateBalance();
+    }
+
+    function updateBalance() {
+        document.getElementById('balance').innerText = usersData[currentUser].coins.toLocaleString();
+    }
+
+    function runScan() {
+        if (usersData[currentUser].coins < 10) return alert("Không đủ xu! Vui lòng nạp thêm.");
         
-        // Giả lập độ trễ truyền tải từ Server thật (1.2s)
-        setTimeout(() => {
-            // Thuật toán dựa trên lịch sử 10 ván gần nhất
-            let pCount = history.filter(x => x === 'P').length;
-            let bCount = history.filter(x => x === 'B').length;
-            
-            let prediction = (pCount > bCount) ? "BANKER" : "PLAYER"; 
-            let acc = (95 + Math.random() * 4.9).toFixed(1);
+        usersData[currentUser].coins -= 10; // Trừ 10 xu mỗi lần quét
+        saveData();
+        updateBalance();
 
-            resultDiv.innerText = prediction;
-            resultDiv.style.color = prediction === "BANKER" ? "var(--banker)" : "var(--player)";
-            percentDiv.innerText = acc + "%";
-            betDiv.innerText = `MỨC CƯỢC: ${(fibo[step] * 1000).toLocaleString()}đ`;
-        }, 1200);
+        document.getElementById('res').innerText = "CALCULATING...";
+        document.getElementById('btn-scan').disabled = true;
+
+        setTimeout(() => {
+            const results = ["BANKER", "PLAYER", "TIE"];
+            const final = results[Math.floor(Math.random() * 2.1)];
+            document.getElementById('res').innerText = final;
+            document.getElementById('res').style.color = final === "BANKER" ? "var(--b)" : (final === "PLAYER" ? "var(--p)" : "var(--t)");
+            document.getElementById('btn-scan').disabled = false;
+        }, 1500);
     }
 
-    // Cập nhật PING thật
-    setInterval(() => {
-        document.getElementById('ping').innerText = `PING: ${Math.floor(Math.random() * 20) + 15}ms`;
-    }, 3000);
+    function showTopup() {
+        document.getElementById('bot-ui').style.display = 'none';
+        document.getElementById('topup-ui').style.display = 'block';
+    }
 
-    window.onload = initRealScan;
+    function backToBot() {
+        document.getElementById('topup-ui').style.display = 'none';
+        document.getElementById('bot-ui').style.display = 'block';
+    }
+
+    function processTopup() {
+        alert("Yêu cầu nạp đã được gửi! Chờ quản trị viên phê duyệt.");
+        backToBot();
+    }
+
+    function saveData() {
+        localStorage.setItem('usersOnline', JSON.stringify(usersData));
+    }
 </script>
 </body>
 </html>
