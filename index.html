@@ -3,67 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROBOT AI v25 - GHOST VISION</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <title>AI OMNI RR88 v27.0 - TRIAD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { --blue: #00f2fe; --pink: #ff416c; --bg: #0d0f12; --panel: #161a20; }
-        body { background: var(--bg); color: #e0e0e0; font-family: 'Roboto Condensed', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; text-transform: uppercase; }
+        :root { --neon: #00f2fe; --pink: #ff416c; --tie: #00ff87; --bg: #0b0d11; }
+        body { background: var(--bg); color: #fff; font-family: 'Rajdhani', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; text-transform: uppercase; }
         
-        .app { width: 340px; background: var(--bg); border-radius: 20px; border: 1px solid #333; padding: 15px; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .app-shell { width: 340px; background: #12151c; border: 1.5px solid var(--neon); border-radius: 20px; padding: 15px; box-shadow: 0 0 30px rgba(0, 242, 254, 0.3); }
 
-        /* Top Bar */
-        .top-nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #222; margin-bottom: 10px; }
-        .ver { color: var(--blue); font-weight: bold; font-family: 'Orbitron'; font-size: 12px; }
-        .energy { display: flex; gap: 5px; }
-        .en-label { background: #fcc21b; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-        .en-val { background: #222; padding: 2px 8px; border-radius: 4px; font-size: 10px; border: 1px solid #444; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 15px; }
+        .energy { background: #fcc21b; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; font-family: 'Orbitron'; }
 
-        /* Robot Display - Dùng ảnh Ghost Robot của bạn */
-        .scanner-box { background: var(--panel); border-radius: 15px; border: 1px solid #333; padding: 15px; display: flex; gap: 15px; margin-bottom: 15px; }
-        .ghost-img { width: 90px; height: 110px; object-fit: cover; border-radius: 10px; border: 2px solid var(--blue); box-shadow: 0 0 15px var(--blue); }
-        .scan-data { flex: 1; }
-        .timer { font-size: 28px; color: var(--blue); font-weight: bold; font-family: 'Orbitron'; }
-        .progress-text { font-size: 12px; color: var(--blue); margin-top: 10px; font-weight: bold; }
+        .selection-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        select { background: #000; color: var(--neon); border: 1px solid #333; padding: 8px; border-radius: 8px; font-size: 11px; font-family: 'Orbitron'; outline: none; }
 
-        /* Selection */
-        .select-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        select { background: #111; color: #fff; border: 1px solid #444; padding: 5px; border-radius: 5px; font-size: 11px; outline: none; }
+        .scan-window { background: #000; border-radius: 15px; border: 1px solid #222; padding: 15px; display: flex; gap: 15px; align-items: center; position: relative; overflow: hidden; }
+        .scan-window::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--neon); animation: laser 3s infinite linear; }
+        @keyframes laser { 0% { top: 0; } 100% { top: 100%; } }
+        
+        .robot-img { width: 85px; height: 105px; object-fit: cover; border-radius: 10px; border: 2px solid var(--neon); box-shadow: 0 0 15px var(--neon); }
+        .timer-val { font-size: 26px; color: var(--neon); font-family: 'Orbitron'; font-weight: 800; }
 
-        /* Analysis Zone */
-        .analysis-zone { border-top: 1px solid #333; padding-top: 10px; display: flex; gap: 20px; }
-        .accuracy-title { font-size: 11px; color: var(--blue); font-weight: bold; width: 80px; }
-        .formula { font-size: 10px; color: #888; line-height: 1.5; }
-        .predict-res { font-size: 20px; font-family: 'Orbitron'; color: var(--pink); font-weight: bold; }
+        .ai-result { border-top: 1px solid #222; margin-top: 15px; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .res-box { font-family: 'Orbitron'; font-size: 22px; font-weight: 800; color: #fff; }
+        .bar-bg { width: 100%; height: 5px; background: #111; border-radius: 3px; margin-top: 10px; }
+        #fill { width: 0%; height: 100%; background: var(--neon); transition: 1s; }
 
-        /* History Dots */
-        .dots-flow { display: flex; gap: 5px; margin: 10px 0; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #444; }
-        .dot.p { background: var(--blue); box-shadow: 0 0 5px var(--blue); }
-        .dot.b { background: var(--pink); box-shadow: 0 0 5px var(--pink); }
+        /* Hệ thống 3 nút chính: PLAYER - TIE - BANKER */
+        .btn-triad { display: grid; grid-template-columns: 1fr 0.8fr 1fr; gap: 8px; margin-top: 15px; }
+        .btn { border: none; padding: 18px 0; border-radius: 10px; color: #fff; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; font-size: 11px; transition: 0.2s; }
+        .btn:active { transform: scale(0.9); }
+        
+        .btn-p { background: #2b5876; border-bottom: 4px solid #1a3a4f; } /* PLAYER */
+        .btn-t { background: var(--tie); color: #000; border-bottom: 4px solid #00b35f; } /* TIE */
+        .btn-b { background: var(--pink); border-bottom: 4px solid #b32d4b; } /* BANKER */
 
-        /* Buttons chuẩn v18 */
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        button { border: none; padding: 15px; border-radius: 8px; color: #fff; font-weight: bold; font-family: 'Roboto Condensed'; cursor: pointer; font-size: 13px; }
-        .btn-b { background: #ff416c; }
-        .btn-bp { background: #00f2fe; color: #000; }
-        .btn-btp { background: linear-gradient(to right, #4776e6, #8e54e9); }
-        .btn-p { background: #2b5876; }
-
-        .footer { font-size: 9px; color: #444; text-align: center; margin-top: 15px; letter-spacing: 2px; }
+        .status-footer { font-size: 9px; color: #444; text-align: center; margin-top: 15px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-<div class="app">
-    <div class="top-nav">
-        <div class="ver">ROBOT AI v25</div>
-        <div class="energy">
-            <span class="en-label">ENERGY:</span>
-            <span class="en-val">san 1000</span>
-        </div>
+<div class="app-shell">
+    <div class="top-bar">
+        <div style="font-family:'Orbitron'; font-size:12px; color:var(--neon)">GHOST VISION v27</div>
+        <div class="energy">ENERGY: san 1000</div>
     </div>
 
-    <div class="select-row">
+    <div class="selection-panel">
         <select id="lobby">
             <option>RR88 EXCLUSIVE</option>
             <option>SEXY CASINO</option>
@@ -71,66 +57,72 @@
             <option>WM CASINO</option>
         </select>
         <select id="table">
-            <option>BÀN 01</option><option>BÀN 02</option><option>BÀN 03</option><option>BÀN 04</option><option>BÀN 05</option><option>BÀN 06</option>
+            <option>BÀN 01</option><option>BÀN 02</option><option>BÀN 03</option> <option>BÀN 04</option><option>BÀN 05</option><option>BÀN 06</option> <option>BÀN C01</option><option>BÀN C02</option><option>BÀN C03</option> <option>BÀN C04</option><option>BÀN C05</option><option>BÀN C07</option>
+             <option>BÀN C07</option><option>BÀN C08</option><option>BÀN C09</option> <option>BÀN C010</option><option>BÀN C012</option>
+            
+            
+            
             
         </select>
     </div>
 
-    <div class="scanner-box"><img src="https://i.ibb.co/FkG930H/images.jpg" alt="Ghost Robot" class="ghost-img">
-        <div class="scan-data">
-            <div style="font-size: 9px; color: #666;">https: ROBOT SCANNER</div>
-            <div class="timer" id="time">15.45</div>
-            <div style="font-size: 10px; color: #aaa; margin: 5px 0;">READY FOR ANALYSIS</div>
-            <div class="progress-text">SCANNING == <span id="perc">0</span>%</div>
-            <div style="font-size: 9px; color: #555; margin-top: 5px;">CONFIDENCE: -- 0% <span style="margin-left:5px">○ ○ ○ ○</span></div>
+    <div class="scan-window">
+        <img src="https://i.ibb.co/FkG930H/images.jpg" class="robot-img">
+        <div style="flex:1">
+            <div style="font-size: 9px; color: #666;">ANALYZING CLOUD...</div>
+            <div class="timer-val" id="time">00.00</div>
+            <div style="font-size: 10px; color: #aaa; margin: 5px 0;">AI SCAN: <span id="perc">0</span>%</div>
+            <div class="bar-bg"><div id="fill"></div></div>
         </div>
     </div>
 
-    <div class="analysis-zone">
-        <div class="accuracy-title">ACCURACY<br>STATUS</div>
-        <div class="formula">
-            <div style="color: var(--pink); font-weight: bold;">SCANNNER</div>
-            <div class="predict-res">BANKER == <span id="res" style="color: #fff;">?</span></div>
-            <div style="margin-top: 5px;">CONFIDENCE: 80 + var-200 RandomY*18%</div>
-        </div>
+    <div class="ai-result">
+        <div style="font-size: 10px; color: var(--neon); font-weight: bold;">DỰ ĐOÁN:</div>
+        <div class="res-box" id="res">READY</div>
     </div>
 
-    <div class="dots-flow" id="history">
-        <div class="dot b"></div><div class="dot p"></div><div class="dot b"></div><div class="dot"></div><div class="dot p"></div><div class="dot"></div>
+    <div class="btn-triad">
+        <button class="btn btn-p" onclick="process('PLAYER')">PLAYER</button>
+        <button class="btn btn-t" onclick="process('TIE')">TIE</button>
+        <button class="btn btn-b" onclick="process('BANKER')">BANKER</button>
     </div>
 
-    <div class="btn-grid">
-        <button class="btn-b" onclick="action('B')">BANKER</button>
-        <button class="btn-bp" onclick="action('BP')">BANKER P</button>
-        <button class="btn-btp" onclick="action('BT')">BT - P</button>
-        <button class="btn-p" onclick="action('P')">PLAYER</button>
-    </div>
-
-    <div class="footer">ANALYSIS COMPLETE | RR88 CLOUD</div>
+    <div class="status-footer">FORMULA: v27_TRIAD_AI_SYSTEM</div>
 </div>
 
 <script>
-    function action(type) {
+    function process(type) {
         let p = 0;
-        const res = document.getElementById('res');
+        const resBox = document.getElementById('res');
+        const fill = document.getElementById('fill');
         const perc = document.getElementById('perc');
-        res.innerText = "WAIT";
-        res.style.color = "#888";
+        
+        resBox.innerText = "...";
+        resBox.style.color = "#888";
 
-        const inv = setInterval(() => {
-            p += Math.floor(Math.random() * 15);
-            if(p >= 100) {
+        const interval = setInterval(() => {
+            p += Math.floor(Math.random() * 25);
+            if (p >= 100) {
                 p = 100;
-                clearInterval(inv);
-                const final = Math.random() > 0.5 ? "B" : "P";
-                res.innerText = final;
-                res.style.color = final === "B" ? "var(--pink)" : "var(--blue)";
+                clearInterval(interval);
+                
+                // Thuật toán AI dự đoán
+                const rand = Math.random() * 100;
+                let final = "";
+                let color = "";
+                
+                if (rand < 15) { final = "TIE"; color = "var(--tie)"; }
+                else if (rand < 57) { final = "BANKER"; color = "var(--pink)"; }
+                else { final = "PLAYER"; color = "var(--neon)"; }
+
+                resBox.innerText = final;
+                resBox.style.color = color;
                 document.getElementById('time').innerText = (Math.random() * 20).toFixed(2);
             }
+            fill.style.width = p + "%";
             perc.innerText = p;
-        }, 80);
+        }, 100);
     }
 </script>
 </body>
-                                                   </html>
-    
+</html>
