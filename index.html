@@ -3,168 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI ROBOT v24 - ULTIMATE OMNI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+    <title>ROBOT AI v25 - GHOST VISION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { --neon: #00f2fe; --banker: #ff416c; --player: #4776e6; --tie: #00ff87; --gold: #fcc21b; }
-        body { background: transparent; color: #fff; font-family: 'Rajdhani', sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; }
+        :root { --blue: #00f2fe; --pink: #ff416c; --bg: #0d0f12; --panel: #161a20; }
+        body { background: var(--bg); color: #e0e0e0; font-family: 'Roboto Condensed', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; text-transform: uppercase; }
         
-        /* App Shell - Có khả năng di động */
-        .app-shell { 
-            width: 320px; background: rgba(10, 12, 18, 0.95); border: 2px solid var(--neon); 
-            border-radius: 20px; padding: 15px; box-shadow: 0 0 30px rgba(0, 242, 254, 0.4);
-            backdrop-filter: blur(10px); position: relative; touch-action: none; 
-        }
+        .app { width: 340px; background: var(--bg); border-radius: 20px; border: 1px solid #333; padding: 15px; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
 
-        .header { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 12px; cursor: move; }
-        .brand { font-family: 'Orbitron'; font-size: 13px; color: var(--neon); text-shadow: 0 0 10px var(--neon); }
-        
-        /* Form Đăng nhập */
-        .auth-screen { text-align: center; }
-        input { width: 90%; padding: 10px; margin: 5px 0; background: #1a1f26; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        .btn-auth { width: 100%; padding: 12px; background: var(--neon); color: #000; font-weight: bold; border: none; border-radius: 8px; margin-top: 10px; cursor: pointer; }
+        /* Top Bar */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #222; margin-bottom: 10px; }
+        .ver { color: var(--blue); font-weight: bold; font-family: 'Orbitron'; font-size: 12px; }
+        .energy { display: flex; gap: 5px; }
+        .en-label { background: #fcc21b; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .en-val { background: #222; padding: 2px 8px; border-radius: 4px; font-size: 10px; border: 1px solid #444; }
 
-        /* Giao diện chính */
-        .hidden { display: none; }
-        .selection-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        select { background: #111; color: var(--neon); border: 1px solid #333; padding: 6px; border-radius: 5px; font-size: 11px; outline: none; }
+        /* Robot Display - Dùng ảnh Ghost Robot của bạn */
+        .scanner-box { background: var(--panel); border-radius: 15px; border: 1px solid #333; padding: 15px; display: flex; gap: 15px; margin-bottom: 15px; }
+        .ghost-img { width: 90px; height: 110px; object-fit: cover; border-radius: 10px; border: 2px solid var(--blue); box-shadow: 0 0 15px var(--blue); }
+        .scan-data { flex: 1; }
+        .timer { font-size: 28px; color: var(--blue); font-weight: bold; font-family: 'Orbitron'; }
+        .progress-text { font-size: 12px; color: var(--blue); margin-top: 10px; font-weight: bold; }
 
-        .ai-screen { background: #000; border: 1px solid #222; border-radius: 15px; padding: 15px; text-align: center; position: relative; overflow: hidden; }
-        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--neon); animation: scan 3s infinite linear; opacity: 0.5; }
-        @keyframes scan { 0% { top:0% } 100% { top:100% } }
-        
-        #res-text { font-family: 'Orbitron'; font-size: 26px; font-weight: bold; margin: 10px 0; letter-spacing: 2px; }
-        .bar-bg { width: 100%; height: 4px; background: #111; border-radius: 2px; margin-top: 10px; }
-        #fill { width: 0%; height: 100%; background: var(--neon); transition: 1s; }
+        /* Selection */
+        .select-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        select { background: #111; color: #fff; border: 1px solid #444; padding: 5px; border-radius: 5px; font-size: 11px; outline: none; }
 
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px; }
-        .btn { border: none; padding: 12px 0; border-radius: 8px; color: #fff; font-weight: bold; font-family: 'Orbitron'; font-size: 11px; cursor: pointer; }
-        .p-btn { background: var(--player); box-shadow: 0 4px 10px rgba(71,118,230,0.3); }
-        .t-btn { background: var(--tie); color: #000; box-shadow: 0 4px 10px rgba(0,255,135,0.3); }
-        .b-btn { background: var(--banker); box-shadow: 0 4px 10px rgba(255,65,108,0.3); }
+        /* Analysis Zone */
+        .analysis-zone { border-top: 1px solid #333; padding-top: 10px; display: flex; gap: 20px; }
+        .accuracy-title { font-size: 11px; color: var(--blue); font-weight: bold; width: 80px; }
+        .formula { font-size: 10px; color: #888; line-height: 1.5; }
+        .predict-res { font-size: 20px; font-family: 'Orbitron'; color: var(--pink); font-weight: bold; }
 
-        .history-flow { display: flex; gap: 4px; overflow-x: auto; margin-top: 10px; padding: 5px; border-top: 1px solid #222; }
-        .dot { min-width: 12px; height: 12px; border-radius: 50%; border: 1px solid #444; }
+        /* History Dots */
+        .dots-flow { display: flex; gap: 5px; margin: 10px 0; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #444; }
+        .dot.p { background: var(--blue); box-shadow: 0 0 5px var(--blue); }
+        .dot.b { background: var(--pink); box-shadow: 0 0 5px var(--pink); }
+
+        /* Buttons chuẩn v18 */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        button { border: none; padding: 15px; border-radius: 8px; color: #fff; font-weight: bold; font-family: 'Roboto Condensed'; cursor: pointer; font-size: 13px; }
+        .btn-b { background: #ff416c; }
+        .btn-bp { background: #00f2fe; color: #000; }
+        .btn-btp { background: linear-gradient(to right, #4776e6, #8e54e9); }
+        .btn-p { background: #2b5876; }
+
+        .footer { font-size: 9px; color: #444; text-align: center; margin-top: 15px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-<div class="app-shell" id="robotApp">
-    <div class="header" id="dragHeader">
-        <div class="brand">RR88 ROBOT v24</div>
-        <div style="font-size: 9px; color: #555;">● OMNI CORE</div>
+<div class="app">
+    <div class="top-nav">
+        <div class="ver">ROBOT AI v25</div>
+        <div class="energy">
+            <span class="en-label">ENERGY:</span>
+            <span class="en-val">san 1000</span>
+        </div>
     </div>
 
-    <div id="authScreen" class="auth-screen">
-        <input type="text" id="u" placeholder="Tên đăng nhập">
-        <input type="password" id="p" placeholder="Mật khẩu">
-        <button class="btn-auth" onclick="login()">KÍCH HOẠT ROBOT</button>
-        <div style="font-size: 10px; color: #444; margin-top: 10px;">ID: RR88-XXXX-2026</div>
+    <div class="select-row">
+        <select id="lobby">
+            <option>RR88 EXCLUSIVE</option>
+            <option>SEXY CASINO</option>
+            <option>DG CASINO</option>
+            <option>WM CASINO</option>
+        </select>
+        <select id="table">
+            <option>BÀN 01</option><option>BÀN 02</option><option>BÀN 03</option>
+        </select>
     </div>
 
-    <div id="mainScreen" class="hidden">
-        <div class="selection-row">
-            <select id="lobby"><option>SEXY BCR</option><option>DG CASINO</option><option>RR88 EXCL</option><option>WM BCR</option></select>
-            <select id="table"><option>BÀN 01</option><option>BÀN 02</option><option>BÀN 03</option></select>
+    <div class="scanner-box">
+        <img src="https://i.ibb.co/FkG930H/images.jpg" class="ghost-img">
+        <div class="scan-data">
+            <div style="font-size: 9px; color: #666;">https: ROBOT SCANNER</div>
+            <div class="timer" id="time">15.45</div>
+            <div style="font-size: 10px; color: #aaa; margin: 5px 0;">READY FOR ANALYSIS</div>
+            <div class="progress-text">SCANNING == <span id="perc">0</span>%</div>
+            <div style="font-size: 9px; color: #555; margin-top: 5px;">CONFIDENCE: -- 0% <span style="margin-left:5px">○ ○ ○ ○</span></div>
         </div>
-
-        <div class="ai-screen">
-            <div class="scan-line"></div>
-            <div style="font-size: 9px; color: var(--neon);">AI PREDICTING...</div>
-            <div id="res-text">READY</div>
-            <div style="font-size: 10px; color: #888;">CONFIDENCE: <span id="perc">0%</span></div>
-            <div class="bar-bg"><div id="fill"></div></div>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn p-btn" onclick="add('P')">PLAYER</button>
-            <button class="btn t-btn" onclick="add('T')">TIE</button>
-            <button class="btn b-btn" onclick="add('B')">BANKER</button>
-        </div>
-
-        <div class="history-flow" id="history"></div>
     </div>
+
+    <div class="analysis-zone">
+        <div class="accuracy-title">ACCURACY<br>STATUS</div>
+        <div class="formula">
+            <div style="color: var(--pink); font-weight: bold;">SCANNNER</div>
+            <div class="predict-res">BANKER == <span id="res" style="color: #fff;">?</span></div>
+            <div style="margin-top: 5px;">CONFIDENCE: 80 + var-200 RandomY*18%</div>
+        </div>
+    </div>
+
+    <div class="dots-flow" id="history">
+        <div class="dot b"></div><div class="dot p"></div><div class="dot b"></div><div class="dot"></div><div class="dot p"></div><div class="dot"></div>
+    </div>
+
+    <div class="btn-grid">
+        <button class="btn-b" onclick="action('B')">BANKER</button>
+        <button class="btn-bp" onclick="action('BP')">BANKER P</button>
+        <button class="btn-btp" onclick="action('BT')">BT - P</button>
+        <button class="btn-p" onclick="action('P')">PLAYER</button>
+    </div>
+
+    <div class="footer">ANALYSIS COMPLETE | RR88 CLOUD</div>
 </div>
 
 <script>
-    let logs = [];
-
-    // Tính năng Đăng nhập
-    function login() {
-        const u = document.getElementById('u').value;
-        const p = document.getElementById('p').value;
-        if(u && p) {
-            document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('mainScreen').classList.remove('hidden');
-        } else alert("Vui lòng nhập tài khoản!");
-    }
-
-    // Thuật toán AI Soi Cầu
-    function add(v) {
-        logs.push(v);
-        updateHistory();
-        const resDiv = document.getElementById('res-text');
-        const fill = document.getElementById('fill');
+    function action(type) {
+        let p = 0;
+        const res = document.getElementById('res');
         const perc = document.getElementById('perc');
+        res.innerText = "WAIT";
+        res.style.color = "#888";
 
-        resDiv.innerText = "SCANNING";
-        resDiv.style.color = "#fff";
-        fill.style.width = "0%";
-
-        setTimeout(() => {
-            const rand = Math.random() * 100;
-            let result = "";
-            let color = "";
-
-            if (rand < 10) { result = "TIE"; color = "var(--tie)"; }
-            else if (rand < 55) { result = "BANKER"; color = "var(--banker)"; }
-            else { result = "PLAYER"; color = "var(--player)"; }
-
-            // Logic bẻ cầu bệt ẩn
-            if (logs.slice(-3).join('') === "BBB") { result = "PLAYER"; color = "var(--player)"; }
-            if (logs.slice(-4).join('') === "PPPP") { result = "BANKER"; color = "var(--banker)"; }
-
-            resDiv.innerText = result;
-            resDiv.style.color = color;
-            let rate = (94 + Math.random() * 5).toFixed(1);
-            perc.innerText = rate + "%";
-            fill.style.width = rate + "%";
-        }, 1000);
+        const inv = setInterval(() => {
+            p += Math.floor(Math.random() * 15);
+            if(p >= 100) {
+                p = 100;
+                clearInterval(inv);
+                const final = Math.random() > 0.5 ? "B" : "P";
+                res.innerText = final;
+                res.style.color = final === "B" ? "var(--pink)" : "var(--blue)";
+                document.getElementById('time').innerText = (Math.random() * 20).toFixed(2);
+            }
+            perc.innerText = p;
+        }, 80);
     }
-
-    function updateHistory() {
-        const h = document.getElementById('history');
-        h.innerHTML = "";
-        logs.slice(-12).forEach(x => {
-            const d = document.createElement('div');
-            d.className = 'dot';
-            d.style.background = x === 'P' ? 'var(--player)' : (x === 'B' ? 'var(--banker)' : 'var(--tie)');
-            h.appendChild(d);
-        });
-    }
-
-    // TÍNH NĂNG KÉO THẢ (Cho Oppo A5)
-    const app = document.getElementById('robotApp');
-    const header = document.getElementById('dragHeader');
-    let isDragging = false, currentX, currentY, initialX, initialY;
-
-    header.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        initialX = e.touches[0].clientX - app.offsetLeft;
-        initialY = e.touches[0].clientY - app.offsetTop;
-    });
-
-    document.addEventListener('touchmove', (e) => {
-        if (isDragging) {
-            e.preventDefault();
-            app.style.position = 'fixed';
-            app.style.left = (e.touches[0].clientX - initialX) + 'px';
-            app.style.top = (e.touches[0].clientY - initialY) + 'px';
-        }
-    });
-
-    document.addEventListener('touchend', () => isDragging = false);
 </script>
 </body>
-    </html>
+                                                   </html>
     
