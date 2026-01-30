@@ -2,126 +2,126 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI OMNI RR88 v27.0 - TRIAD</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+    <title>AI OMNI v28.0 - GHOST INTERFACE</title>
     <style>
-        :root { --neon: #00f2fe; --pink: #ff416c; --tie: #00ff87; --bg: #0b0d11; }
-        body { background: var(--bg); color: #fff; font-family: 'Rajdhani', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; text-transform: uppercase; }
+        :root { --neon: #00f2fe; --pink: #ff416c; --tie: #00ff87; --bg: #0d0f14; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; }
         
-        .app-shell { width: 340px; background: #12151c; border: 1.5px solid var(--neon); border-radius: 20px; padding: 15px; box-shadow: 0 0 30px rgba(0, 242, 254, 0.3); }
+        /* Khung máy điện thoại */
+        .phone-frame {
+            width: 320px; background: #161b22; border: 2px solid #30363d;
+            border-radius: 30px; padding: 20px; box-shadow: 0 0 50px rgba(0,0,0,1);
+        }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 15px; }
-        .energy { background: #fcc21b; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; font-family: 'Orbitron'; }
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .title { color: var(--neon); font-style: italic; font-weight: bold; font-size: 14px; }
+        .energy-tag { background: #fcc21b; color: #000; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
 
-        .selection-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        select { background: #000; color: var(--neon); border: 1px solid #333; padding: 8px; border-radius: 8px; font-size: 11px; font-family: 'Orbitron'; outline: none; }
+        /* Khu vực chọn Bàn/Sảnh */
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .select-box { background: #0d1117; border: 1px solid #30363d; padding: 5px; border-radius: 5px; text-align: center; }
+        .label { font-size: 9px; color: var(--neon); margin-bottom: 3px; }
+        .val { font-size: 11px; font-weight: bold; }
 
-        .scan-window { background: #000; border-radius: 15px; border: 1px solid #222; padding: 15px; display: flex; gap: 15px; align-items: center; position: relative; overflow: hidden; }
-        .scan-window::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--neon); animation: laser 3s infinite linear; }
-        @keyframes laser { 0% { top: 0; } 100% { top: 100%; } }
-        
-        .robot-img { width: 85px; height: 105px; object-fit: cover; border-radius: 10px; border: 2px solid var(--neon); box-shadow: 0 0 15px var(--neon); }
-        .timer-val { font-size: 26px; color: var(--neon); font-family: 'Orbitron'; font-weight: 800; }
+        /* SCAN WINDOW - Nơi chứa ảnh Robot */
+        .scan-window {
+            border: 2px solid var(--neon); border-radius: 15px; position: relative;
+            display: flex; height: 160px; overflow: hidden; background: #000;
+        }
+        .robot-part { 
+            width: 50%; border-right: 1px solid var(--neon); 
+            display: flex; align-items: center; justify-content: center;
+        }
+        /* THAY LINK ẢNH CỦA BẠN VÀO ĐÂY */
+        .robot-part img { width: 90%; height: 90%; object-fit: contain; filter: drop-shadow(0 0 10px var(--neon)); }
+        (https://i.ibb.co/FkG930H/images.jpg).
+        .data-part { width: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .timer { font-size: 32px; font-weight: bold; color: var(--neon); }
+        .scan-status { font-size: 10px; margin-top: 5px; color: #8b949e; }
 
-        .ai-result { border-top: 1px solid #222; margin-top: 15px; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .res-box { font-family: 'Orbitron'; font-size: 22px; font-weight: 800; color: #fff; }
-        .bar-bg { width: 100%; height: 5px; background: #111; border-radius: 3px; margin-top: 10px; }
-        #fill { width: 0%; height: 100%; background: var(--neon); transition: 1s; }
+        /* Kết quả dự đoán */
+        .prediction-zone { text-align: center; margin: 20px 0; }
+        #res-text { font-size: 24px; font-weight: bold; color: var(--pink); letter-spacing: 2px; margin: 5px 0; }
 
-        /* Hệ thống 3 nút chính: PLAYER - TIE - BANKER */
-        .btn-triad { display: grid; grid-template-columns: 1fr 0.8fr 1fr; gap: 8px; margin-top: 15px; }
-        .btn { border: none; padding: 18px 0; border-radius: 10px; color: #fff; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; font-size: 11px; transition: 0.2s; }
-        .btn:active { transform: scale(0.9); }
-        
-        .btn-p { background: #2b5876; border-bottom: 4px solid #1a3a4f; } /* PLAYER */
-        .btn-t { background: var(--tie); color: #000; border-bottom: 4px solid #00b35f; } /* TIE */
-        .btn-b { background: var(--pink); border-bottom: 4px solid #b32d4b; } /* BANKER */
-
-        .status-footer { font-size: 9px; color: #444; text-align: center; margin-top: 15px; letter-spacing: 2px; }
+        /* Hệ thống 3 nút màu đổ bóng (Gradient) */
+        .button-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .btn { 
+            border: none; padding: 12px 0; border-radius: 8px; color: #fff; 
+            font-weight: bold; cursor: pointer; font-size: 11px; transition: 0.3s;
+        }
+        .btn-p { background: linear-gradient(180deg, #0081ff, #004586); box-shadow: 0 4px #002d58; }
+        .btn-t { background: linear-gradient(180deg, #00ff87, #008f4b); color: #000; box-shadow: 0 4px #006435; }
+        .btn-b { background: linear-gradient(180deg, #ff416c, #b32d4b); box-shadow: 0 4px #7a1f33; }
+        .btn:active { transform: translateY(2px); box-shadow: none; }
     </style>
 </head>
 <body>
 
-<div class="app-shell">
-    <div class="top-bar">
-        <div style="font-family:'Orbitron'; font-size:12px; color:var(--neon)">GHOST VISION v27</div>
-        <div class="energy">ENERGY: san 1000</div>
+<div class="phone-frame">
+    <div class="header">
+        <div class="title">AI OMNI VIR88 <span style="font-weight:normal; color:#fff; font-size:11px">v28.0 - TRIAD</span></div>
+        <div class="energy-tag">ENERGY: Xu 1000</div>
     </div>
 
-    <div class="selection-panel">
-        <select id="lobby">
-            <option>RR88 EXCLUSIVE</option>
-            <option>SEXY CASINO</option>
-            <option>DG CASINO</option>
-            <option>WM CASINO</option>
-        </select>
-        <select id="table">
-            <option>BÀN 01</option><option>BÀN 02</option><option>BÀN 03</option> <option>BÀN 04</option><option>BÀN 05</option><option>BÀN 06</option> <option>BÀN C01</option><option>BÀN C02</option><option>BÀN C03</option> <option>BÀN C04</option><option>BÀN C05</option><option>BÀN C07</option>
-             <option>BÀN C07</option><option>BÀN C08</option><option>BÀN C09</option> <option>BÀN C010</option><option>BÀN C012</option>
-            
-            
-            
-            
-        </select>
+    <div class="selection-grid">
+        <div class="select-box"><div class="label">LOBBY</div><div class="val">RR88 EXCLUSIVE</div></div>
+        <div class="select-box"><div class="label">TABLE</div><div class="val">BÀN 02</div></div>
     </div>
 
+    <div style="text-align:center; font-size:11px; color:var(--neon); margin-bottom:10px; font-weight:bold">SCAN-WINDOW</div>
+    
     <div class="scan-window">
-        <img src="https://i.ibb.co/FkG930H/images.jpg" class="robot-img">
-        <div style="flex:1">
-            <div style="font-size: 9px; color: #666;">ANALYZING CLOUD...</div>
-            <div class="timer-val" id="time">00.00</div>
-            <div style="font-size: 10px; color: #aaa; margin: 5px 0;">AI SCAN: <span id="perc">0</span>%</div>
-            <div class="bar-bg"><div id="fill"></div></div>
+        <div class="robot-part">
+            <img src="https://i.ibb.co/FkG930H/images.jpg" alt="Robot">
+        </div>
+        <div class="data-part">
+            <div class="timer" id="clock">20.12</div>
+            <div class="scan-status">AI SCAN: <span id="perc">78</span>%</div>
+            <div style="width:70%; height:3px; background:#333; margin-top:8px"><div id="bar" style="width:78%; height:100%; background:var(--neon)"></div></div>
         </div>
     </div>
 
-    <div class="ai-result">
-        <div style="font-size: 10px; color: var(--neon); font-weight: bold;">DỰ ĐOÁN:</div>
-        <div class="res-box" id="res">READY</div>
+    <div class="prediction-zone">
+        <div style="font-size: 11px; color: var(--neon); font-weight: bold;">DỰ ĐOÁN:</div>
+        <div id="res-text">BANKER</div>
+        <div style="font-size: 8px; color: #444;">FORMULA: v28_TRIAD_GHOST_SYSTEM</div>
     </div>
 
-    <div class="btn-triad">
-        <button class="btn btn-p" onclick="process('PLAYER')">PLAYER</button>
-        <button class="btn btn-t" onclick="process('TIE')">TIE</button>
-        <button class="btn btn-b" onclick="process('BANKER')">BANKER</button>
+    <div class="button-group">
+        <button class="btn btn-p" onclick="run('PLAYER')">PLAYER</button>
+        <button class="btn btn-t" onclick="run('TIE')">TIE</button>
+        <button class="btn btn-b" onclick="run('BANKER')">BANKER</button>
     </div>
 
-    <div class="status-footer">FORMULA: v27_TRIAD_AI_SYSTEM</div>
+    <div style="text-align:center; font-size:9px; color:#444; margin-top:20px">ANALYSIS COMPLETE</div>
 </div>
 
 <script>
-    function process(type) {
+    function run(type) {
         let p = 0;
-        const resBox = document.getElementById('res');
-        const fill = document.getElementById('fill');
-        const perc = document.getElementById('perc');
+        document.getElementById('res-text').innerText = "SCANNING...";
+        document.getElementById('res-text').style.color = "#fff";
         
-        resBox.innerText = "...";
-        resBox.style.color = "#888";
-
-        const interval = setInterval(() => {
-            p += Math.floor(Math.random() * 25);
-            if (p >= 100) {
+        let inv = setInterval(() => {
+            p += Math.floor(Math.random() * 20);
+            if(p >= 100) {
                 p = 100;
-                clearInterval(interval);
-                
-                // Thuật toán AI dự đoán
-                const rand = Math.random() * 100;
-                let final = "";
-                let color = "";
-                
-                if (rand < 15) { final = "TIE"; color = "var(--tie)"; }
-                else if (rand < 57) { final = "BANKER"; color = "var(--pink)"; }
-                else { final = "PLAYER"; color = "var(--neon)"; }
-
-                resBox.innerText = final;
-                resBox.style.color = color;
-                document.getElementById('time').innerText = (Math.random() * 20).toFixed(2);
+                clearInterval(inv);
+                showResult();
             }
-            fill.style.width = p + "%";
-            perc.innerText = p;
+            document.getElementById('perc').innerText = p;
+            document.getElementById('bar').style.width = p + "%";
         }, 100);
+    }
+
+    function showResult() {
+        const r = Math.random();
+        let res = r < 0.1 ? "TIE" : (r < 0.55 ? "BANKER" : "PLAYER");
+        const txt = document.getElementById('res-text');
+        txt.innerText = res;
+        txt.style.color = res === "BANKER" ? "var(--pink)" : (res === "TIE" ? "var(--tie)" : "var(--neon)");
+        document.getElementById('clock').innerText = (Math.random() * 30).toFixed(2);
     }
 </script>
 </body>
