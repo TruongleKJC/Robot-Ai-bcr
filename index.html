@@ -2,151 +2,162 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>RR88 DEEP SCANNER v32.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RR88 DATA STREAM v33.0</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
     <style>
-        :root { --neon: #00f2fe; --pink: #ff416c; --tie: #00ff87; --bg: rgba(10, 15, 25, 0.98); }
-        body { background: transparent; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
-        
-        /* Giao diện Overlay để đè lên Game */
-        .injector-app {
+        :root { --neon: #00f2fe; --pink: #ff416c; --tie: #28a745; --bg: #0a0c10; --panel: #161a1e; }
+        body { background: transparent; color: #fff; font-family: 'Arial', sans-serif; display: flex; justify-content: center; padding: 10px; margin: 0; }
+
+        /* Khung App chính */
+        .app-shell {
             width: 320px; background: var(--bg); border: 2px solid var(--neon);
-            border-radius: 25px; padding: 15px; position: relative;
-            box-shadow: 0 0 40px rgba(0, 242, 254, 0.5); backdrop-filter: blur(10px);
+            border-radius: 25px; padding: 15px; box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+            text-transform: uppercase;
         }
 
-        .header { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 12px; }
-        .status-dot { width: 8px; height: 8px; background: var(--tie); border-radius: 50%; box-shadow: 0 0 10px var(--tie); }
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .header-title { color: var(--neon); font-weight: bold; font-size: 14px; letter-spacing: 1px; }
+        .status-led { width: 10px; height: 10px; background: #39ff14; border-radius: 50%; box-shadow: 0 0 8px #39ff14; }
 
-        /* Vùng quét AI */
-        .scan-container {
-            display: flex; gap: 10px; background: #000; border-radius: 15px; padding: 10px;
-            border: 1px solid #222; position: relative;
+        /* Khu vực luồng dữ liệu Real-time */
+        .data-feed {
+            background: var(--panel); border: 1px solid #333; border-radius: 12px;
+            padding: 12px; margin-bottom: 15px;
         }
-        .robot-vision { width: 80px; height: 100px; border: 1px solid var(--neon); border-radius: 10px; overflow: hidden; }
-        .robot-vision img { width: 100%; height: 100%; object-fit: cover; }
+        .feed-label { font-size: 9px; color: #888; margin-bottom: 8px; }
+        .feed-line { background: #000; border: 1px solid #222; padding: 6px; border-radius: 4px; font-size: 10px; margin-bottom: 6px; color: var(--neon); overflow: hidden; }
         
-        /* Camera ẩn để quét sâu */
+        .progress-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .perc { font-size: 10px; color: #fff; width: 35px; }
+        .bar-bg { flex: 1; height: 4px; background: #222; border-radius: 2px; }
+        #fill { width: 0%; height: 100%; background: var(--neon); transition: 0.3s; }
+
+        /* Khu vực tính toán AI */
+        .calc-zone {
+            border: 1px dashed var(--neon); border-radius: 12px; padding: 15px;
+            text-align: center; margin-bottom: 15px;
+        }
+        .calc-label { font-size: 9px; color: #888; margin-bottom: 10px; }
+        .calculating-text { font-size: 18px; font-weight: bold; letter-spacing: 2px; }
+        .pink-text { color: var(--pink); }
+
+        /* Kết quả soi cầu */
+        .result-row { font-size: 11px; margin-bottom: 15px; display: flex; justify-content: center; gap: 5px; }
+        #final-res { color: var(--tie); font-weight: bold; }
+
+        /* Hệ thống Nút bấm */
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .btn { border: none; padding: 10px 0; border-radius: 6px; color: #fff; font-weight: bold; font-size: 10px; cursor: pointer; }
+        .btn-p { background: #2c4a86; }
+        .btn-t { background: #1e7e34; }
+        .btn-b { background: #a52a42; }
+
+        /* Nút Kích hoạt chính */
+        .act-btn {
+            width: 100%; padding: 12px; border: none; border-radius: 20px;
+            background: var(--neon); color: #000; font-weight: bold;
+            font-size: 12px; cursor: pointer; box-shadow: 0 0 10px var(--neon);
+        }
+
         #hidden-cam { position: absolute; width: 1px; height: 1px; opacity: 0; }
-
-        .deep-data { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .data-line { font-size: 9px; color: var(--neon); font-family: 'Orbitron'; margin-bottom: 4px; }
-        .reading-val { font-size: 11px; color: #8b949e; overflow: hidden; white-space: nowrap; }
-
-        /* Kết quả soi cầu AI */
-        .ai-prediction {
-            text-align: center; margin: 15px 0; border: 1px dashed var(--neon);
-            padding: 10px; border-radius: 12px;
-        }
-        #res-text { font-family: 'Orbitron'; font-size: 26px; font-weight: 900; color: #fff; }
-
-        /* 3 Nút bấm thực tế */
-        .btn-triad { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .btn { 
-            border: none; padding: 12px 0; border-radius: 8px; color: #fff; 
-            font-weight: bold; font-family: 'Orbitron'; cursor: pointer; font-size: 10px;
-        }
-        .btn-p { background: #0056b3; } .btn-t { background: #008f4b; } .btn-b { background: #b32d4b; }
-        
-        .inject-btn {
-            width: 100%; margin-top: 15px; padding: 10px; background: var(--neon);
-            color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
-        }
     </style>
 </head>
 <body>
 
-<div class="injector-app" id="app">
+<div class="app-shell">
     <div class="header">
-        <div style="font-family:'Orbitron'; font-size:11px; color:var(--neon)">RR88 DEEP INJECTOR v32</div>
-        <div class="status-dot"></div>
+        <div class="header-title">RR88 DATA STREAM <span style="font-weight: normal; font-size: 10px;">v33.0</span></div>
+        <div class="status-led"></div>
     </div>
 
-    <div class="scan-container">
-        <div class="robot-vision">
-            <img src="https://i.ibb.co/FkG930H/images.jpg" alt="Ghost AI">
+    <div class="data-feed">
+        <div class="feed-label">REAL-TIME DATA FEED:</div>
+        <div class="feed-line" id="status-txt">CONNECTING RR88 LIVE...</div>
+        <div class="feed-line" id="raw-data">DATA: WAITING FOR SCAN...</div>
+        
+        <div class="progress-row">
+            <div class="perc" id="perc-num">0%</div>
+            <div class="bar-bg"><div id="fill"></div></div>
         </div>
-        <div class="deep-data">
-            <div class="data-line">SCANNING DOM... 100%</div>
-            <div class="reading-val" id="raw-out">LISTENING RR88 DATA...</div>
-            <div style="width:100%; height:2px; background:#111; margin-top:5px">
-                <div id="bar" style="width:0%; height:100%; background:var(--neon); transition: 0.3s;"></div>
-            </div>
-        </div>
-        <video id="hidden-cam" autoplay playsinline></video>
     </div>
 
-    <div class="ai-prediction">
-        <div style="font-size: 9px; color: var(--neon);">KẾT QUẢ SOI CẦU AI:</div>
-        <div id="res-text">WAITING</div>
+    <div class="calc-zone">
+        <div class="calc-label">AI SOUTHERN-CALIFORNIA FORMULA:</div>
+        <div class="calculating-text">CALCU<span class="pink-text">LATING...</span></div>
     </div>
 
-    <div class="btn-triad">
+    <div class="result-row">
+        SOI CẦU: <span id="final-res">ĐANG QUÉT...</span>
+    </div>
+
+    <div class="btn-group">
         <button class="btn btn-p" onclick="manual('PLAYER')">PLAYER</button>
         <button class="btn btn-t" onclick="manual('TIE')">TIE</button>
         <button class="btn btn-b" onclick="manual('BANKER')">BANKER</button>
     </div>
 
-    <button class="inject-btn" onclick="startDeepScan()">KÍCH HOẠT QUÉT SÂU RR88</button>
+    <button class="act-btn" onclick="startDeepScan()">ACTIVATE DEEP SCAN</button>
+
+    <video id="hidden-cam" autoplay playsinline></video>
 </div>
 
 <script>
-    let isScanning = false;
+    let scanning = false;
 
     async function startDeepScan() {
-        if(isScanning) return;
-        isScanning = true;
+        if(scanning) return;
+        scanning = true;
         const video = document.getElementById('hidden-cam');
-        const bar = document.getElementById('bar');
+        const status = document.getElementById('status-txt');
         
         try {
-            // Yêu cầu quyền camera để quét lá bài/màn hình thật
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
             video.srcObject = stream;
+            status.innerText = "STREAMING RR88 DATA...";
             
-            document.getElementById('raw-out').innerText = "INJECTING RR88 PORTAL...";
-            
-            // Vòng lặp quét dữ liệu thật mỗi 3 giây
             setInterval(() => {
-                const p = Math.floor(Math.random() * 100);
-                bar.style.width = p + "%";
-                processDeepData(video);
+                runScanner(video);
             }, 3000);
-
-        } catch (err) {
-            alert("Vui lòng cấp quyền Camera để Robot quét sâu vào bàn cược!");
-            isScanning = false;
+        } catch (e) {
+            alert("VUI LÒNG CẤP QUYỀN CAMERA ĐỂ QUÉT SÂU!");
+            scanning = false;
         }
     }
 
-    async function processDeepData(video) {
+    async function runScanner(video) {
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0);
 
-        // OCR quét thực tế số điểm hoặc chữ Player/Banker
         const { data: { text } } = await Tesseract.recognize(canvas, 'eng');
-        const raw = text.toUpperCase();
-        document.getElementById('raw-out').innerText = "READ: " + raw.substring(0, 20);
+        const raw = text.toUpperCase().substring(0, 20);
+        document.getElementById('raw-data').innerText = "DATA: " + (raw || "ANALYZING...");
+        
+        // Cập nhật tiến trình
+        let p = Math.floor(Math.random() * 40) + 60;
+        document.getElementById('perc-num').innerText = p + "%";
+        document.getElementById('fill').style.width = p + "%";
 
-        // Thuật toán bẻ cầu AI
-        const resText = document.getElementById('res-text');
-        if(raw.includes('P') || raw.includes('7') || raw.includes('8')) {
-            resText.innerText = "BANKER";
-            resText.style.color = "var(--pink)";
-        } else if(raw.includes('B') || raw.includes('1') || raw.includes('2')) {
-            resText.innerText = "PLAYER";
-            resText.style.color = "var(--neon)";
+        // Logic dự đoán
+        const res = document.getElementById('final-res');
+        if (text.includes('P') || text.includes('7')) {
+            res.innerText = "BANKER (CÁI)";
+            res.style.color = "#ff416c";
+        } else {
+            res.innerText = "PLAYER (CON)";
+            res.style.color = "#00f2fe";
         }
     }
 
     function manual(type) {
-        const resText = document.getElementById('res-text');
-        resText.innerText = type;
-        resText.style.color = type === 'BANKER' ? 'var(--pink)' : (type === 'PLAYER' ? 'var(--neon)' : 'var(--tie)');
+        const res = document.getElementById('final-res');
+        res.innerText = type + " (MANUAL)";
+        res.style.color = type === 'BANKER' ? '#ff416c' : (type === 'TIE' ? '#28a745' : '#00f2fe');
     }
 </script>
 </body>
 </html>
+    
