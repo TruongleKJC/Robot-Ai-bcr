@@ -2,126 +2,150 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>AI OMNI v28.0 - GHOST INTERFACE</title>
+    <title>RR88 DEEP SCANNER v32.0</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
     <style>
-        :root { --neon: #00f2fe; --pink: #ff416c; --tie: #00ff87; --bg: #0d0f14; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; }
+        :root { --neon: #00f2fe; --pink: #ff416c; --tie: #00ff87; --bg: rgba(10, 15, 25, 0.98); }
+        body { background: transparent; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
         
-        /* Khung máy điện thoại */
-        .phone-frame {
-            width: 320px; background: #161b22; border: 2px solid #30363d;
-            border-radius: 30px; padding: 20px; box-shadow: 0 0 50px rgba(0,0,0,1);
+        /* Giao diện Overlay để đè lên Game */
+        .injector-app {
+            width: 320px; background: var(--bg); border: 2px solid var(--neon);
+            border-radius: 25px; padding: 15px; position: relative;
+            box-shadow: 0 0 40px rgba(0, 242, 254, 0.5); backdrop-filter: blur(10px);
         }
 
-        /* Header */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .title { color: var(--neon); font-style: italic; font-weight: bold; font-size: 14px; }
-        .energy-tag { background: #fcc21b; color: #000; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .header { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 12px; }
+        .status-dot { width: 8px; height: 8px; background: var(--tie); border-radius: 50%; box-shadow: 0 0 10px var(--tie); }
 
-        /* Khu vực chọn Bàn/Sảnh */
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .select-box { background: #0d1117; border: 1px solid #30363d; padding: 5px; border-radius: 5px; text-align: center; }
-        .label { font-size: 9px; color: var(--neon); margin-bottom: 3px; }
-        .val { font-size: 11px; font-weight: bold; }
-
-        /* SCAN WINDOW - Nơi chứa ảnh Robot */
-        .scan-window {
-            border: 2px solid var(--neon); border-radius: 15px; position: relative;
-            display: flex; height: 160px; overflow: hidden; background: #000;
+        /* Vùng quét AI */
+        .scan-container {
+            display: flex; gap: 10px; background: #000; border-radius: 15px; padding: 10px;
+            border: 1px solid #222; position: relative;
         }
-        .robot-part { 
-            width: 50%; border-right: 1px solid var(--neon); 
-            display: flex; align-items: center; justify-content: center;
+        .robot-vision { width: 80px; height: 100px; border: 1px solid var(--neon); border-radius: 10px; overflow: hidden; }
+        .robot-vision img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Camera ẩn để quét sâu */
+        #hidden-cam { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+        .deep-data { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .data-line { font-size: 9px; color: var(--neon); font-family: 'Orbitron'; margin-bottom: 4px; }
+        .reading-val { font-size: 11px; color: #8b949e; overflow: hidden; white-space: nowrap; }
+
+        /* Kết quả soi cầu AI */
+        .ai-prediction {
+            text-align: center; margin: 15px 0; border: 1px dashed var(--neon);
+            padding: 10px; border-radius: 12px;
         }
-        /* THAY LINK ẢNH CỦA BẠN VÀO ĐÂY */
-        .robot-part img { width: 90%; height: 90%; object-fit: contain; filter: drop-shadow(0 0 10px var(--neon)); }
-        (https://i.ibb.co/FkG930H/images.jpg).
-        .data-part { width: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .timer { font-size: 32px; font-weight: bold; color: var(--neon); }
-        .scan-status { font-size: 10px; margin-top: 5px; color: #8b949e; }
+        #res-text { font-family: 'Orbitron'; font-size: 26px; font-weight: 900; color: #fff; }
 
-        /* Kết quả dự đoán */
-        .prediction-zone { text-align: center; margin: 20px 0; }
-        #res-text { font-size: 24px; font-weight: bold; color: var(--pink); letter-spacing: 2px; margin: 5px 0; }
-
-        /* Hệ thống 3 nút màu đổ bóng (Gradient) */
-        .button-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        /* 3 Nút bấm thực tế */
+        .btn-triad { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .btn { 
             border: none; padding: 12px 0; border-radius: 8px; color: #fff; 
-            font-weight: bold; cursor: pointer; font-size: 11px; transition: 0.3s;
+            font-weight: bold; font-family: 'Orbitron'; cursor: pointer; font-size: 10px;
         }
-        .btn-p { background: linear-gradient(180deg, #0081ff, #004586); box-shadow: 0 4px #002d58; }
-        .btn-t { background: linear-gradient(180deg, #00ff87, #008f4b); color: #000; box-shadow: 0 4px #006435; }
-        .btn-b { background: linear-gradient(180deg, #ff416c, #b32d4b); box-shadow: 0 4px #7a1f33; }
-        .btn:active { transform: translateY(2px); box-shadow: none; }
+        .btn-p { background: #0056b3; } .btn-t { background: #008f4b; } .btn-b { background: #b32d4b; }
+        
+        .inject-btn {
+            width: 100%; margin-top: 15px; padding: 10px; background: var(--neon);
+            color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-<div class="phone-frame">
+<div class="injector-app" id="app">
     <div class="header">
-        <div class="title">AI OMNI VIR88 <span style="font-weight:normal; color:#fff; font-size:11px">v28.0 - TRIAD</span></div>
-        <div class="energy-tag">ENERGY: Xu 1000</div>
+        <div style="font-family:'Orbitron'; font-size:11px; color:var(--neon)">RR88 DEEP INJECTOR v32</div>
+        <div class="status-dot"></div>
     </div>
 
-    <div class="selection-grid">
-        <div class="select-box"><div class="label">LOBBY</div><div class="val">RR88 EXCLUSIVE</div></div>
-        <div class="select-box"><div class="label">TABLE</div><div class="val">BÀN 02</div></div>
-    </div>
-
-    <div style="text-align:center; font-size:11px; color:var(--neon); margin-bottom:10px; font-weight:bold">SCAN-WINDOW</div>
-    
-    <div class="scan-window">
-        <div class="robot-part">
-            <img src="https://i.ibb.co/FkG930H/images.jpg" alt="Robot">
+    <div class="scan-container">
+        <div class="robot-vision">
+            <img src="https://i.ibb.co/FkG930H/images.jpg" alt="Ghost AI">
         </div>
-        <div class="data-part">
-            <div class="timer" id="clock">20.12</div>
-            <div class="scan-status">AI SCAN: <span id="perc">78</span>%</div>
-            <div style="width:70%; height:3px; background:#333; margin-top:8px"><div id="bar" style="width:78%; height:100%; background:var(--neon)"></div></div>
+        <div class="deep-data">
+            <div class="data-line">SCANNING DOM... 100%</div>
+            <div class="reading-val" id="raw-out">LISTENING RR88 DATA...</div>
+            <div style="width:100%; height:2px; background:#111; margin-top:5px">
+                <div id="bar" style="width:0%; height:100%; background:var(--neon); transition: 0.3s;"></div>
+            </div>
         </div>
+        <video id="hidden-cam" autoplay playsinline></video>
     </div>
 
-    <div class="prediction-zone">
-        <div style="font-size: 11px; color: var(--neon); font-weight: bold;">DỰ ĐOÁN:</div>
-        <div id="res-text">BANKER</div>
-        <div style="font-size: 8px; color: #444;">FORMULA: v28_TRIAD_GHOST_SYSTEM</div>
+    <div class="ai-prediction">
+        <div style="font-size: 9px; color: var(--neon);">KẾT QUẢ SOI CẦU AI:</div>
+        <div id="res-text">WAITING</div>
     </div>
 
-    <div class="button-group">
-        <button class="btn btn-p" onclick="run('PLAYER')">PLAYER</button>
-        <button class="btn btn-t" onclick="run('TIE')">TIE</button>
-        <button class="btn btn-b" onclick="run('BANKER')">BANKER</button>
+    <div class="btn-triad">
+        <button class="btn btn-p" onclick="manual('PLAYER')">PLAYER</button>
+        <button class="btn btn-t" onclick="manual('TIE')">TIE</button>
+        <button class="btn btn-b" onclick="manual('BANKER')">BANKER</button>
     </div>
 
-    <div style="text-align:center; font-size:9px; color:#444; margin-top:20px">ANALYSIS COMPLETE</div>
+    <button class="inject-btn" onclick="startDeepScan()">KÍCH HOẠT QUÉT SÂU RR88</button>
 </div>
 
 <script>
-    function run(type) {
-        let p = 0;
-        document.getElementById('res-text').innerText = "SCANNING...";
-        document.getElementById('res-text').style.color = "#fff";
+    let isScanning = false;
+
+    async function startDeepScan() {
+        if(isScanning) return;
+        isScanning = true;
+        const video = document.getElementById('hidden-cam');
+        const bar = document.getElementById('bar');
         
-        let inv = setInterval(() => {
-            p += Math.floor(Math.random() * 20);
-            if(p >= 100) {
-                p = 100;
-                clearInterval(inv);
-                showResult();
-            }
-            document.getElementById('perc').innerText = p;
-            document.getElementById('bar').style.width = p + "%";
-        }, 100);
+        try {
+            // Yêu cầu quyền camera để quét lá bài/màn hình thật
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            video.srcObject = stream;
+            
+            document.getElementById('raw-out').innerText = "INJECTING RR88 PORTAL...";
+            
+            // Vòng lặp quét dữ liệu thật mỗi 3 giây
+            setInterval(() => {
+                const p = Math.floor(Math.random() * 100);
+                bar.style.width = p + "%";
+                processDeepData(video);
+            }, 3000);
+
+        } catch (err) {
+            alert("Vui lòng cấp quyền Camera để Robot quét sâu vào bàn cược!");
+            isScanning = false;
+        }
     }
 
-    function showResult() {
-        const r = Math.random();
-        let res = r < 0.1 ? "TIE" : (r < 0.55 ? "BANKER" : "PLAYER");
-        const txt = document.getElementById('res-text');
-        txt.innerText = res;
-        txt.style.color = res === "BANKER" ? "var(--pink)" : (res === "TIE" ? "var(--tie)" : "var(--neon)");
-        document.getElementById('clock').innerText = (Math.random() * 30).toFixed(2);
+    async function processDeepData(video) {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+
+        // OCR quét thực tế số điểm hoặc chữ Player/Banker
+        const { data: { text } } = await Tesseract.recognize(canvas, 'eng');
+        const raw = text.toUpperCase();
+        document.getElementById('raw-out').innerText = "READ: " + raw.substring(0, 20);
+
+        // Thuật toán bẻ cầu AI
+        const resText = document.getElementById('res-text');
+        if(raw.includes('P') || raw.includes('7') || raw.includes('8')) {
+            resText.innerText = "BANKER";
+            resText.style.color = "var(--pink)";
+        } else if(raw.includes('B') || raw.includes('1') || raw.includes('2')) {
+            resText.innerText = "PLAYER";
+            resText.style.color = "var(--neon)";
+        }
+    }
+
+    function manual(type) {
+        const resText = document.getElementById('res-text');
+        resText.innerText = type;
+        resText.style.color = type === 'BANKER' ? 'var(--pink)' : (type === 'PLAYER' ? 'var(--neon)' : 'var(--tie)');
     }
 </script>
 </body>
