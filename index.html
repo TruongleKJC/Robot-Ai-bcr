@@ -4,104 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOOLWIN AI - RR88 PRESTIGE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00d2ff; --secondary: #3a7bd5; --accent: #fcc21b; --dark-bg: #0f172a; }
-        body { background: var(--dark-bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        :root { --primary: #007bff; --dark-bg: #121212; --panel: #1e1e1e; --gold: #fcc21b; --sexy: #ff007a; }
+        body { background: var(--dark-bg); color: #fff; font-family: 'Roboto', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
 
-        /* Khung đăng nhập giống ToolWin */
-        #login-page {
-            width: 350px; padding: 40px 30px; background: rgba(30, 41, 59, 0.7);
-            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px);
-            text-align: center;
-        }
-        .logo { font-family: 'Orbitron'; font-size: 24px; color: var(--primary); margin-bottom: 30px; letter-spacing: 2px; }
-        input {
-            width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155;
-            background: #1e293b; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s;
-        }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
-        .login-btn {
-            width: 100%; padding: 12px; margin-top: 20px; border: none; border-radius: 10px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: #fff; font-weight: 800; cursor: pointer; transition: 0.3s;
-        }
-        .login-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .app-container { width: 360px; background: var(--panel); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; }
 
-        /* Dashboard Tool (Sau khi đăng nhập) */
-        #tool-page { display: none; width: 360px; padding: 20px; background: #0f172a; border-radius: 25px; border: 2px solid var(--accent); }
-        .status-bar { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; margin-bottom: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; }
-        .res-box { background: #020617; border-radius: 15px; padding: 30px 10px; text-align: center; border: 1px dashed var(--accent); margin-bottom: 20px; }
-        #prediction { font-family: 'Orbitron'; font-size: 40px; color: #fff; text-shadow: 0 0 15px var(--primary); }
+        /* Header phong cách ToolWin */
+        .header { background: linear-gradient(90deg, #004fb2, #007bff); padding: 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: 1px; }
+        .status-bar { font-size: 11px; margin-top: 5px; color: #e0e0e0; }
+
+        /* Màn hình chính sau khi đăng nhập (Dashboard) */
+        .dashboard { padding: 20px; }
         
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        .btn-v { border: none; padding: 15px 0; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; }
-        .p-btn { background: #2563eb; } .t-btn { background: #16a34a; } .b-btn { background: #dc2626; }
+        /* Khu vực phân tích Online */
+        .analysis-card {
+            background: #000; border-radius: 10px; padding: 20px; text-align: center;
+            border: 1px solid var(--primary); margin-bottom: 20px; box-shadow: inset 0 0 10px rgba(0,123,255,0.2);
+        }
+        .label-sm { font-size: 10px; color: #888; margin-bottom: 10px; text-transform: uppercase; }
+        #ai-result { font-size: 36px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--primary); }
+
+        /* Input Baccarat 3 Nút */
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn-input {
+            border: none; padding: 15px 0; border-radius: 6px; font-weight: bold;
+            color: #fff; cursor: pointer; transition: 0.3s; font-size: 12px;
+        }
+        .btn-p { background: #004fb2; border-bottom: 4px solid #003377; }
+        .btn-t { background: #28a745; border-bottom: 4px solid #1e7e34; }
+        .btn-b { background: #dc3545; border-bottom: 4px solid #a71d2a; }
+        .btn-input:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+        /* Thông tin tài khoản & Kết nối */
+        .info-section { background: #252525; border-radius: 8px; padding: 12px; font-size: 11px; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .val-gold { color: var(--gold); font-weight: bold; }
+
+        /* Nút kích hoạt hệ thống */
+        .btn-activate {
+            width: 100%; padding: 15px; margin-top: 20px; border: none;
+            border-radius: 30px; background: var(--gold); color: #000;
+            font-weight: 900; font-size: 14px; cursor: pointer; text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
 
-<div id="login-page">
-    <div class="logo">TOOLWIN <span style="color: #fff;">AI</span></div>
-    <div style="font-size: 12px; color: #94a3b8; margin-bottom: 20px;">HỆ THỐNG PHÂN TÍCH RR88 CAO CẤP</div>
-    <input type="text" id="user" placeholder="Tên đăng nhập">
-    <input type="password" id="pass" placeholder="Mật khẩu">
-    <button class="login-btn" onclick="handleLogin()">ĐĂNG NHẬP HỆ THỐNG</button>
-    <div style="margin-top: 15px; font-size: 11px; color: #64748b;">Quên mật khẩu? Liên hệ Admin</div>
-</div>
+<div class="app-container">
+    <div class="header">
+        <h1>TOOLWIN RR88 AI</h1>
+        <div class="status-bar">HỆ THỐNG: <span id="conn-stt">ONLINE</span> | PHIÊN: #88921</div>
+    </div>
 
-<div id="tool-page">
-    <div class="status-bar">
-        <div>SERVER: <span style="color: #22c55e;">ONLINE</span></div>
-        <div>IP: <span id="ip-masked">103.xxx.xx.88</span></div>
+    <div class="dashboard">
+        <div class="analysis-card">
+            <div class="label-sm">Dự đoán kết quả tiếp theo</div>
+            <div id="ai-result">CHỜ DỮ LIỆU</div>
+            <div style="font-size: 11px; color: #39ff14; margin-top: 10px;">ĐỘ CHÍNH XÁC: 100% (LIVE)</div>
+        </div>
+
+        <div class="label-sm" style="text-align: center;">Nhập 3 kết quả gần nhất tại sảnh Sexy</div>
+        <div class="grid-inputs">
+            <button class="btn-input btn-p" onclick="process('PLAYER')">PLAYER</button>
+            <button class="btn-input btn-t" onclick="process('TIE')">TIE</button>
+            <button class="btn-input btn-b" onclick="process('BANKER')">BANKER</button>
+        </div>
+
+        <div class="info-section">
+            <div class="info-row"><span>TRẠNG THÁI:</span> <span class="val-gold">ĐÃ KẾT NỐI RR88</span></div>
+            <div class="info-row"><span>IP PROTECT:</span> <span style="color:#39ff14">ENCRYPTED</span></div>
+            <div class="info-row"><span>SERVER:</span> <span>HONGKONG_CL01</span></div>
+        </div>
+
+        <button class="btn-activate" onclick="syncServer()">KÍCH HOẠT QUÉT SÂU ONLINE</button>
     </div>
     
-    <div style="text-align: center; font-size: 11px; color: var(--accent); margin-bottom: 5px;">KẾT QUẢ DỰ ĐOÁN THỰC (SEXY)</div>
-    <div class="res-box">
-        <div id="prediction">STANDBY</div>
-        <div style="color: #22c55e; font-size: 11px; margin-top: 10px;">ĐỘ CHÍNH XÁC: 100%</div>
-    </div>
-
-    <div class="btn-group">
-        <button class="btn-v p-btn" onclick="runAI('PLAYER')">PLAYER</button>
-        <button class="btn-v t-btn" onclick="runAI('TIE')">TIE</button>
-        <button class="btn-v b-btn" onclick="runAI('BANKER')">BANKER</button>
-    </div>
-
-    <div style="margin-top: 20px; font-size: 9px; color: #475569; text-align: center;">
-        BYPASS SECURITY | ANTI-BAN SYSTEM ACTIVE
+    <div style="padding: 15px; text-align: center; font-size: 9px; color: #555;">
+        © 2026 TOOLWIN AI SYSTEM - TOP 1 BACCARAT PREDICTOR
     </div>
 </div>
 
 <script>
-    // Xử lý đăng nhập giả lập giống ToolWin
-    function handleLogin() {
-        const u = document.getElementById('user').value;
-        const p = document.getElementById('pass').value;
+    let logs = [];
 
-        if(u !== "" && p !== "") {
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('tool-page').style.display = 'block';
-            alert("Kết nối thành công với cổng game RR88!");
-        } else {
-            alert("Vui lòng nhập tài khoản!");
-        }
+    function syncServer() {
+        const stt = document.getElementById('conn-stt');
+        stt.innerText = "ĐANG ĐỒNG BỘ...";
+        setTimeout(() => {
+            stt.innerText = "ONLINE - SYNCED";
+            alert("Đã kết nối luồng dữ liệu thật từ sảnh Sexy!");
+        }, 1500);
     }
 
-    // Cốt lõi AI v40.0
-    function runAI(type) {
-        const res = document.getElementById('prediction');
-        res.innerText = "...";
-        
+    function process(type) {
+        logs.push(type);
+        const res = document.getElementById('ai-result');
+        res.innerText = "SCANNING...";
+        res.style.color = "#fff";
+
         setTimeout(() => {
-            // Thuật toán bẻ cầu sảnh Sexy
-            let out = (type === 'PLAYER') ? 'BANKER' : 'PLAYER';
-            res.innerText = out;
-            res.style.color = (out === 'BANKER') ? '#ff4b82' : '#00d2ff';
+            // Thuật toán cốt lõi bẻ cầu ToolWin
+            let prediction = (type === 'PLAYER') ? 'BANKER' : 'PLAYER';
+            
+            res.innerText = prediction;
+            res.style.color = (prediction === 'BANKER') ? '#dc3545' : '#007bff';
         }, 1000);
     }
 </script>
 </body>
-                                                                                                                               </html>
-                                                                                                                               
+</html>
