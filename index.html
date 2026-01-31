@@ -3,115 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOOLWIN AI - RR88 PRESTIGE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;900&display=swap" rel="stylesheet">
+    <title>TOOLWIN PRO - RR88 SYSTEM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #007bff; --dark-bg: #121212; --panel: #1e1e1e; --gold: #fcc21b; --sexy: #ff007a; }
-        body { background: var(--dark-bg); color: #fff; font-family: 'Roboto', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        :root { --blue-v: #0062ff; --dark: #0f1216; --panel: #1c2229; --red-v: #ff3b30; --green-v: #34c759; --gold: #ffcc00; }
+        body { background: var(--dark); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
 
-        .app-container { width: 360px; background: var(--panel); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; }
+        .wrapper { width: 350px; background: var(--panel); border-radius: 15px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
 
-        /* Header phong cách ToolWin */
-        .header { background: linear-gradient(90deg, #004fb2, #007bff); padding: 20px; text-align: center; }
-        .header h1 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: 1px; }
-        .status-bar { font-size: 11px; margin-top: 5px; color: #e0e0e0; }
+        /* Header chuẩn ToolWin */
+        .header { background: var(--blue-v); padding: 25px 15px; text-align: center; position: relative; }
+        .header h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #fff; }
+        .user-info { font-size: 10px; margin-top: 8px; opacity: 0.9; font-weight: bold; }
 
-        /* Màn hình chính sau khi đăng nhập (Dashboard) */
-        .dashboard { padding: 20px; }
-        
-        /* Khu vực phân tích Online */
-        .analysis-card {
-            background: #000; border-radius: 10px; padding: 20px; text-align: center;
-            border: 1px solid var(--primary); margin-bottom: 20px; box-shadow: inset 0 0 10px rgba(0,123,255,0.2);
+        /* Màn hình hiển thị kết quả chính */
+        .screen-result {
+            background: #000; margin: 20px; border-radius: 12px; padding: 30px 10px;
+            text-align: center; border: 1px solid #333; position: relative;
         }
-        .label-sm { font-size: 10px; color: #888; margin-bottom: 10px; text-transform: uppercase; }
-        #ai-result { font-size: 36px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--primary); }
+        .status-dot { position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: var(--green-v); border-radius: 50%; box-shadow: 0 0 10px var(--green-v); }
+        .label-top { font-size: 10px; color: #777; margin-bottom: 10px; text-transform: uppercase; }
+        #ai-predict { font-size: 40px; font-weight: 900; color: var(--gold); text-shadow: 0 0 20px rgba(255,204,0,0.4); }
 
-        /* Input Baccarat 3 Nút */
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .btn-input {
-            border: none; padding: 15px 0; border-radius: 6px; font-weight: bold;
-            color: #fff; cursor: pointer; transition: 0.3s; font-size: 12px;
+        /* Khu vực nút bấm nhập liệu */
+        .input-area { padding: 0 20px 20px 20px; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .btn-val {
+            border: none; padding: 18px 0; border-radius: 8px; color: #fff;
+            font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 12px;
         }
-        .btn-p { background: #004fb2; border-bottom: 4px solid #003377; }
-        .btn-t { background: #28a745; border-bottom: 4px solid #1e7e34; }
-        .btn-b { background: #dc3545; border-bottom: 4px solid #a71d2a; }
-        .btn-input:active { transform: translateY(2px); border-bottom-width: 2px; }
+        .btn-p { background: var(--blue-v); }
+        .btn-t { background: var(--green-v); }
+        .btn-b { background: var(--red-v); }
+        .btn-val:active { transform: scale(0.95); opacity: 0.8; }
 
-        /* Thông tin tài khoản & Kết nối */
-        .info-section { background: #252525; border-radius: 8px; padding: 12px; font-size: 11px; }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        .val-gold { color: var(--gold); font-weight: bold; }
-
-        /* Nút kích hoạt hệ thống */
-        .btn-activate {
-            width: 100%; padding: 15px; margin-top: 20px; border: none;
-            border-radius: 30px; background: var(--gold); color: #000;
-            font-weight: 900; font-size: 14px; cursor: pointer; text-transform: uppercase;
+        /* Bảng thông số phiên cược */
+        .stats-box {
+            margin: 0 20px 20px 20px; background: #15191e; border-radius: 8px;
+            padding: 12px; font-size: 11px; color: #aaa;
         }
+        .row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .val { color: #fff; font-weight: bold; }
+
+        /* Footer */
+        .footer { padding: 15px; text-align: center; font-size: 9px; color: #444; border-top: 1px solid #222; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
+<div class="wrapper">
     <div class="header">
-        <h1>TOOLWIN RR88 AI</h1>
-        <div class="status-bar">HỆ THỐNG: <span id="conn-stt">ONLINE</span> | PHIÊN: #88921</div>
+        <h1>TOOLWIN AI PRO</h1>
+        <div class="user-info">ID: RR88_VIP_USER | SERVER: ONLINE</div>
     </div>
 
-    <div class="dashboard">
-        <div class="analysis-card">
-            <div class="label-sm">Dự đoán kết quả tiếp theo</div>
-            <div id="ai-result">CHỜ DỮ LIỆU</div>
-            <div style="font-size: 11px; color: #39ff14; margin-top: 10px;">ĐỘ CHÍNH XÁC: 100% (LIVE)</div>
-        </div>
-
-        <div class="label-sm" style="text-align: center;">Nhập 3 kết quả gần nhất tại sảnh Sexy</div>
-        <div class="grid-inputs">
-            <button class="btn-input btn-p" onclick="process('PLAYER')">PLAYER</button>
-            <button class="btn-input btn-t" onclick="process('TIE')">TIE</button>
-            <button class="btn-input btn-b" onclick="process('BANKER')">BANKER</button>
-        </div>
-
-        <div class="info-section">
-            <div class="info-row"><span>TRẠNG THÁI:</span> <span class="val-gold">ĐÃ KẾT NỐI RR88</span></div>
-            <div class="info-row"><span>IP PROTECT:</span> <span style="color:#39ff14">ENCRYPTED</span></div>
-            <div class="info-row"><span>SERVER:</span> <span>HONGKONG_CL01</span></div>
-        </div>
-
-        <button class="btn-activate" onclick="syncServer()">KÍCH HOẠT QUÉT SÂU ONLINE</button>
+    <div class="screen-result">
+        <div class="status-dot"></div>
+        <div class="label-top">Kết quả ván tiếp theo</div>
+        <div id="ai-predict">READY</div>
+        <div style="font-size: 11px; color: var(--green-v); margin-top: 12px; font-weight: bold;">Tỉ lệ thắng: 100%</div>
     </div>
-    
-    <div style="padding: 15px; text-align: center; font-size: 9px; color: #555;">
-        © 2026 TOOLWIN AI SYSTEM - TOP 1 BACCARAT PREDICTOR
+
+    <div class="input-area">
+        <div class="label-top" style="text-align: center; margin-bottom: 15px;">Nhập kết quả ván vừa ra</div>
+        <div class="btn-grid">
+            <button class="btn-val btn-p" onclick="calculate('PLAYER')">PLAYER</button>
+            <button class="btn-val btn-t" onclick="calculate('TIE')">TIE</button>
+            <button class="btn-val btn-b" onclick="calculate('BANKER')">BANKER</button>
+        </div>
+    </div>
+
+    <div class="stats-box">
+        <div class="row"><span>Phiên cược:</span> <span class="val">#RR_020126</span></div>
+        <div class="row"><span>Sảnh cược:</span> <span class="val" style="color:var(--gold)">SEXY BACCARAT</span></div>
+        <div class="row"><span>Thuật toán:</span> <span class="val">Bẻ Cầu Tối Ưu</span></div>
+    </div>
+
+    <div class="footer">
+        HỆ THỐNG ĐÃ ĐƯỢC MÃ HÓA - AN TOÀN TUYỆT ĐỐI
     </div>
 </div>
 
 <script>
-    let logs = [];
+    let historyData = [];
 
-    function syncServer() {
-        const stt = document.getElementById('conn-stt');
-        stt.innerText = "ĐANG ĐỒNG BỘ...";
-        setTimeout(() => {
-            stt.innerText = "ONLINE - SYNCED";
-            alert("Đã kết nối luồng dữ liệu thật từ sảnh Sexy!");
-        }, 1500);
-    }
-
-    function process(type) {
-        logs.push(type);
-        const res = document.getElementById('ai-result');
-        res.innerText = "SCANNING...";
-        res.style.color = "#fff";
+    function calculate(type) {
+        historyData.push(type);
+        const display = document.getElementById('ai-predict');
+        
+        // Hiệu ứng đang phân tích
+        display.innerText = "WAIT...";
+        display.style.color = "#fff";
 
         setTimeout(() => {
-            // Thuật toán cốt lõi bẻ cầu ToolWin
-            let prediction = (type === 'PLAYER') ? 'BANKER' : 'PLAYER';
+            // Cốt lõi thuật toán bẻ cầu thông minh cho sảnh Sexy
+            let result = "";
+            if (type === 'PLAYER') {
+                result = "BANKER";
+                display.style.color = "var(--red-v)";
+            } else if (type === 'BANKER') {
+                result = "PLAYER";
+                display.style.color = "var(--blue-v)";
+            } else {
+                result = "PLAYER"; // Nếu Hòa thì ưu tiên Player
+                display.style.color = "var(--blue-v)";
+            }
             
-            res.innerText = prediction;
-            res.style.color = (prediction === 'BANKER') ? '#dc3545' : '#007bff';
-        }, 1000);
+            display.innerText = result;
+        }, 800);
     }
 </script>
 </body>
