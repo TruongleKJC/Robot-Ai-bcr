@@ -3,161 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RR88 DATA STREAM v33.0</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <title>AI Baccarat Pro - GitHub Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --neon: #00f2fe; --pink: #ff416c; --tie: #28a745; --bg: #0a0c10; --panel: #161a1e; }
-        body { background: transparent; color: #fff; font-family: 'Arial', sans-serif; display: flex; justify-content: center; padding: 10px; margin: 0; }
-
-        /* Khung App chính */
-        .app-shell {
-            width: 320px; background: var(--bg); border: 2px solid var(--neon);
-            border-radius: 25px; padding: 15px; box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
-            text-transform: uppercase;
-        }
-
-        /* Header */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .header-title { color: var(--neon); font-weight: bold; font-size: 14px; letter-spacing: 1px; }
-        .status-led { width: 10px; height: 10px; background: #39ff14; border-radius: 50%; box-shadow: 0 0 8px #39ff14; }
-
-        /* Khu vực luồng dữ liệu Real-time */
-        .data-feed {
-            background: var(--panel); border: 1px solid #333; border-radius: 12px;
-            padding: 12px; margin-bottom: 15px;
-        }
-        .feed-label { font-size: 9px; color: #888; margin-bottom: 8px; }
-        .feed-line { background: #000; border: 1px solid #222; padding: 6px; border-radius: 4px; font-size: 10px; margin-bottom: 6px; color: var(--neon); overflow: hidden; }
-        
-        .progress-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-        .perc { font-size: 10px; color: #fff; width: 35px; }
-        .bar-bg { flex: 1; height: 4px; background: #222; border-radius: 2px; }
-        #fill { width: 0%; height: 100%; background: var(--neon); transition: 0.3s; }
-
-        /* Khu vực tính toán AI */
-        .calc-zone {
-            border: 1px dashed var(--neon); border-radius: 12px; padding: 15px;
-            text-align: center; margin-bottom: 15px;
-        }
-        .calc-label { font-size: 9px; color: #888; margin-bottom: 10px; }
-        .calculating-text { font-size: 18px; font-weight: bold; letter-spacing: 2px; }
-        .pink-text { color: var(--pink); }
-
-        /* Kết quả soi cầu */
-        .result-row { font-size: 11px; margin-bottom: 15px; display: flex; justify-content: center; gap: 5px; }
-        #final-res { color: var(--tie); font-weight: bold; }
-
-        /* Hệ thống Nút bấm */
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .btn { border: none; padding: 10px 0; border-radius: 6px; color: #fff; font-weight: bold; font-size: 10px; cursor: pointer; }
-        .btn-p { background: #2c4a86; }
-        .btn-t { background: #1e7e34; }
-        .btn-b { background: #a52a42; }
-
-        /* Nút Kích hoạt chính */
-        .act-btn {
-            width: 100%; padding: 12px; border: none; border-radius: 20px;
-            background: var(--neon); color: #000; font-weight: bold;
-            font-size: 12px; cursor: pointer; box-shadow: 0 0 10px var(--neon);
-        }
-
-        #hidden-cam { position: absolute; width: 1px; height: 1px; opacity: 0; }
+        .bead { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: white; margin: 2px; }
+        .B { background-color: #ef4444; } /* Đỏ - Banker */
+        .P { background-color: #3b82f6; } /* Xanh - Player */
+        .T { background-color: #10b981; } /* Xanh lá - Tie */
     </style>
 </head>
-<body>
+<body class="bg-gray-900 text-white font-sans p-4">
 
-<div class="app-shell">
-    <div class="header">
-        <div class="header-title">RR88 DATA STREAM <span style="font-weight: normal; font-size: 10px;">v33.0</span></div>
-        <div class="status-led"></div>
-    </div>
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold text-center mb-6 text-yellow-500">🤖 AI BACCARAT PREDICTOR</h1>
 
-    <div class="data-feed">
-        <div class="feed-label">REAL-TIME DATA FEED:</div>
-        <div class="feed-line" id="status-txt">CONNECTING RR88 LIVE...</div>
-        <div class="feed-line" id="raw-data">DATA: WAITING FOR SCAN...</div>
-        
-        <div class="progress-row">
-            <div class="perc" id="perc-num">0%</div>
-            <div class="bar-bg"><div id="fill"></div></div>
+        <div class="bg-gray-800 p-6 rounded-2xl shadow-xl mb-6 text-center border border-gray-700">
+            <h2 class="text-gray-400 uppercase text-sm mb-2">AI Dự Đoán Ván Tiếp</h2>
+            <div id="prediction" class="text-4xl font-black mb-2">ĐANG CHỜ...</div>
+            <div id="confidence" class="text-sm text-yellow-400 mb-4">Nhập ít nhất 6 ván để bắt đầu</div>
+            <div class="bg-gray-700 h-2 rounded-full overflow-hidden">
+                <div id="progress" class="bg-yellow-500 h-full w-0 transition-all duration-500"></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-6 text-center">
+            <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+                <div class="text-gray-400 text-xs">TIỀN CƯỢC (ĐƠN VỊ)</div>
+                <div id="bet_amount" class="text-2xl font-bold text-green-400">1</div>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+                <div class="text-gray-400 text-xs">XU HƯỚNG CẦU</div>
+                <div id="trend" class="text-sm font-bold">---</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mb-8">
+            <button onclick="addData('B')" class="bg-red-600 hover:bg-red-700 h-20 rounded-xl font-bold text-lg active:scale-95 transition-transform shadow-lg">BANKER</button>
+            <button onclick="addData('P')" class="bg-blue-600 hover:bg-blue-700 h-20 rounded-xl font-bold text-lg active:scale-95 transition-transform shadow-lg">PLAYER</button>
+            <button onclick="addData('T')" class="bg-green-600 hover:bg-green-700 h-20 rounded-xl font-bold text-lg active:scale-95 transition-transform shadow-lg">TIE</button>
+        </div>
+
+        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+            <div class="flex justify-between mb-2">
+                <span class="text-xs text-gray-400">LỊCH SỬ CẦU (GẦN NHẤT)</span>
+                <button onclick="reset()" class="text-xs text-red-400 underline">Xóa dữ liệu</button>
+            </div>
+            <div id="history" class="flex flex-wrap"></div>
         </div>
     </div>
 
-    <div class="calc-zone">
-        <div class="calc-label">AI SOUTHERN-CALIFORNIA FORMULA:</div>
-        <div class="calculating-text">CALCU<span class="pink-text">LATING...</span></div>
-    </div>
+    <script>
+        let history = [];
+        let fibo = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144];
+        let fiboIdx = 0;
+        let lastPred = null;
 
-    <div class="result-row">
-        SOI CẦU: <span id="final-res">ĐANG QUÉT...</span>
-    </div>
+        function addData(res) {
+            // Cập nhật Fibo nếu có dự đoán trước đó
+            if (lastPred) {
+                if (res === lastPred) {
+                    fiboIdx = Math.max(0, fiboIdx - 2);
+                } else {
+                    fiboIdx = Math.min(fibo.length - 1, fiboIdx + 1);
+                }
+            }
 
-    <div class="btn-group">
-        <button class="btn btn-p" onclick="manual('PLAYER')">PLAYER</button>
-        <button class="btn btn-t" onclick="manual('TIE')">TIE</button>
-        <button class="btn btn-b" onclick="manual('BANKER')">BANKER</button>
-    </div>
+            history.push(res);
+            updateUI();
+            analyze();
+        }
 
-    <button class="act-btn" onclick="startDeepScan()">ACTIVATE DEEP SCAN</button>
+        function analyze() {
+            if (history.length < 6) return;
 
-    <video id="hidden-cam" autoplay playsinline></video>
-</div>
+            // Thuật toán Markov Chain 2 bước
+            let transitions = {};
+            for (let i = 0; i < history.length - 2; i++) {
+                let state = history[i] + history[i+1];
+                let next = history[i+2];
+                if (!transitions[state]) transitions[state] = [];
+                transitions[state].push(next);
+            }
 
-<script>
-    let scanning = false;
+            let currentState = history[history.length - 2] + history[history.length - 1];
+            let nextOptions = transitions[currentState] || history.slice(-10);
 
-    async function startDeepScan() {
-        if(scanning) return;
-        scanning = true;
-        const video = document.getElementById('hidden-cam');
-        const status = document.getElementById('status-txt');
-        
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-            video.srcObject = stream;
-            status.innerText = "STREAMING RR88 DATA...";
+            let counts = nextOptions.reduce((acc, val) => {
+                acc[val] = (acc[val] || 0) + 1;
+                return acc;
+            }, {});
+
+            let pred = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+            let conf = (counts[pred] / nextOptions.length) * 100;
+
+            lastPred = pred;
             
-            setInterval(() => {
-                runScanner(video);
-            }, 3000);
-        } catch (e) {
-            alert("VUI LÒNG CẤP QUYỀN CAMERA ĐỂ QUÉT SÂU!");
-            scanning = false;
+            const predDiv = document.getElementById('prediction');
+            const name = pred === 'B' ? 'BANKER' : (pred === 'P' ? 'PLAYER' : 'TIE');
+            predDiv.innerText = name;
+            predDiv.style.color = pred === 'B' ? '#ef4444' : (pred === 'P' ? '#3b82f6' : '#10b981');
+            
+            document.getElementById('confidence').innerText = `Độ tin cậy: ${conf.toFixed(1)}%`;
+            document.getElementById('progress').style.width = `${conf}%`;
         }
-    }
 
-    async function runScanner(video) {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
+        function updateUI() {
+            const histDiv = document.getElementById('history');
+            histDiv.innerHTML = '';
+            history.slice(-24).forEach(item => {
+                const span = document.createElement('div');
+                span.className = `bead ${item}`;
+                span.innerText = item;
+                histDiv.appendChild(span);
+            });
 
-        const { data: { text } } = await Tesseract.recognize(canvas, 'eng');
-        const raw = text.toUpperCase().substring(0, 20);
-        document.getElementById('raw-data').innerText = "DATA: " + (raw || "ANALYZING...");
-        
-        // Cập nhật tiến trình
-        let p = Math.floor(Math.random() * 40) + 60;
-        document.getElementById('perc-num').innerText = p + "%";
-        document.getElementById('fill').style.width = p + "%";
-
-        // Logic dự đoán
-        const res = document.getElementById('final-res');
-        if (text.includes('P') || text.includes('7')) {
-            res.innerText = "BANKER (CÁI)";
-            res.style.color = "#ff416c";
-        } else {
-            res.innerText = "PLAYER (CON)";
-            res.style.color = "#00f2fe";
+            document.getElementById('bet_amount').innerText = fibo[fiboIdx];
+            
+            let bCount = history.filter(x => x === 'B').length;
+            let pCount = history.filter(x => x === 'P').length;
+            document.getElementById('trend').innerText = bCount > pCount ? "ƯU THẾ BANKER" : "ƯU THẾ PLAYER";
         }
-    }
 
-    function manual(type) {
-        const res = document.getElementById('final-res');
-        res.innerText = type + " (MANUAL)";
-        res.style.color = type === 'BANKER' ? '#ff416c' : (type === 'TIE' ? '#28a745' : '#00f2fe');
-    }
-</script>
+        function reset() {
+            history = [];
+            fiboIdx = 0;
+            lastPred = null;
+            document.getElementById('prediction').innerText = "ĐANG CHỜ...";
+            document.getElementById('confidence').innerText = "Nhập ít nhất 6 ván";
+            document.getElementById('progress').style.width = "0%";
+            updateUI();
+        }
+    </script>
 </body>
 </html>
-    
