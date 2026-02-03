@@ -3,166 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToolWin AI - Points Analysis v45</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>ToolWin VIP - Giftcode System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #0061ff; --bg-dark: #0f172a; --card-bg: #1e293b;
-            --success: #10b981; --danger: #ef4444; --gold: #fbbf24;
+            --gold: #ffc107;
+            --gold-grad: linear-gradient(135deg, #ffc107, #ff9800);
+            --dark-bg: #0f172a;
+            --panel-bg: #1e293b;
+            --blue: #3b82f6;
+            --text-gray: #94a3b8;
         }
 
         body {
-            margin: 0; padding: 0; font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-dark); color: #ffffff;
-            display: flex; justify-content: center; align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--dark-bg);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
 
-        .toolwin-container {
-            width: 100%; max-width: 380px; background: var(--card-bg);
-            border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5); animation: fadeIn 0.8s ease-out;
+        .app-shell {
+            width: 100%; max-width: 400px;
+            background: var(--panel-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
         }
 
-        .header {
-            background: linear-gradient(135deg, #0061ff 0%, #60a5fa 100%);
-            padding: 35px 20px; text-align: center;
+        /* --- AUTH SCREEN --- */
+        #auth-screen { padding: 40px 30px; text-align: center; }
+        .logo-text { font-size: 28px; font-weight: 900; background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .form-group { margin-bottom: 15px; }
+        .form-group input {
+            width: 100%; padding: 14px; background: #0f172a; border: 1px solid #334155;
+            border-radius: 10px; color: white; outline: none; box-sizing: border-box;
+        }
+        .btn-action {
+            width: 100%; padding: 15px; background: var(--gold-grad); border: none;
+            border-radius: 10px; color: #000; font-weight: 800; cursor: pointer;
+            text-transform: uppercase; margin-top: 10px;
         }
 
-        .header h1 { margin: 0; font-weight: 900; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; }
-
-        .content { padding: 25px; }
-
-        /* Màn hình kết quả AI */
-        .result-box {
-            background: #0f172a; border-radius: 15px; padding: 20px;
-            text-align: center; border: 1px solid var(--primary); margin-bottom: 25px;
+        /* --- MAIN APP --- */
+        #main-app { display: none; }
+        
+        .app-header {
+            background: #0f172a; padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #334155;
         }
-        .res-label { font-size: 10px; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; }
-        #ai-output { font-size: 38px; font-weight: 900; color: var(--gold); }
-
-        /* Khu vực nhập điểm số */
-        .points-input-group {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;
+        .coin-badge {
+            background: rgba(255, 193, 7, 0.15); color: var(--gold);
+            padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;
+            cursor: pointer; border: 1px solid rgba(255, 193, 7, 0.3);
         }
-        .input-item label { display: block; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; text-align: center; }
-        .input-item input {
-            width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155;
-            border-radius: 8px; color: var(--gold); text-align: center; font-size: 18px;
-            font-weight: 900; outline: none; transition: 0.3s;
+
+        /* Khu vực Nạp Xu (Giftcode) */
+        #recharge-panel {
+            background: #111; padding: 15px; display: none; border-bottom: 1px solid #333;
+            animation: slideDown 0.3s;
         }
-        .input-item input:focus { border-color: var(--primary); }
-
-        .btn-analyze {
-            width: 100%; padding: 16px; background: var(--primary); border: none;
-            border-radius: 10px; color: white; font-weight: 700; cursor: pointer;
-            text-transform: uppercase; transition: 0.3s; margin-top: 10px;
+        @keyframes slideDown { from {height: 0; opacity: 0;} to {height: auto; opacity: 1;} }
+        
+        .code-input-group { display: flex; gap: 10px; }
+        .code-inp {
+            flex: 1; padding: 10px; background: #222; border: 1px solid #444;
+            color: #fff; border-radius: 8px; text-transform: uppercase; font-weight: bold;
         }
-        .btn-analyze:active { transform: scale(0.98); }
+        .btn-redeem {
+            padding: 0 20px; background: var(--blue); color: #fff; border: none;
+            border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
 
-        .history-dots { display: flex; justify-content: center; gap: 5px; margin-top: 20px; height: 12px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.5; }
+        .game-area { padding: 25px; }
+        .result-display {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 2px solid var(--gold); border-radius: 15px; padding: 20px;
+            text-align: center; margin-bottom: 25px;
+        }
+        .res-val { font-size: 42px; font-weight: 900; color: white; text-shadow: 0 0 15px var(--gold); margin: 10px 0; }
+        .cost-notify { font-size: 10px; color: var(--text-gray); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .inputs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .score-inp {
+            text-align: center; padding: 15px; font-size: 20px; font-weight: bold;
+            background: #0f172a; border: 1px solid #334155; color: white; border-radius: 10px;
+            outline: none; width: 100%; box-sizing: border-box;
+        }
+        .score-inp:focus { border-color: var(--blue); }
+
+        .btn-scan {
+            width: 100%; padding: 18px; background: var(--blue); border: none;
+            border-radius: 12px; color: white; font-weight: 900; font-size: 15px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        .toast {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.9); padding: 10px 20px; border-radius: 30px;
+            font-size: 11px; white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .toast.show { opacity: 1; bottom: 40px; }
     </style>
 </head>
 <body>
 
-<div class="toolwin-container">
-    <div class="header">
-        <h1>TOOLWIN AI</h1>
-        <div style="font-size: 11px; margin-top: 5px; font-weight: bold;">ALGORITHM: POINTS-SCAN v45</div>
-    </div>
-
-    <div class="content">
-        <div class="result-box">
-            <div class="res-label">Dự Đoán Ván Tiếp Theo</div>
-            <div id="ai-output">0-0 READY</div>
-            <div style="font-size: 11px; color: var(--success); margin-top: 8px; font-weight: bold;">Tỉ Lệ Thắng: 100%</div>
-        </div>
-
-        <div class="points-input-group">
-            <div class="input-item">
-                <label>ĐIỂM PLAYER</label>
-                <input type="number" id="p-score" placeholder="0" min="0" max="9">
-            </div>
-            <div class="input-item">
-                <label>ĐIỂM BANKER</label>
-                <input type="number" id="b-score" placeholder="0" min="0" max="9">
+<div class="app-shell">
+    
+    <div id="auth-screen">
+        <div class="logo-text" style="margin-bottom: 30px;">TOOLWIN VIP</div>
+        
+        <div id="login-form">
+            <div class="form-group"><input type="text" id="l-user" placeholder="Tài khoản"></div>
+            <div class="form-group"><input type="password" id="l-pass" placeholder="Mật khẩu"></div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-action" onclick="login()" style="flex:2;">ĐĂNG NHẬP</button>
+                <button class="btn-action" onclick="showRegister()" style="flex:1; background: #334155; color: #fff;">ĐK</button>
             </div>
         </div>
 
-        <button class="btn-analyze" onclick="runPointsAI()">PHÂN TÍCH ĐIỂM SỐ</button>
-
-        <div class="history-dots" id="dots-container">
-            <div class="dot" style="background:#444"></div>
-            <div class="dot" style="background:#444"></div>
-            <div class="dot" style="background:#444"></div>
-            <div class="dot" style="background:#444"></div>
-            <div class="dot" style="background:#444"></div>
+        <div id="register-form" style="display:none;">
+            <div class="form-group"><input type="text" id="r-user" placeholder="Tài khoản mới"></div>
+            <div class="form-group"><input type="password" id="r-pass" placeholder="Mật khẩu mới"></div>
+            <button class="btn-action" style="background: var(--blue); color: #fff;" onclick="register()">ĐĂNG KÝ NGAY</button>
+            <div style="font-size:10px; margin-top:10px; cursor:pointer; color:#888;" onclick="showLogin()">Quay lại đăng nhập</div>
         </div>
     </div>
 
-    <div style="text-align: center; padding: 20px; font-size: 10px; color: #475569;">
-        Dữ liệu đồng bộ trực tiếp với sảnh Sexy RR88
+    <div id="main-app">
+        <div class="app-header">
+            <div style="font-size: 12px; font-weight: 700;">
+                <i class="fa-solid fa-user"></i> <span id="display-name">User</span>
+            </div>
+            <div class="coin-badge" onclick="toggleRecharge()">
+                <i class="fa-solid fa-coins"></i> <span id="coin-val">0</span> Xu
+                <i class="fa-solid fa-circle-plus" style="margin-left:5px;"></i>
+            </div>
+        </div>
+
+        <div id="recharge-panel">
+            <div style="font-size:10px; color:#aaa; margin-bottom:5px;">NHẬP MÃ GIFTCODE ĐỂ NẠP XU:</div>
+            <div class="code-input-group">
+                <input type="text" id="gift-code" class="code-inp" placeholder="VD: ADMIN88">
+                <button class="btn-redeem" onclick="submitCode()">NẠP</button>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="result-display">
+                <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Dự đoán kết quả</div>
+                <div id="ai-res" class="res-val">READY</div>
+                <div class="cost-notify">Phí dịch vụ: <span style="color:var(--gold); font-weight:bold;">-5 Xu</span> / lượt</div>
+            </div>
+
+            <div class="inputs-row">
+                <input type="number" id="p-point" class="score-inp" placeholder="P (Điểm)" min="0" max="9">
+                <input type="number" id="b-point" class="score-inp" placeholder="B (Điểm)" min="0" max="9">
+            </div>
+
+            <button class="btn-scan" onclick="analyzeGame()">
+                <i class="fa-solid fa-bolt"></i> PHÂN TÍCH
+            </button>
+        </div>
+        
+        <div style="text-align: center; padding: 10px; font-size: 9px; color: #475569;">
+            Copyright © ToolWin System 2026
+        </div>
     </div>
+
+    <div id="toast" class="toast">Thông báo</div>
 </div>
 
 <script>
-    let lastGap = 0;
+    let db = JSON.parse(localStorage.getItem('toolwin_db_v2')) || [];
+    let currentUser = null;
+    const COST = 5; // Phí 5 xu
 
-    function runPointsAI() {
-        const pScore = parseInt(document.getElementById('p-score').value) || 0;
-        const bScore = parseInt(document.getElementById('b-score').value) || 0;
-        const output = document.getElementById('ai-output');
-        
-        output.style.opacity = "0.5";
-        output.innerText = "CALCULATING...";
+    // DANH SÁCH MÃ NẠP (Bạn có thể thêm vào đây)
+    const VALID_CODES = {
+        'ADMIN88': 1000,
+        'TOOLWIN': 500,
+        'VIPMEMBER': 200,
+        'TEST': 50
+    };
 
-        setTimeout(() => {
-            output.style.opacity = "1";
-            
-            // Thuật toán AI theo khoảng cách điểm (Gap Method)
-            // Tính toán khoảng cách giữa Player và Banker
-            let currentGap = Math.abs(pScore - bScore);
-            let result = "";
-
-            /* LOGIC AI NÂNG CAO:
-               1. Nếu khoảng cách ván này lớn hơn ván trước -> Cầu đang thuận -> Theo bên thắng.
-               2. Nếu khoảng cách giảm hoặc bằng 0 -> Cầu sắp gãy -> Đánh ngược lại.
-            */
-            if (currentGap > lastGap) {
-                result = (pScore > bScore) ? "PLAYER" : "BANKER";
-            } else {
-                result = (pScore > bScore) ? "BANKER" : "PLAYER";
-            }
-
-            // Cập nhật khoảng cách cho ván sau
-            lastGap = currentGap;
-
-            // Hiển thị kết quả
-            output.innerText = result;
-            output.style.color = (result === "BANKER") ? "var(--danger)" : "var(--primary)";
-            
-            // Thêm dấu vết vào lịch sử
-            addDot(result);
-            
-            // Reset input
-            document.getElementById('p-score').value = "";
-            document.getElementById('b-score').value = "";
-        }, 800);
+    // --- AUTH ---
+    function showRegister() {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'block';
+    }
+    function showLogin() {
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('register-form').style.display = 'none';
     }
 
-    function addDot(res) {
-        const container = document.getElementById('dots-container');
-        const newDot = document.createElement('div');
-        newDot.className = 'dot';
-        newDot.style.background = (res === "BANKER") ? "var(--danger)" : "var(--primary)";
-        newDot.style.opacity = "1";
-        container.prepend(newDot);
-        if(container.children.length > 10) container.lastChild.remove();
+    function register() {
+        const u = document.getElementById('r-user').value;
+        const p = document.getElementById('r-pass').value;
+        if(!u || !p) return showToast("Nhập thiếu thông tin!");
+        if(db.find(a => a.user === u)) return showToast("Tài khoản đã tồn tại!");
+
+        // Tặng 10 xu làm vốn
+        db.push({ user: u, pass: p, coins: 10, usedCodes: [] });
+        saveDB();
+        showToast("Đăng ký thành công! +10 Xu");
+        showLogin();
+        document.getElementById('l-user').value = u;
+    }
+
+    function login() {
+        const u = document.getElementById('l-user').value;
+        const p = document.getElementById('l-pass').value;
+        const acc = db.find(a => a.user === u && a.pass === p);
+        if(acc) {
+            currentUser = acc;
+            if(!currentUser.usedCodes) currentUser.usedCodes = []; // Fix lỗi phiên bản cũ
+            enterApp();
+        } else {
+            showToast("Sai tài khoản/mật khẩu!");
+        }
+    }
+
+    function enterApp() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        updateUI();
+    }
+
+    // --- LOGIC CHÍNH ---
+    function saveDB() {
+        localStorage.setItem('toolwin_db_v2', JSON.stringify(db));
+    }
+
+    function updateUI() {
+        document.getElementById('display-name').innerText = currentUser.user;
+        document.getElementById('coin-val').innerText = currentUser.coins;
+    }
+
+    // Nạp Xu bằng Mã
+    function toggleRecharge() {
+        const panel = document.getElementById('recharge-panel');
+        panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function submitCode() {
+        const code = document.getElementById('gift-code').value.toUpperCase().trim();
+        
+        if (!VALID_CODES[code]) {
+            return showToast("Mã không hợp lệ!");
+        }
+        if (currentUser.usedCodes.includes(code)) {
+            return showToast("Bạn đã dùng mã này rồi!");
+        }
+
+        const amount = VALID_CODES[code];
+        currentUser.coins += amount;
+        currentUser.usedCodes.push(code);
+        saveDB();
+        updateUI();
+        showToast(`Nạp thành công +${amount} Xu!`);
+        document.getElementById('gift-code').value = "";
+        toggleRecharge(); // Đóng panel
+    }
+
+    function analyzeGame() {
+        const p = document.getElementById('p-point').value;
+        const b = document.getElementById('b-point').value;
+        const resBox = document.getElementById('ai-res');
+
+        if(p === "" || b === "") return showToast("Vui lòng nhập điểm số!");
+        
+        if(currentUser.coins < COST) {
+            toggleRecharge(); // Mở bảng nạp tiền ngay
+            return showToast(`Cần ${COST} Xu để phân tích!`);
+        }
+
+        // Trừ tiền
+        currentUser.coins -= COST;
+        saveDB();
+        updateUI();
+
+        resBox.innerText = "WAIT...";
+        resBox.style.color = "#888";
+
+        setTimeout(() => {
+            const pVal = parseInt(p);
+            const bVal = parseInt(b);
+            let result = "";
+            let color = "";
+
+            // Logic tính điểm ToolWin:
+            // Nếu chênh lệch thấp (<=2) => Theo cầu (Bên thắng)
+            // Nếu chênh lệch cao (>2) => Bẻ cầu (Đánh ngược)
+            const gap = Math.abs(pVal - bVal);
+
+            if (gap <= 2) {
+                if(pVal > bVal) { result = "PLAYER"; color = "#3b82f6"; }
+                else if(bVal > pVal) { result = "BANKER"; color = "#ef4444"; }
+                else { result = "TIE"; color = "#10b981"; }
+            } else {
+                if(pVal > bVal) { result = "BANKER"; color = "#ef4444"; }
+                else { result = "PLAYER"; color = "#3b82f6"; }
+            }
+
+            resBox.innerText = result;
+            resBox.style.color = color;
+            showToast(`Kết quả có sẵn (-${COST} Xu)`);
+            
+            document.getElementById('p-point').value = "";
+            document.getElementById('b-point').value = "";
+        }, 600);
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
     }
 </script>
 
 </body>
-                    </html>
+    </html>
+                                                                                                                  
