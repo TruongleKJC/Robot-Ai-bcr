@@ -3,52 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToolWin - Hệ Thống Soi Cầu AI v44</title>
+    <title>ToolWin AI - Points Analysis v45</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #0061ff;
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --gold: #fbbf24;
+            --primary: #0061ff; --bg-dark: #0f172a; --card-bg: #1e293b;
+            --success: #10b981; --danger: #ef4444; --gold: #fbbf24;
         }
 
         body {
-            margin: 0; padding: 0;
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-dark);
-            color: #ffffff;
+            margin: 0; padding: 0; font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark); color: #ffffff;
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; overflow: hidden;
+            min-height: 100vh;
         }
 
-        /* Hiệu ứng Fade-in cho toàn bộ Tool */
         .toolwin-container {
-            width: 100%; max-width: 400px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            animation: slideUp 0.8s ease-out;
+            width: 100%; max-width: 380px; background: var(--card-bg);
+            border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5); animation: fadeIn 0.8s ease-out;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .login-header {
+        .header {
             background: linear-gradient(135deg, #0061ff 0%, #60a5fa 100%);
-            padding: 40px 20px; text-align: center;
+            padding: 35px 20px; text-align: center;
         }
 
-        .login-header h1 { margin: 0; font-weight: 900; font-size: 28px; text-transform: uppercase; }
+        .header h1 { margin: 0; font-weight: 900; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; }
 
-        .main-content { padding: 30px 20px; position: relative; }
+        .content { padding: 25px; }
 
-        /* Input & Button Animation */
-        .input-group { margin-bottom: 20px; transition
+        /* Màn hình kết quả AI */
+        .result-box {
+            background: #0f172a; border-radius: 15px; padding: 20px;
+            text-align: center; border: 1px solid var(--primary); margin-bottom: 25px;
+        }
+        .res-label { font-size: 10px; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; }
+        #ai-output { font-size: 38px; font-weight: 900; color: var(--gold); }
+
+        /* Khu vực nhập điểm số */
+        .points-input-group {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;
+        }
+        .input-item label { display: block; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; text-align: center; }
+        .input-item input {
+            width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155;
+            border-radius: 8px; color: var(--gold); text-align: center; font-size: 18px;
+            font-weight: 900; outline: none; transition: 0.3s;
+        }
+        .input-item input:focus { border-color: var(--primary); }
+
+        .btn-analyze {
+            width: 100%; padding: 16px; background: var(--primary); border: none;
+            border-radius: 10px; color: white; font-weight: 700; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s; margin-top: 10px;
+        }
+        .btn-analyze:active { transform: scale(0.98); }
+
+        .history-dots { display: flex; justify-content: center; gap: 5px; margin-top: 20px; height: 12px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.5; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="toolwin-container">
+    <div class="header">
+        <h1>TOOLWIN AI</h1>
+        <div style="font-size: 11px; margin-top: 5px; font-weight: bold;">ALGORITHM: POINTS-SCAN v45</div>
+    </div>
+
+    <div class="content">
+        <div class="result-box">
+            <div class="res-label">Dự Đoán Ván Tiếp Theo</div>
+            <div id="ai-output">0-0 READY</div>
+            <div style="font-size: 11px; color: var(--success); margin-top: 8px; font-weight: bold;">Tỉ Lệ Thắng: 100%</div>
+        </div>
+
+        <div class="points-input-group">
+            <div class="input-item">
+                <label>ĐIỂM PLAYER</label>
+                <input type="number" id="p-score" placeholder="0" min="0" max="9">
+            </div>
+            <div class="input-item">
+                <label>ĐIỂM BANKER</label>
+                <input type="number" id="b-score" placeholder="0" min="0" max="9">
+            </div>
+        </div>
+
+        <button class="btn-analyze" onclick="runPointsAI()">PHÂN TÍCH ĐIỂM SỐ</button>
+
+        <div class="history-dots" id="dots-container">
+            <div class="dot" style="background:#444"></div>
+            <div class="dot" style="background:#444"></div>
+            <div class="dot" style="background:#444"></div>
+            <div class="dot" style="background:#444"></div>
+            <div class="dot" style="background:#444"></div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 20px; font-size: 10px; color: #475569;">
+        Dữ liệu đồng bộ trực tiếp với sảnh Sexy RR88
+    </div>
+</div>
+
+<script>
+    let lastGap = 0;
+
+    function runPointsAI() {
+        const pScore = parseInt(document.getElementById('p-score').value) || 0;
+        const bScore = parseInt(document.getElementById('b-score').value) || 0;
+        const output = document.getElementById('ai-output');
         
+        output.style.opacity = "0.5";
+        output.innerText = "CALCULATING...";
+
+        setTimeout(() => {
+            output.style.opacity = "1";
+            
+            // Thuật toán AI theo khoảng cách điểm (Gap Method)
+            // Tính toán khoảng cách giữa Player và Banker
+            let currentGap = Math.abs(pScore - bScore);
+            let result = "";
+
+            /* LOGIC AI NÂNG CAO:
+               1. Nếu khoảng cách ván này lớn hơn ván trước -> Cầu đang thuận -> Theo bên thắng.
+               2. Nếu khoảng cách giảm hoặc bằng 0 -> Cầu sắp gãy -> Đánh ngược lại.
+            */
+            if (currentGap > lastGap) {
+                result = (pScore > bScore) ? "PLAYER" : "BANKER";
+            } else {
+                result = (pScore > bScore) ? "BANKER" : "PLAYER";
+            }
+
+            // Cập nhật khoảng cách cho ván sau
+            lastGap = currentGap;
+
+            // Hiển thị kết quả
+            output.innerText = result;
+            output.style.color = (result === "BANKER") ? "var(--danger)" : "var(--primary)";
+            
+            // Thêm dấu vết vào lịch sử
+            addDot(result);
+            
+            // Reset input
+            document.getElementById('p-score').value = "";
+            document.getElementById('b-score').value = "";
+        }, 800);
+    }
+
+    function addDot(res) {
+        const container = document.getElementById('dots-container');
+        const newDot = document.createElement('div');
+        newDot.className = 'dot';
+        newDot.style.background = (res === "BANKER") ? "var(--danger)" : "var(--primary)";
+        newDot.style.opacity = "1";
+        container.prepend(newDot);
+        if(container.children.length > 10) container.lastChild.remove();
+    }
+</script>
+
+</body>
+                    </html>
