@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TOOLWIN AI - FULL LOGO v54</title>
+    <title>TOOLWIN AI - HISTORY v56</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -13,41 +13,37 @@
 
         .app-shell { width: 100%; max-width: 420px; height: 100%; background: #000; display: flex; flex-direction: column; border: 1px solid #222; position: relative; }
         
-        /* HEADER */
-        .header { padding: 15px; display: none; justify-content: space-between; align-items: center; background: #111; border-bottom: 1px solid #333; }
-        .wallet { background: rgba(0, 243, 255, 0.1); border: 1px solid var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 13px; color: var(--accent); cursor: pointer; font-weight: bold; }
+        .header { padding: 12px 15px; display: none; justify-content: space-between; align-items: center; background: #111; border-bottom: 1px solid #333; }
+        .wallet { background: rgba(0, 243, 255, 0.1); border: 1px solid var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 13px; color: var(--accent); cursor: pointer; font-weight: bold; }
 
         .screen { flex: 1; padding: 20px; display: none; flex-direction: column; overflow-y: auto; }
         .screen.active { display: flex; }
 
-        /* REUSABLE LOGO STYLE */
-        .logo-main { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); box-shadow: 0 0 20px var(--accent); animation: pulse 2s infinite; margin-bottom: 20px; }
-        .logo-small { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 1px solid var(--accent); box-shadow: 0 0 10px var(--accent); margin-bottom: 10px; }
+        /* LOGO & CARDS */
+        .compact-card { background: #080808; border: 1px solid #222; border-radius: 15px; padding: 15px; text-align: center; margin-bottom: 15px; }
+        #ai-res { font-family: 'Orbitron'; font-size: 42px; font-weight: 900; margin: 5px 0; letter-spacing: 2px; }
         
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 15px var(--accent); }
-            50% { transform: scale(1.03); box-shadow: 0 0 30px var(--accent); }
-            100% { transform: scale(1); box-shadow: 0 0 15px var(--accent); }
-        }
+        .compact-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .compact-inputs input { padding: 12px; background: #111; border: 1px solid #333; color: #fff; text-align: center; border-radius: 10px; font-size: 22px; font-family: 'Orbitron'; outline: none; }
 
-        /* UI COMPONENTS */
-        .input-wrap { margin-bottom: 15px; position: relative; }
-        .input-wrap input { width: 100%; padding: 14px 14px 14px 45px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: #fff; outline: none; }
-        .input-wrap i { position: absolute; left: 15px; top: 16px; color: var(--accent); }
-        .btn-glow { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: 12px; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; color: #000; text-transform: uppercase; }
+        .btn-glow { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: 10px; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; color: #000; text-transform: uppercase; font-size: 14px; }
 
-        /* GRID HALLS */
-        .hall-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .hall-item { background: #111; border: 1px solid #222; padding: 18px 10px; border-radius: 15px; text-align: center; cursor: pointer; }
-        .hall-item i { font-size: 24px; color: var(--accent); margin-bottom: 8px; display: block; }
+        /* HISTORY SECTION */
+        .history-box { margin-top: 20px; background: #0a0a0a; border-radius: 10px; padding: 10px; border: 1px dashed #222; }
+        .history-title { font-size: 10px; color: #555; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; text-align: center; }
+        .hist-item { display: flex; justify-content: space-between; padding: 5px 10px; font-size: 12px; border-bottom: 1px solid #111; }
+        .hist-item:last-child { border: none; }
+        .res-p { color: var(--accent); font-weight: bold; }
+        .res-b { color: var(--danger); font-weight: bold; }
 
-        /* ANALYZE CARD */
-        .ai-card { background: #111; padding: 20px; border-radius: 20px; border: 1px solid #222; text-align: center; margin-bottom: 15px; }
-        #ai-res { font-family: 'Orbitron'; font-size: 38px; font-weight: 900; margin: 10px 0; }
-        .score-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .score-box input { padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; text-align: center; border-radius: 10px; font-size: 20px; font-family: 'Orbitron'; outline: none; }
+        /* OTHERS */
+        .hall-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .hall-item { background: #111; border: 1px solid #222; padding: 15px; border-radius: 12px; text-align: center; cursor: pointer; }
+        .input-wrap { margin-bottom: 12px; position: relative; }
+        .input-wrap input { width: 100%; padding: 12px 12px 12px 40px; background: #111; border: 1px solid #333; border-radius: 10px; color: #fff; outline: none; }
+        .input-wrap i { position: absolute; left: 15px; top: 14px; color: var(--accent); }
 
-        .toast { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 10px 20px; border-radius: 25px; font-size: 12px; font-weight: bold; opacity: 0; transition: 0.3s; z-index: 1000; }
+        .toast { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 8px 20px; border-radius: 20px; font-size: 12px; font-weight: bold; opacity: 0; transition: 0.3s; z-index: 1000; pointer-events: none; }
         .toast.show { opacity: 1; }
     </style>
 </head>
@@ -55,76 +51,79 @@
 
 <div class="app-shell">
     <div class="header" id="app-header">
-        <div style="font-family:'Orbitron'; font-weight:900; color:var(--accent);">TOOLWIN AI</div>
-        <div class="wallet" onclick="addMoney()"><i class="fa-solid fa-coins"></i> <span id="user-coins">0</span> Xu</div>
+        <div style="font-family:'Orbitron'; font-weight:900; color:var(--accent); font-size:14px;">TOOLWIN AI</div>
+        <div class="wallet" onclick="addMoney()"><i class="fa-solid fa-database"></i> <span id="user-coins">0</span> Xu</div>
     </div>
 
     <div id="scr-login" class="screen active">
-        <div style="text-align: center; margin-top: 30px;">
-            <img src="https://i.postimg.cc/PJGn7RLM/07fa38d5-8765-4e59-bb8e-58f89f5e4db4-jpg.jpg" class="logo-main">
-            <h2 style="font-family:'Orbitron'; margin-bottom:30px;">LOGIN</h2>
+        <div style="text-align:center; margin-top:40px;">
+            <img src="https://i.postimg.cc/pT3PHdSB/ai-robot-3-10650714-jpg-w700wp.webp" style="width:120px; height:120px; border-radius:50%; border:2px solid var(--accent); margin-bottom:15px;">
+            <h2 style="font-family:'Orbitron'; font-size:22px;">SYSTEM LOGIN</h2>
         </div>
-        <div class="input-wrap"><i class="fa-solid fa-user"></i><input type="text" id="l-u" placeholder="Tên tài khoản"></div>
+        <div class="input-wrap"><i class="fa-solid fa-user"></i><input type="text" id="l-u" placeholder="Tài khoản"></div>
         <div class="input-wrap"><i class="fa-solid fa-lock"></i><input type="password" id="l-p" placeholder="Mật khẩu"></div>
-        <button class="btn-glow" onclick="doLogin()">KẾT NỐI</button>
-        <p style="text-align:center; font-size:14px; color:#555; margin-top:20px;" onclick="nav('scr-reg')">Đăng ký tài khoản mới</p>
+        <button class="btn-glow" onclick="doLogin()">KẾT NỐI AI</button>
+        <p style="text-align:center; font-size:13px; color:#444; margin-top:20px;" onclick="nav('scr-reg')">Tạo tài khoản mới</p>
     </div>
 
     <div id="scr-halls" class="screen">
-        <div style="text-align: center;">
-            <img src="https://i.postimg.cc/pT3PHdSB/ai-robot-3-10650714-jpg-w700wp.webp" class="logo-small">
-            <h4 style="margin: 0 0 15px 0; color: var(--accent); font-family: 'Orbitron'; letter-spacing: 2px;">CASINO HUB</h4>
+        <div style="text-align:center; margin-bottom:20px;">
+            <img src="https://i.postimg.cc/fWVSG2y9/TRI-TUE-NHA-N-TA-O-3.jpg" style="width:50px; height:50px; border-radius:50%; border:1px solid var(--accent);">
+            <div style="font-family:'Orbitron'; color:var(--accent); font-size:10px; margin-top:5px;">CASINO LIST</div>
         </div>
         <div class="hall-grid">
-            <div class="hall-item" onclick="nav('scr-game','SEXY')"><i class="fa-solid fa-venus"></i><b>SEXY</b></div>
-            <div class="hall-item" onclick="nav('scr-game','DG')"><i class="fa-solid fa-shield-cat"></i><b>DG</b></div>
-            <div class="hall-item" onclick="nav('scr-game','SA')"><i class="fa-solid fa-gem"></i><b>SA</b></div>
-            <div class="hall-item" onclick="nav('scr-game','AG')"><i class="fa-solid fa-crown"></i><b>AG</b></div>
-            <div class="hall-item" onclick="nav('scr-game','WM')"><i class="fa-solid fa-dice"></i><b>WM</b></div>
-            <div class="hall-item" onclick="nav('scr-game','EVO')"><i class="fa-solid fa-bolt"></i><b>EVO</b></div>
-            <div class="hall-item" onclick="nav('scr-game','MT')"><i class="fa-solid fa-microchip"></i><b>MT</b></div>
-            <div class="hall-item" onclick="nav('scr-game','CASINO')"><i class="fa-solid fa-building-columns"></i><b>TOTAL</b></div>
+            <div class="hall-item" onclick="nav('scr-game','SEXY')"><b>SEXY</b></div>
+            <div class="hall-item" onclick="nav('scr-game','DG')"><b>DG</b></div>
+            <div class="hall-item" onclick="nav('scr-game','SA')"><b>SA</b></div>
+            <div class="hall-item" onclick="nav('scr-game','AG')"><b>AG</b></div>
+            <div class="hall-item" onclick="nav('scr-game','WM')"><b>WM</b></div>
+            <div class="hall-item" onclick="nav('scr-game','EVO')"><b>EVO</b></div>
+            <div class="hall-item" onclick="nav('scr-game','MT')"><b>MT</b></div>
+            <div class="hall-item" onclick="nav('scr-game','ALL')"><b>TOTAL</b></div>
         </div>
     </div>
 
     <div id="scr-game" class="screen">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <i class="fa-solid fa-arrow-left" onclick="nav('scr-halls')"></i>
-            <b id="hall-title" style="color:var(--accent); font-family:'Orbitron';">GAME BCR</b>
-            <span></span>
-        </div>
-        
-        <div style="text-align: center; margin-bottom: 15px;">
-            <img src="https://i.postimg.cc/xjwtkbNs/b5a37f8d-8744-4c64-bea4-27e7978d11e9-jpg.jpg" style="width: 80px; height: 80px; border-radius: 50%; border: 1px solid var(--accent); box-shadow: 0 0 10px var(--accent);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <i class="fa-solid fa-chevron-left" onclick="nav('scr-halls')" style="font-size:18px;"></i>
+            <b id="hall-title" style="color:var(--accent); font-family:'Orbitron'; font-size:14px;">GAME BCR</b>
+            <i class="fa-solid fa-circle-dot" style="color:#00ff00; font-size:10px;"></i>
         </div>
 
-        <div class="ai-card">
-            <div style="font-size:11px; color:#555;">AI DỰ ĐOÁN</div>
+        <div class="compact-card">
+            <div style="font-size:10px; color:#444; letter-spacing:2px; margin-bottom:5px;">DỰ ĐOÁN TIẾP THEO</div>
             <div id="ai-res" style="color:#222;">READY</div>
-            <div style="font-size:12px; color:var(--gold);">CHÍNH XÁC: 98%</div>
+            <div style="font-size:11px; color:var(--gold); font-weight:bold;">TỈ LỆ THẮNG: 98%</div>
         </div>
 
-        <div class="score-box">
+        <div class="compact-inputs">
             <input type="number" id="p_s" placeholder="P">
             <input type="number" id="b_s" placeholder="B">
         </div>
+
         <button class="btn-glow" onclick="runAI()">PHÂN TÍCH (-1 XU)</button>
+
+        <div class="history-box" id="hist-container" style="display:none;">
+            <div class="history-title">Lịch sử phân tích</div>
+            <div id="hist-list"></div>
+        </div>
     </div>
 
     <div id="scr-reg" class="screen">
-        <h2 style="text-align:center; font-family:'Orbitron'; color:var(--danger);">REGISTER</h2>
+        <h2 style="text-align:center; font-family:'Orbitron'; color:var(--danger); margin-top:40px;">REGISTER</h2>
         <div class="input-wrap"><i class="fa-solid fa-user-plus"></i><input type="text" id="r-u" placeholder="Tên đăng nhập"></div>
         <div class="input-wrap"><i class="fa-solid fa-key"></i><input type="password" id="r-p" placeholder="Mật khẩu"></div>
-        <button class="btn-glow" style="background:var(--danger); color:#fff;" onclick="doRegister()">ĐĂNG KÝ</button>
-        <p style="text-align:center; font-size:14px; color:#555; margin-top:20px;" onclick="nav('scr-login')">Quay lại</p>
+        <button class="btn-glow" style="background:var(--danger); color:#fff;" onclick="doRegister()">XÁC NHẬN</button>
+        <p style="text-align:center; margin-top:20px;" onclick="nav('scr-login')">Quay lại</p>
     </div>
 
     <div id="toast" class="toast"></div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('tw_v54')) || [];
+    let db = JSON.parse(localStorage.getItem('tw_v56')) || [];
     let user = null;
+    let analyzeHistory = [];
 
     function nav(id, title) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -137,10 +136,10 @@
         const u = document.getElementById('r-u').value.trim();
         const p = document.getElementById('r-p').value;
         if(u.length < 3) return showToast("Tên quá ngắn!");
-        if(db.find(x => x.u === u)) return showToast("Đã tồn tại!");
+        if(db.find(x => x.u === u)) return showToast("Tài khoản đã có!");
         db.push({ u: u, p: p, coins: 20 });
-        localStorage.setItem('tw_v54', JSON.stringify(db));
-        showToast("Đăng ký xong! +20 Xu");
+        localStorage.setItem('tw_v56', JSON.stringify(db));
+        showToast("Đăng ký thành công!");
         nav('scr-login');
     }
 
@@ -152,8 +151,8 @@
             user = acc;
             document.getElementById('user-coins').innerText = user.coins;
             nav('scr-halls');
-            showToast("Đã kết nối!");
-        } else showToast("Sai thông tin!");
+            showToast("Đã kết nối Robot AI!");
+        } else showToast("Sai tài khoản!");
     }
 
     function runAI() {
@@ -161,28 +160,52 @@
         const p = document.getElementById('p_s').value;
         const b = document.getElementById('b_s').value;
         if(p==='' || b==='') return showToast("Nhập điểm!");
+
         user.coins -= 1;
         document.getElementById('user-coins').innerText = user.coins;
         const out = document.getElementById('ai-res');
         out.innerText = "WAIT...";
+        
         setTimeout(() => {
             let res = (Math.abs(p-b) <= 2) ? (p>=b?"PLAYER":"BANKER") : (p>=b?"BANKER":"PLAYER");
             out.innerText = res;
             out.style.color = (res === "PLAYER") ? "var(--accent)" : "var(--danger)";
+            
+            // Cập nhật lịch sử
+            updateHistory(res, p, b);
+            
+            // Lưu dữ liệu
             const idx = db.findIndex(x => x.u === user.u);
             db[idx] = user;
-            localStorage.setItem('tw_v54', JSON.stringify(db));
-        }, 1000);
+            localStorage.setItem('tw_v56', JSON.stringify(db));
+        }, 800);
+    }
+
+    function updateHistory(res, p, b) {
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        analyzeHistory.unshift({ res, p, b, time });
+        if(analyzeHistory.length > 5) analyzeHistory.pop(); // Giữ 5 ván
+
+        const container = document.getElementById('hist-container');
+        const list = document.getElementById('hist-list');
+        container.style.display = "block";
+        
+        list.innerHTML = analyzeHistory.map(h => `
+            <div class="hist-item">
+                <span>${h.time} (P:${h.p}-B:${h.b})</span>
+                <span class="${h.res === 'PLAYER' ? 'res-p' : 'res-b'}">${h.res}</span>
+            </div>
+        `).join('');
     }
 
     function addMoney() {
-        const code = prompt("GIFTCODE:");
+        const code = prompt("NHẬP GIFTCODE:");
         if(code === "TOOLWIN88") {
             user.coins += 500;
             document.getElementById('user-coins').innerText = user.coins;
             const idx = db.findIndex(x => x.u === user.u);
             db[idx] = user;
-            localStorage.setItem('tw_v54', JSON.stringify(db));
+            localStorage.setItem('tw_v56', JSON.stringify(db));
             showToast("+500 Xu!");
         }
     }
@@ -194,4 +217,5 @@
     }
 </script>
 </body>
-</html>
+                </html>
+        
