@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TOOLWIN AI - CLEAN v53</title>
+    <title>TOOLWIN AI - FULL LOGO v54</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -17,77 +17,64 @@
         .header { padding: 15px; display: none; justify-content: space-between; align-items: center; background: #111; border-bottom: 1px solid #333; }
         .wallet { background: rgba(0, 243, 255, 0.1); border: 1px solid var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 13px; color: var(--accent); cursor: pointer; font-weight: bold; }
 
-        .screen { flex: 1; padding: 25px; display: none; flex-direction: column; overflow-y: auto; }
+        .screen { flex: 1; padding: 20px; display: none; flex-direction: column; overflow-y: auto; }
         .screen.active { display: flex; }
 
-        /* LOGO ROBOT AI */
-        .logo-container { text-align: center; margin-bottom: 30px; margin-top: 30px; }
-        .logo-img { 
-            width: 160px; height: 160px; border-radius: 50%; object-fit: cover;
-            border: 2px solid var(--accent); box-shadow: 0 0 25px var(--accent);
-            animation: pulse 2s infinite;
-        }
+        /* REUSABLE LOGO STYLE */
+        .logo-main { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); box-shadow: 0 0 20px var(--accent); animation: pulse 2s infinite; margin-bottom: 20px; }
+        .logo-small { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 1px solid var(--accent); box-shadow: 0 0 10px var(--accent); margin-bottom: 10px; }
+        
         @keyframes pulse {
             0% { transform: scale(1); box-shadow: 0 0 15px var(--accent); }
-            50% { transform: scale(1.05); box-shadow: 0 0 35px var(--accent); }
+            50% { transform: scale(1.03); box-shadow: 0 0 30px var(--accent); }
             100% { transform: scale(1); box-shadow: 0 0 15px var(--accent); }
         }
 
-        /* INPUTS & BUTTONS */
-        .input-wrap { margin-bottom: 20px; position: relative; }
-        .input-wrap input { width: 100%; padding: 16px 16px 16px 50px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: #fff; outline: none; font-size: 16px; transition: 0.3s; }
-        .input-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
-        .input-wrap i { position: absolute; left: 18px; top: 18px; color: var(--accent); }
-        
-        .btn-glow { width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: 12px; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; text-transform: uppercase; color: #000; letter-spacing: 1px; }
-        .btn-glow:active { transform: scale(0.98); }
+        /* UI COMPONENTS */
+        .input-wrap { margin-bottom: 15px; position: relative; }
+        .input-wrap input { width: 100%; padding: 14px 14px 14px 45px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: #fff; outline: none; }
+        .input-wrap i { position: absolute; left: 15px; top: 16px; color: var(--accent); }
+        .btn-glow { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: 12px; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; color: #000; text-transform: uppercase; }
 
-        /* SẢNH CASINO GRID */
-        .hall-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
-        .hall-item { background: #111; border: 1px solid #222; padding: 25px 10px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .hall-item:hover { border-color: var(--accent); background: #151515; }
-        .hall-item i { font-size: 30px; color: var(--accent); margin-bottom: 10px; display: block; }
-        .hall-item b { font-size: 14px; letter-spacing: 1px; font-family: 'Orbitron'; }
+        /* GRID HALLS */
+        .hall-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .hall-item { background: #111; border: 1px solid #222; padding: 18px 10px; border-radius: 15px; text-align: center; cursor: pointer; }
+        .hall-item i { font-size: 24px; color: var(--accent); margin-bottom: 8px; display: block; }
 
-        /* ANALYZE AREA */
-        .ai-card { background: linear-gradient(180deg, #111, #000); padding: 40px 20px; border-radius: 25px; border: 1px solid #222; text-align: center; margin-bottom: 25px; box-shadow: inset 0 0 20px rgba(0,243,255,0.05); }
-        #ai-res { font-family: 'Orbitron'; font-size: 50px; font-weight: 900; margin: 15px 0; text-shadow: 0 0 15px rgba(255,255,255,0.1); }
-        .score-box { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .score-box input { padding: 15px; background: #111; border: 1px solid #333; color: #fff; text-align: center; border-radius: 12px; font-size: 24px; font-weight: bold; font-family: 'Orbitron'; outline: none; }
+        /* ANALYZE CARD */
+        .ai-card { background: #111; padding: 20px; border-radius: 20px; border: 1px solid #222; text-align: center; margin-bottom: 15px; }
+        #ai-res { font-family: 'Orbitron'; font-size: 38px; font-weight: 900; margin: 10px 0; }
+        .score-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .score-box input { padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; text-align: center; border-radius: 10px; font-size: 20px; font-family: 'Orbitron'; outline: none; }
 
-        .toast { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 12px 25px; border-radius: 30px; font-size: 13px; font-weight: bold; opacity: 0; transition: 0.3s; z-index: 1000; }
-        .toast.show { opacity: 1; bottom: 80px; }
+        .toast { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 10px 20px; border-radius: 25px; font-size: 12px; font-weight: bold; opacity: 0; transition: 0.3s; z-index: 1000; }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
 
 <div class="app-shell">
     <div class="header" id="app-header">
-        <div style="font-family:'Orbitron'; font-weight:900; color:var(--accent); font-size: 18px;">TOOLWIN <span style="color:#fff">AI</span></div>
-        <div class="wallet" onclick="addMoney()"><i class="fa-solid fa-database"></i> <span id="user-coins">0</span> Xu</div>
+        <div style="font-family:'Orbitron'; font-weight:900; color:var(--accent);">TOOLWIN AI</div>
+        <div class="wallet" onclick="addMoney()"><i class="fa-solid fa-coins"></i> <span id="user-coins">0</span> Xu</div>
     </div>
 
     <div id="scr-login" class="screen active">
-        <div class="logo-container">
-            <img src="https://i.postimg.cc/PJGn7RLM/07fa38d5-8765-4e59-bb8e-58f89f5e4db4-jpg.jpg" class="logo-img" alt="AI Robot">
+        <div style="text-align: center; margin-top: 30px;">
+            <img src="https://i.postimg.cc/PJGn7RLM/07fa38d5-8765-4e59-bb8e-58f89f5e4db4-jpg.jpg" class="logo-main">
+            <h2 style="font-family:'Orbitron'; margin-bottom:30px;">LOGIN</h2>
         </div>
-        <h2 style="text-align:center; font-family:'Orbitron'; margin-bottom:35px; letter-spacing: 2px;">LOGIN ACCESS</h2>
         <div class="input-wrap"><i class="fa-solid fa-user"></i><input type="text" id="l-u" placeholder="Tên tài khoản"></div>
         <div class="input-wrap"><i class="fa-solid fa-lock"></i><input type="password" id="l-p" placeholder="Mật khẩu"></div>
-        <button class="btn-glow" onclick="doLogin()">KẾT NỐI SERVER</button>
-        <p style="text-align:center; font-size:14px; color:#555; margin-top:25px;" onclick="nav('scr-reg')">Chưa có tài khoản? <span style="color:var(--accent); text-decoration: underline;">Đăng ký ngay</span></p>
-    </div>
-
-    <div id="scr-reg" class="screen">
-        <h2 style="text-align:center; font-family:'Orbitron'; margin-top:50px; color:var(--danger); letter-spacing: 2px;">NEW ACCOUNT</h2>
-        <div class="input-wrap"><i class="fa-solid fa-user-plus"></i><input type="text" id="r-u" placeholder="Tên đăng nhập mới"></div>
-        <div class="input-wrap"><i class="fa-solid fa-key"></i><input type="password" id="r-p" placeholder="Mật khẩu bảo mật"></div>
-        <button class="btn-glow" style="background:var(--danger); color:#fff;" onclick="doRegister()">XÁC NHẬN ĐĂNG KÝ</button>
-        <p style="text-align:center; font-size:14px; color:#555; margin-top:25px;" onclick="nav('scr-login')">Đã có tài khoản? <span style="color:var(--danger); text-decoration: underline;">Quay lại</span></p>
+        <button class="btn-glow" onclick="doLogin()">KẾT NỐI</button>
+        <p style="text-align:center; font-size:14px; color:#555; margin-top:20px;" onclick="nav('scr-reg')">Đăng ký tài khoản mới</p>
     </div>
 
     <div id="scr-halls" class="screen">
-        <h3 style="color:var(--accent); margin-bottom:20px; font-family:'Orbitron';">CHỌN SẢNH CASINO</h3>
+        <div style="text-align: center;">
+            <img src="https://i.postimg.cc/pT3PHdSB/ai-robot-3-10650714-jpg-w700wp.webp" class="logo-small">
+            <h4 style="margin: 0 0 15px 0; color: var(--accent); font-family: 'Orbitron'; letter-spacing: 2px;">CASINO HUB</h4>
+        </div>
         <div class="hall-grid">
             <div class="hall-item" onclick="nav('scr-game','SEXY')"><i class="fa-solid fa-venus"></i><b>SEXY</b></div>
             <div class="hall-item" onclick="nav('scr-game','DG')"><i class="fa-solid fa-shield-cat"></i><b>DG</b></div>
@@ -96,40 +83,47 @@
             <div class="hall-item" onclick="nav('scr-game','WM')"><i class="fa-solid fa-dice"></i><b>WM</b></div>
             <div class="hall-item" onclick="nav('scr-game','EVO')"><i class="fa-solid fa-bolt"></i><b>EVO</b></div>
             <div class="hall-item" onclick="nav('scr-game','MT')"><i class="fa-solid fa-microchip"></i><b>MT</b></div>
-            <div class="hall-item" onclick="nav('scr-game','CASINO')"><i class="fa-solid fa-building-columns"></i><b>CASINO</b></div>
+            <div class="hall-item" onclick="nav('scr-game','CASINO')"><i class="fa-solid fa-building-columns"></i><b>TOTAL</b></div>
         </div>
     </div>
 
     <div id="scr-game" class="screen">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <i class="fa-solid fa-chevron-left" onclick="nav('scr-halls')" style="cursor:pointer; font-size: 20px; color: var(--accent);"></i>
-            <b id="hall-title" style="color:var(--accent); font-family:'Orbitron'; font-size: 18px;">SEXY BCR</b>
-            <span style="font-size: 10px; color: #00ff00;"><i class="fa-solid fa-circle"></i> LIVE</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <i class="fa-solid fa-arrow-left" onclick="nav('scr-halls')"></i>
+            <b id="hall-title" style="color:var(--accent); font-family:'Orbitron';">GAME BCR</b>
+            <span></span>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 15px;">
+            <img src="https://i.postimg.cc/xjwtkbNs/b5a37f8d-8744-4c64-bea4-27e7978d11e9-jpg.jpg" style="width: 80px; height: 80px; border-radius: 50%; border: 1px solid var(--accent); box-shadow: 0 0 10px var(--accent);">
         </div>
 
         <div class="ai-card">
-            <div style="font-size:12px; color:#555; letter-spacing: 3px; margin-bottom: 10px;">AI PREDICTION</div>
+            <div style="font-size:11px; color:#555;">AI DỰ ĐOÁN</div>
             <div id="ai-res" style="color:#222;">READY</div>
-            <div style="font-size:13px; color:var(--gold); font-weight:bold; margin-top: 10px;">TỈ LỆ CHÍNH XÁC: 98.8%</div>
+            <div style="font-size:12px; color:var(--gold);">CHÍNH XÁC: 98%</div>
         </div>
 
-        <div style="text-align: center; font-size: 12px; color: #666; margin-bottom: 10px;">NHẬP ĐIỂM VÁN TRƯỚC</div>
         <div class="score-box">
             <input type="number" id="p_s" placeholder="P">
             <input type="number" id="b_s" placeholder="B">
         </div>
-        <button class="btn-glow" onclick="runAI()">BẮT ĐẦU PHÂN TÍCH ( -1 XU )</button>
-        
-        <div style="margin-top: auto; text-align: center; color: #333; font-size: 11px;">
-            Hệ thống phân tích dựa trên thuật toán xác suất thời gian thực.
-        </div>
+        <button class="btn-glow" onclick="runAI()">PHÂN TÍCH (-1 XU)</button>
+    </div>
+
+    <div id="scr-reg" class="screen">
+        <h2 style="text-align:center; font-family:'Orbitron'; color:var(--danger);">REGISTER</h2>
+        <div class="input-wrap"><i class="fa-solid fa-user-plus"></i><input type="text" id="r-u" placeholder="Tên đăng nhập"></div>
+        <div class="input-wrap"><i class="fa-solid fa-key"></i><input type="password" id="r-p" placeholder="Mật khẩu"></div>
+        <button class="btn-glow" style="background:var(--danger); color:#fff;" onclick="doRegister()">ĐĂNG KÝ</button>
+        <p style="text-align:center; font-size:14px; color:#555; margin-top:20px;" onclick="nav('scr-login')">Quay lại</p>
     </div>
 
     <div id="toast" class="toast"></div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('tw_db_v53')) || [];
+    let db = JSON.parse(localStorage.getItem('tw_v54')) || [];
     let user = null;
 
     function nav(id, title) {
@@ -142,11 +136,11 @@
     function doRegister() {
         const u = document.getElementById('r-u').value.trim();
         const p = document.getElementById('r-p').value;
-        if(u.length < 3) return showToast("Tên tài khoản tối thiểu 3 ký tự!");
-        if(db.find(x => x.u === u)) return showToast("Tài khoản đã tồn tại!");
+        if(u.length < 3) return showToast("Tên quá ngắn!");
+        if(db.find(x => x.u === u)) return showToast("Đã tồn tại!");
         db.push({ u: u, p: p, coins: 20 });
-        localStorage.setItem('tw_db_v53', JSON.stringify(db));
-        showToast("Đăng ký thành công! Nhận 20 Xu miễn phí.");
+        localStorage.setItem('tw_v54', JSON.stringify(db));
+        showToast("Đăng ký xong! +20 Xu");
         nav('scr-login');
     }
 
@@ -158,60 +152,46 @@
             user = acc;
             document.getElementById('user-coins').innerText = user.coins;
             nav('scr-halls');
-            showToast("Kết nối server thành công!");
-        } else {
-            showToast("Sai tài khoản hoặc mật khẩu!");
-        }
+            showToast("Đã kết nối!");
+        } else showToast("Sai thông tin!");
     }
 
     function runAI() {
-        if(user.coins < 1) return showToast("Tài khoản không đủ xu!");
+        if(user.coins < 1) return showToast("Hết xu!");
         const p = document.getElementById('p_s').value;
         const b = document.getElementById('b_s').value;
-        if(p === '' || b === '') return showToast("Vui lòng nhập điểm!");
-        
+        if(p==='' || b==='') return showToast("Nhập điểm!");
         user.coins -= 1;
         document.getElementById('user-coins').innerText = user.coins;
         const out = document.getElementById('ai-res');
-        out.innerText = "SCANNING...";
-        out.style.color = "#444";
-        
+        out.innerText = "WAIT...";
         setTimeout(() => {
-            const gap = Math.abs(p - b);
-            let res = (gap <= 2) ? (p >= b ? "PLAYER" : "BANKER") : (p >= b ? "BANKER" : "PLAYER");
+            let res = (Math.abs(p-b) <= 2) ? (p>=b?"PLAYER":"BANKER") : (p>=b?"BANKER":"PLAYER");
             out.innerText = res;
             out.style.color = (res === "PLAYER") ? "var(--accent)" : "var(--danger)";
-            saveUser();
-            showToast("Phân tích hoàn tất!");
-            document.getElementById('p_s').value = "";
-            document.getElementById('b_s').value = "";
-        }, 1200);
+            const idx = db.findIndex(x => x.u === user.u);
+            db[idx] = user;
+            localStorage.setItem('tw_v54', JSON.stringify(db));
+        }, 1000);
     }
 
     function addMoney() {
-        const code = prompt("NHẬP MÃ GIFTCODE ĐỂ NẠP XU:");
+        const code = prompt("GIFTCODE:");
         if(code === "TOOLWIN88") {
             user.coins += 500;
             document.getElementById('user-coins').innerText = user.coins;
-            saveUser();
-            showToast("Nạp +500 Xu thành công!");
-        } else if (code !== null) {
-            showToast("Mã code không hợp lệ!");
+            const idx = db.findIndex(x => x.u === user.u);
+            db[idx] = user;
+            localStorage.setItem('tw_v54', JSON.stringify(db));
+            showToast("+500 Xu!");
         }
-    }
-
-    function saveUser() {
-        const idx = db.findIndex(x => x.u === user.u);
-        db[idx] = user;
-        localStorage.setItem('tw_db_v53', JSON.stringify(db));
     }
 
     function showToast(m) {
         const t = document.getElementById('toast');
         t.innerText = m; t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2500);
+        setTimeout(() => t.classList.remove('show'), 2000);
     }
 </script>
 </body>
-    </html>
-    
+</html>
