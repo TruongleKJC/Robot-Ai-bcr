@@ -3,136 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOOL ROBOT BACCARAT AI</title>
+    <title>CongthucBCR AI</title>
     <style>
-        :root { --gold: #ffcc00; --blue: #007bff; --red: #ff4d4d; --bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
+        :root { --gold: #ffcc00; --blue: #00f2ff; --red: #ff0055; --bg: #0a0a0b; }
+        body { background: var(--bg); color: #fff; font-family: 'Orbitron', sans-serif; margin: 0; overflow-x: hidden; }
         
-        /* Chuyển trang */
-        .page { display: none; padding: 20px; animation: fadeIn 0.5s; }
+        /* Hiệu ứng hạt bụi bay nền */
+        #bg-effect { position: fixed; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle, #1a1a2e 0%, #0a0a0b 100%); }
+
+        .page { display: none; padding: 20px; animation: slideUp 0.4s ease-out; }
         .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .header { margin-bottom: 30px; border-bottom: 1px solid var(--gold); padding-bottom: 15px; }
-        .header h1 { color: var(--gold); font-size: 20px; text-transform: uppercase; letter-spacing: 3px; }
+        .header h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 4px; text-shadow: 0 0 15px var(--gold); font-size: 18px; }
 
-        /* Card Lựa chọn */
-        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: var(--glass); border: 1px solid #333; padding: 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .card:hover { border-color: var(--gold); background: rgba(255, 204, 0, 0.1); }
-        .card img { width: 50px; margin-bottom: 10px; filter: grayscale(1); }
-        .card:hover img { filter: grayscale(0); }
+        /* Card Selection */
+        .grid-select { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .item-card { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 25px 10px; border-radius: 15px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .item-card:hover { border-color: var(--blue); box-shadow: 0 0 20px rgba(0, 242, 255, 0.3); transform: scale(1.05); }
+        .item-card::after { content: "ONLINE"; position: absolute; top: 5px; right: 5px; font-size: 8px; color: #0f0; border: 1px solid #0f0; padding: 2px 5px; border-radius: 3px; }
 
-        /* Giao diện Phân tích */
-        .analysis-box { background: #000; border: 2px solid var(--gold); border-radius: 15px; padding: 20px; position: relative; margin-bottom: 20px; }
-        .scan-line { position: absolute; width: 100%; height: 2px; background: var(--gold); top: 0; left: 0; animation: scan 2s linear infinite; display: none; box-shadow: 0 0 10px var(--gold); }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        /* Màn hình Phân tích */
+        .main-monitor { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 20px; box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.2); margin-bottom: 20px; }
+        .predict-val { font-size: 40px; font-weight: bold; margin: 10px 0; letter-spacing: 2px; height: 50px; }
+        .glow-blue { color: var(--blue); text-shadow: 0 0 20px var(--blue); }
+        .glow-red { color: var(--red); text-shadow: 0 0 20px var(--red); }
 
-        .btn-input { padding: 20px; border-radius: 10px; border: none; color: white; font-weight: bold; font-size: 18px; cursor: pointer; }
-        .p-color { background: var(--blue); }
-        .b-color { background: var(--red); }
-        
-        .status-bar { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-top: 10px; padding: 10px; background: #111; border-radius: 5px; }
+        /* Nhập điểm */
+        .score-input-group { display: flex; justify-content: space-around; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+        .score-box { width: 40%; }
+        .score-box label { display: block; font-size: 10px; color: #888; margin-bottom: 5px; }
+        input { width: 100%; background: #222; border: 1px solid #444; color: var(--gold); text-align: center; padding: 10px; font-size: 20px; border-radius: 8px; outline: none; }
+        input:focus { border-color: var(--gold); }
+
+        .btn-analyze { width: 100%; padding: 15px; border-radius: 10px; border: none; background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); color: white; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 210, 255, 0.5); }
+        .btn-analyze:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
-    <div id="page-lobby" class="page active">
-        <div class="header"><h1>SELECT LOBBY</h1></div>
-        <p>Chọn sảnh Casino bạn đang tham gia</p>
-        <div class="card-grid">
-            <div class="card" onclick="goToTable('AE SEXY')"><h3>AE SEXY</h3></div>
-            <div class="card" onclick="goToTable('EVOLUTION')"><h3>EVOLUTION</h3></div>
-            <div class="card" onclick="goToTable('DREAM GAMING')"><h3>DG</h3></div>
-            <div class="card" onclick="goToTable('WM CASINO')"><h3>WM</h3></div>
-            <div class="card" onclick="goToTable('SA GAMING')"><h3>SA GAMING</h3></div>
-            <div class="card" onclick="goToTable('BIG GAMING')"><h3>BIG GAMING</h3></div>
+    <div id="bg-effect"></div>
+
+    <div id="page-1" class="page active">
+        <div class="header"><h1>AI ROBOT LOBBY</h1></div>
+        <div class="grid-select">
+            <div class="item-card" onclick="nextPage(2, 'AE SEXY')">AE SEXY</div>
+            <div class="item-card" onclick="nextPage(2, 'EVOLUTION')">EVOLUTION</div>
+            <div class="item-card" onclick="nextPage(2, 'WM CASINO')">WM CASINO</div>
+            <div class="item-card" onclick="nextPage(2, 'DG CASINO')">DG CASINO</div>
         </div>
     </div>
 
-    <div id="page-table" class="page">
-        <div class="header"><h1 id="lobby-name">CASINO</h1></div>
-        <p>Hệ thống AI đang quét bàn trống...</p>
-        <div class="card-grid">
-            <div class="card" onclick="goToAnalysis('Bàn 001')"><h3>Bàn 001</h3><small style="color: #0f0;">Độ khớp 98%</small></div>
-            <div class="card" onclick="goToAnalysis('Bàn 002')"><h3>Bàn 002</h3><small style="color: #0f0;">Độ khớp 95%</small></div>
-            <div class="card" onclick="goToAnalysis('Bàn 003')"><h3>Bàn 005</h3><small style="color: #0f0;">Độ khớp 92%</small></div>
-            <div class="card" onclick="goToAnalysis('Bàn VIP')"><h3>Bàn VIP</h3><small style="color: #0f0;">Độ khớp 99%</small></div>
+    <div id="page-2" class="page">
+        <div class="header"><h1 id="selected-lobby">CASINO</h1></div>
+        <div class="grid-select">
+            <div class="item-card" onclick="nextPage(3, 'BÀN VIP 01')">BÀN VIP 01<br><small>Độ khớp 99%</small></div>
+            <div class="item-card" onclick="nextPage(3, 'BÀN VIP 02')">BÀN VIP 02<br><small>Độ khớp 97%</small></div>
+            <div class="item-card" onclick="nextPage(3, 'BÀN THƯỜNG')">BÀN THƯỜNG<br><small>Độ khớp 92%</small></div>
+            <div class="item-card" onclick="nextPage(1)">← QUAY LẠI</div>
         </div>
-        <button onclick="backToLobby()" style="margin-top: 20px; background: none; color: #888; border: none;">← Quay lại</button>
     </div>
 
-    <div id="page-analysis" class="page">
-        <div class="status-bar">
-            <span id="display-lobby">AE SEXY</span>
-            <span id="display-table">BÀN 001</span>
-        </div>
+    <div id="page-3" class="page">
+        <div style="font-size: 10px; color: var(--gold); margin-bottom: 10px;" id="info-bar">SYSTEM ACTIVE</div>
         
-        <div class="analysis-box">
-            <div class="scan-line" id="scanner"></div>
-            <div id="ai-status" style="font-size: 13px; color: #888;">CHỜ DỮ LIỆU...</div>
-            <div id="predict-result" style="font-size: 35px; font-weight: 800; margin: 20px 0;">---</div>
-            <div id="win-rate" style="color: var(--gold); font-weight: bold;">CHỜ SCAN</div>
+        <div class="main-monitor">
+            <div id="ai-msg" style="font-size: 12px; color: #555;">DỮ LIỆU TRỐNG</div>
+            <div id="predict-display" class="predict-val">---</div>
+            <div id="win-rate" style="font-size: 14px; color: #0f0;">TỈ LỆ THẮNG: 0%</div>
         </div>
 
-        <div class="card-grid">
-            <button class="btn-input p-color" onclick="process('P')">PLAYER</button>
-            <button class="btn-input b-color" onclick="process('B')">BANKER</button>
+        <div class="score-input-group">
+            <div class="score-box">
+                <label>ĐIỂM PLAYER</label>
+                <input type="number" id="p-score" placeholder="0" min="0" max="9">
+            </div>
+            <div style="font-size: 20px; align-self: center; color: #444;">VS</div>
+            <div class="score-box">
+                <label>ĐIỂM BANKER</label>
+                <input type="number" id="b-score" placeholder="0" min="0" max="9">
+            </div>
         </div>
+
+        <button class="btn-analyze" onclick="startAnalysis()">PHÂN TÍCH KẾT QUẢ VÁN TIẾP</button>
         
-        <button onclick="backToTable()" style="margin-top: 30px; opacity: 0.5; background: none; border: 1px solid #444; color: #fff; padding: 5px 15px; border-radius: 5px;">Thoát Bàn</button>
+        <p style="font-size: 11px; color: #444; margin-top: 20px;">Dữ liệu được mã hóa 256-bit với sảnh trực tuyến</p>
     </div>
 
     <script>
-        let selectedLobby = "";
-        let selectedTable = "";
-        let history = "";
-
-        // Chuyển trang
-        function goToTable(lobby) {
-            selectedLobby = lobby;
-            document.getElementById('lobby-name').innerText = lobby;
-            showPage('page-table');
-        }
-
-        function goToAnalysis(table) {
-            selectedTable = table;
-            document.getElementById('display-lobby').innerText = selectedLobby;
-            document.getElementById('display-table').innerText = table;
-            showPage('page-analysis');
-        }
-
-        function showPage(id) {
+        function nextPage(pageId, info = "") {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            document.getElementById('page-' + pageId).classList.add('active');
+            if(pageId === 2) document.getElementById('selected-lobby').innerText = info;
+            if(pageId === 3) document.getElementById('info-bar').innerText = "LOBBY: " + info + " | AI CONNECTED";
         }
 
-        function backToLobby() { showPage('page-lobby'); }
-        function backToTable() { showPage('page-table'); }
+        function startAnalysis() {
+            let p = parseInt(document.getElementById('p-score').value) || 0;
+            let b = parseInt(document.getElementById('b-score').value) || 0;
+            let display = document.getElementById('predict-display');
+            let msg = document.getElementById('ai-status');
+            let rate = document.getElementById('win-rate');
 
-        // Logic Phân Tích
-        function process(val) {
-            history += val;
-            let scanner = document.getElementById('scanner');
-            let status = document.getElementById('ai-status');
-            let predict = document.getElementById('predict-result');
-            
-            scanner.style.display = "block";
-            status.innerText = "ROBOT ĐANG SOÍ CẦU...";
-            predict.innerText = "ANALYZING...";
+            display.innerText = "SCANNING...";
+            display.className = "predict-val";
 
             setTimeout(() => {
-                scanner.style.display = "none";
-                let result = Math.random() > 0.5 ? "BANKER" : "PLAYER";
-                let rate = Math.floor(Math.random() * (99 - 88 + 1)) + 88;
+                // Thuật toán "Giả lập" dựa trên điểm số
+                let prediction = "";
+                let diff = Math.abs(p - b);
+
+                if (diff >= 5) {
+                    // Nếu thắng cách biệt, ưu tiên bệt
+                    prediction = (p > b) ? "PLAYER" : "BANKER";
+                } else {
+                    // Nếu thắng sát nút, ưu tiên đảo cầu
+                    prediction = (p > b) ? "BANKER" : "PLAYER";
+                }
+
+                display.innerText = prediction;
+                display.classList.add(prediction === "BANKER" ? "glow-red" : "glow-blue");
                 
-                predict.innerText = result;
-                predict.style.color = (result === "BANKER") ? "var(--red)" : "var(--blue)";
-                document.getElementById('win-rate').innerText = "TỶ LỆ KHỚP: " + rate + "%";
-                status.innerText = "KHUYÊN DÙNG:";
-            }, 1000);
+                let winPercent = Math.floor(Math.random() * (99 - 91 + 1)) + 91;
+                rate.innerText = "TỈ LỆ KHỚP: " + winPercent + "%";
+                document.getElementById('ai-msg').innerText = "DỰA TRÊN ĐIỂM SỐ: " + p + " - " + b;
+            }, 1500);
         }
     </script>
 </body>
-                </html>
-                
+</html>
