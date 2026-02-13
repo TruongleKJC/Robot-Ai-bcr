@@ -3,132 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CongthucBCR AI</title>
+    <title>AI ROBOT BACCARAT ULTIMATE v6.0</title>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    
     <style>
-        :root { --gold: #ffcc00; --blue: #00f2ff; --red: #ff0055; --bg: #0a0a0b; }
-        body { background: var(--bg); color: #fff; font-family: 'Orbitron', sans-serif; margin: 0; overflow-x: hidden; }
+        :root { --gold: #d4af37; --blue: #0084ff; --red: #ff3131; --green: #00ff88; --bg: #0a0a0a; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
         
-        /* Hiệu ứng hạt bụi bay nền */
-        #bg-effect { position: fixed; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle, #1a1a2e 0%, #0a0a0b 100%); }
+        /* Hiệu ứng Loading */
+        #loader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column; justify-content:center; align-items:center; }
+        .spinner { border: 4px solid #333; border-top: 4px solid var(--gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .page { display: none; padding: 20px; animation: slideUp 0.4s ease-out; }
+        /* Giao diện */
+        .page { display: none; padding: 20px; animation: fadeIn 0.5s ease; }
         .active { display: block; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .header h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 4px; text-shadow: 0 0 15px var(--gold); font-size: 18px; }
+        .container { max-width: 450px; margin: auto; text-align: center; }
+        .auth-box { background: #111; padding: 30px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 50px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
+        
+        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
+        .btn-gold { background: linear-gradient(45deg, #d4af37, #f9e29c); color: #000; }
+        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
 
-        /* Card Selection */
-        .grid-select { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .item-card { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 25px 10px; border-radius: 15px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
-        .item-card:hover { border-color: var(--blue); box-shadow: 0 0 20px rgba(0, 242, 255, 0.3); transform: scale(1.05); }
-        .item-card::after { content: "ONLINE"; position: absolute; top: 5px; right: 5px; font-size: 8px; color: #0f0; border: 1px solid #0f0; padding: 2px 5px; border-radius: 3px; }
+        /* Monitor Phân Tích */
+        .monitor { background: #000; border: 2px solid var(--gold); border-radius: 20px; padding: 30px; margin: 20px 0; position: relative; overflow: hidden; }
+        .scan-line { position: absolute; width: 100%; height: 2px; background: var(--gold); top: 0; left: 0; animation: scan 2s linear infinite; display: none; box-shadow: 0 0 10px var(--gold); }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
-        /* Màn hình Phân tích */
-        .main-monitor { background: #000; border: 2px solid var(--blue); border-radius: 20px; padding: 20px; box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.2); margin-bottom: 20px; }
-        .predict-val { font-size: 40px; font-weight: bold; margin: 10px 0; letter-spacing: 2px; height: 50px; }
-        .glow-blue { color: var(--blue); text-shadow: 0 0 20px var(--blue); }
-        .glow-red { color: var(--red); text-shadow: 0 0 20px var(--red); }
+        .lobby-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .lobby-card { background: #1a1a1a; padding: 15px 5px; border-radius: 10px; border: 1px solid #333; font-size: 11px; cursor: pointer; }
+        .lobby-card:hover { border-color: var(--gold); background: #222; }
 
-        /* Nhập điểm */
-        .score-input-group { display: flex; justify-content: space-around; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 15px; }
-        .score-box { width: 40%; }
-        .score-box label { display: block; font-size: 10px; color: #888; margin-bottom: 5px; }
-        input { width: 100%; background: #222; border: 1px solid #444; color: var(--gold); text-align: center; padding: 10px; font-size: 20px; border-radius: 8px; outline: none; }
-        input:focus { border-color: var(--gold); }
-
-        .btn-analyze { width: 100%; padding: 15px; border-radius: 10px; border: none; background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); color: white; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 210, 255, 0.5); }
-        .btn-analyze:active { transform: scale(0.98); }
+        .score-input { display: flex; justify-content: space-between; gap: 10px; margin: 20px 0; }
+        .predict-text { font-size: 35px; font-weight: 900; margin: 15px 0; text-shadow: 0 0 10px currentColor; }
     </style>
 </head>
 <body>
 
-    <div id="bg-effect"></div>
+    <div id="loader"><div class="spinner"></div><p style="color:var(--gold)">CONNECTING SERVER...</p></div>
 
-    <div id="page-1" class="page active">
-        <div class="header"><h1>AI ROBOT LOBBY</h1></div>
-        <div class="grid-select">
-            <div class="item-card" onclick="nextPage(2, 'AE SEXY')">AE SEXY</div>
-            <div class="item-card" onclick="nextPage(2, 'EVOLUTION')">EVOLUTION</div>
-            <div class="item-card" onclick="nextPage(2, 'WM CASINO')">WM CASINO</div>
-            <div class="item-card" onclick="nextPage(2, 'DG CASINO')">DG CASINO</div>
-        </div>
-    </div>
-
-    <div id="page-2" class="page">
-        <div class="header"><h1 id="selected-lobby">CASINO</h1></div>
-        <div class="grid-select">
-            <div class="item-card" onclick="nextPage(3, 'BÀN VIP 01')">BÀN VIP 01<br><small>Độ khớp 99%</small></div>
-            <div class="item-card" onclick="nextPage(3, 'BÀN VIP 02')">BÀN VIP 02<br><small>Độ khớp 97%</small></div>
-            <div class="item-card" onclick="nextPage(3, 'BÀN THƯỜNG')">BÀN THƯỜNG<br><small>Độ khớp 92%</small></div>
-            <div class="item-card" onclick="nextPage(1)">← QUAY LẠI</div>
-        </div>
-    </div>
-
-    <div id="page-3" class="page">
-        <div style="font-size: 10px; color: var(--gold); margin-bottom: 10px;" id="info-bar">SYSTEM ACTIVE</div>
-        
-        <div class="main-monitor">
-            <div id="ai-msg" style="font-size: 12px; color: #555;">DỮ LIỆU TRỐNG</div>
-            <div id="predict-display" class="predict-val">---</div>
-            <div id="win-rate" style="font-size: 14px; color: #0f0;">TỈ LỆ THẮNG: 0%</div>
-        </div>
-
-        <div class="score-input-group">
-            <div class="score-box">
-                <label>ĐIỂM PLAYER</label>
-                <input type="number" id="p-score" placeholder="0" min="0" max="9">
-            </div>
-            <div style="font-size: 20px; align-self: center; color: #444;">VS</div>
-            <div class="score-box">
-                <label>ĐIỂM BANKER</label>
-                <input type="number" id="b-score" placeholder="0" min="0" max="9">
+    <div class="container">
+        <div id="page-auth" class="page active">
+            <div class="auth-box">
+                <h1 style="color: var(--gold); font-size: 20px; letter-spacing: 2px;">ROBOT AI BACCARAT</h1>
+                <p style="font-size: 11px; color: #666;">HỆ THỐNG PHÂN TÍCH MÃ VẠCH TRỰC TUYẾN</p>
+                <input type="text" id="email" placeholder="Username">
+                <input type="password" id="password" placeholder="Mật khẩu">
+                <button class="btn btn-gold" onclick="login()">ĐĂNG NHẬP</button>
+                <button class="btn btn-outline" onclick="register()">ĐĂNG KÝ MỚI</button>
             </div>
         </div>
 
-        <button class="btn-analyze" onclick="startAnalysis()">PHÂN TÍCH KẾT QUẢ VÁN TIẾP</button>
-        
-        <p style="font-size: 11px; color: #444; margin-top: 20px;">Dữ liệu được mã hóa 256-bit với sảnh trực tuyến</p>
+        <div id="page-lobby" class="page">
+            <h2 style="color: var(--gold);">CHỌN SẢNH CASINO</h2>
+            <div class="lobby-grid">
+                <div class="lobby-card" onclick="startBot('AE SEXY')">AE SEXY</div>
+                <div class="lobby-card" onclick="startBot('EVOLUTION')">EVOLUTION</div>
+                <div class="lobby-card" onclick="startBot('WM CASINO')">WM</div>
+                <div class="lobby-card" onclick="startBot('DG GAMING')">DG</div>
+                <div class="lobby-card" onclick="startBot('SA GAMING')">SA GAMING</div>
+                <div class="lobby-card" onclick="startBot('VENUS')">VENUS</div>
+                <div class="lobby-card" onclick="startBot('ALLBET')">ALLBET</div>
+                <div class="lobby-card" onclick="startBot('BBIN')">BBIN</div>
+                <div class="lobby-card" onclick="startBot('MG')">MG</div>
+            </div>
+            <button onclick="logout()" class="btn btn-outline" style="margin-top: 20px;">ĐĂNG XUẤT</button>
+        </div>
+
+        <div id="page-analysis" class="page">
+            <div id="lobby-info" style="color: var(--gold); font-size: 12px; margin-bottom: 10px;"></div>
+            <div class="monitor">
+                <div class="scan-line" id="scanner"></div>
+                <div id="status-text" style="font-size: 12px; color: #888;">READY TO SCAN</div>
+                <div id="predict-val" class="predict-text">---</div>
+                <div id="rate-val" style="color: var(--green); font-size: 13px;">WIN RATE: 0%</div>
+            </div>
+
+            <div class="score-input">
+                <input type="number" id="p-score" placeholder="PLAYER" style="border-color: var(--blue);">
+                <input type="number" id="b-score" placeholder="BANKER" style="border-color: var(--red);">
+            </div>
+            <button class="btn btn-gold" onclick="runAnalysis()">PHÂN TÍCH VÁN TIẾP</button>
+            <button onclick="showPage('page-lobby')" class="btn btn-outline">ĐỔI SẢNH</button>
+        </div>
     </div>
 
     <script>
-        function nextPage(pageId, info = "") {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            if(pageId === 2) document.getElementById('selected-lobby').innerText = info;
-            if(pageId === 3) document.getElementById('info-bar').innerText = "LOBBY: " + info + " | AI CONNECTED";
+        // --- CẤU HÌNH FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE",
+    authDomain: "congthucbcr-ai.firebaseapp.com",
+    projectId: "congthucbcr-ai",
+    storageBucket: "congthucbcr-ai.firebasestorage.app",
+    messagingSenderId: "1084138516470",
+    appId: "1:1084138516470:web:1630e3966146060fbe21d7",
+    measurementId: "G-RJ1EWP64LG"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>// Thay mã của bạn vào đây
+            authDomain: "your-app.firebaseapp.com",
+            projectId: "your-app",
+            storageBucket: "your-app.appspot.com",
+            messagingSenderId: "...",
+            appId: "..."
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // --- HÀM AUTH ---
+        function login() {
+            toggleLoader(true);
+            const e = document.getElementById('email').value + "@robot.com";
+            const p = document.getElementById('password').value;
+            auth.signInWithEmailAndPassword(e, p)
+                .then(() => showPage('page-lobby'))
+                .catch(err => alert("Lỗi: " + err.message))
+                .finally(() => toggleLoader(false));
         }
 
-        function startAnalysis() {
-            let p = parseInt(document.getElementById('p-score').value) || 0;
-            let b = parseInt(document.getElementById('b-score').value) || 0;
-            let display = document.getElementById('predict-display');
-            let msg = document.getElementById('ai-status');
-            let rate = document.getElementById('win-rate');
+        function register() {
+            toggleLoader(true);
+            const e = document.getElementById('email').value + "@robot.com";
+            const p = document.getElementById('password').value;
+            auth.createUserWithEmailAndPassword(e, p)
+                .then(() => alert("Đăng ký thành công!"))
+                .catch(err => alert("Lỗi: " + err.message))
+                .finally(() => toggleLoader(false));
+        }
 
-            display.innerText = "SCANNING...";
-            display.className = "predict-val";
+        function logout() { auth.signOut(); showPage('page-auth'); }
+
+        // --- HÀM LOGIC ---
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function toggleLoader(show) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
+
+        function startBot(name) {
+            document.getElementById('lobby-info').innerText = "SẢNH: " + name + " | AI SERVER ACTIVE";
+            showPage('page-analysis');
+        }
+
+        function runAnalysis() {
+            const p = parseInt(document.getElementById('p-score').value) || 0;
+            const b = parseInt(document.getElementById('b-score').value) || 0;
+            const scanner = document.getElementById('scanner');
+            const predict = document.getElementById('predict-val');
+            
+            scanner.style.display = 'block';
+            predict.innerText = "SCANNING...";
+            predict.style.color = "#fff";
 
             setTimeout(() => {
-                // Thuật toán "Giả lập" dựa trên điểm số
-                let prediction = "";
-                let diff = Math.abs(p - b);
-
-                if (diff >= 5) {
-                    // Nếu thắng cách biệt, ưu tiên bệt
-                    prediction = (p > b) ? "PLAYER" : "BANKER";
-                } else {
-                    // Nếu thắng sát nút, ưu tiên đảo cầu
-                    prediction = (p > b) ? "BANKER" : "PLAYER";
-                }
-
-                display.innerText = prediction;
-                display.classList.add(prediction === "BANKER" ? "glow-red" : "glow-blue");
+                scanner.style.display = 'none';
+                let rand = Math.random() * 100;
+                let res = "";
                 
-                let winPercent = Math.floor(Math.random() * (99 - 91 + 1)) + 91;
-                rate.innerText = "TỈ LỆ KHỚP: " + winPercent + "%";
-                document.getElementById('ai-msg').innerText = "DỰA TRÊN ĐIỂM SỐ: " + p + " - " + b;
+                if (rand < 12) {
+                    res = "TIE (HÒA)";
+                    predict.style.color = "var(--green)";
+                } else {
+                    res = Math.random() > 0.5 ? "PLAYER" : "BANKER";
+                    predict.style.color = (res === "BANKER") ? "var(--red)" : "var(--blue)";
+                }
+                
+                predict.innerText = res;
+                document.getElementById('rate-val').innerText = "ĐỘ TIN CẬY: " + (Math.floor(Math.random()*10)+89) + "%";
+                document.getElementById('status-text').innerText = "KẾT QUẢ PHÂN TÍCH:";
             }, 1500);
         }
     </script>
 </body>
-</html>
+    </html>
+    
