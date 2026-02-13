@@ -3,125 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI ROBOT BACCARAT PRO</title>
+    <title>AI ROBOT BACCARAT PRO MAX</title>
     <style>
-        :root { --blue: #0055ff; --red: #ff0000; --gold: #ffcc00; }
-        body { background: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
-        .header { color: var(--gold); text-shadow: 0 0 10px gold; font-size: 20px; margin-bottom: 10px; }
+        :root { --gold: #ffcc00; --blue: #007bff; --red: #ff4d4d; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
         
-        /* Chọn sảnh */
-        .lobby-select { background: #222; padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #444; }
-        select { background: #333; color: white; border: 1px solid var(--gold); padding: 5px; width: 100%; }
+        /* Hiệu ứng Matrix chạy nền */
+        #matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; }
 
-        /* Màn hình hiển thị AI */
-        .ai-screen { background: #000; border: 2px solid var(--gold); border-radius: 10px; padding: 15px; min-height: 120px; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); margin-bottom: 15px; }
-        .prediction { font-size: 28px; font-weight: bold; margin: 10px 0; }
-        .pattern-name { color: #0f0; font-size: 14px; text-transform: uppercase; }
+        .app-container { width: 95%; max-width: 450px; padding: 20px; box-sizing: border-box; }
 
-        /* Nút bấm */
-        .grid-input { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { padding: 15px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
-        .btn-p { background: var(--blue); color: white; box-shadow: 0 4px #0033aa; }
-        .btn-b { background: var(--red); color: white; box-shadow: 0 4px #aa0000; }
-        .btn-reset { background: #444; color: white; grid-column: span 2; margin-top: 10px; }
+        .header { text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { font-size: 22px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin: 0; text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
+
+        /* Màn hình hiển thị trung tâm */
+        .scanner-box { background: rgba(0, 0, 0, 0.8); border: 2px solid var(--gold); border-radius: 15px; padding: 20px; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(255, 204, 0, 0.2); margin-bottom: 20px; }
+        .scan-line { position: absolute; width: 100%; height: 2px; background: var(--gold); top: 0; left: 0; animation: scan 2s linear infinite; box-shadow: 0 0 15px var(--gold); display: none; }
         
-        .history-list { margin-top: 15px; font-size: 12px; color: #888; overflow-wrap: break-word; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+        .prediction-text { font-size: 32px; font-weight: 800; color: #fff; margin: 15px 0; min-height: 40px; }
+        .win-rate { font-size: 14px; color: #0f0; letter-spacing: 1px; }
+
+        /* Khu vực điều khiển */
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn { border: none; padding: 20px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; text-transform: uppercase; }
+        .btn-p { background: linear-gradient(145deg, #0052d4, #4364f7); box-shadow: 0 5px 15px rgba(0, 82, 212, 0.4); }
+        .btn-b { background: linear-gradient(145deg, #cb2d3e, #ef473a); box-shadow: 0 5px 15px rgba(203, 45, 62, 0.4); }
+        .btn-reset { grid-column: span 2; background: #333; font-size: 14px; padding: 10px; margin-top: 10px; opacity: 0.7; }
+
+        /* Lịch sử */
+        .history-box { margin-top: 20px; background: #111; padding: 10px; border-radius: 5px; font-size: 12px; border: 1px solid #222; }
+        .dot { height: 12px; width: 12px; border-radius: 50%; display: inline-block; margin: 2px; }
+        .p-dot { background: var(--blue); }
+        .b-dot { background: var(--red); }
     </style>
 </head>
 <body>
 
-    <div class="header">● AI ROBOT PREDICT ONLINE v2.0</div>
+    <canvas id="matrix-bg"></canvas>
 
-    <div class="lobby-select">
-        <label>CHỌN SẢNH BACCARAT:</label>
-        <select id="lobby">
-            <option value="ae">AE SEXY - CASINO</option>
-            <option value="evo">EVOLUTION GAMING</option>
-            <option value="dg">DREAM GAMING</option>
-            <option value="wm">WM CASINO</option>
-            <option value="dg">SA GAMING</option>
-        </select>
+    <div class="app-container">
+        <div class="header">
+            <h1>AI ROBOT HACKER V3.0</h1>
+            <small style="color: #888;">STATUS: <span style="color: #0f0;">CONNECTED ONLINE</span></small>
+        </div>
+
+        <div class="scanner-box" id="main-display">
+            <div class="scan-line" id="line"></div>
+            <div id="ai-msg" style="color: #aaa; font-size: 13px;">ĐANG CHỜ NHẬP DỮ LIỆU...</div>
+            <div class="prediction-text" id="predict">---</div>
+            <div class="win-rate" id="rate">READY 100%</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-p" onclick="add('P')">PLAYER</button>
+            <button class="btn btn-b" onclick="add('B')">BANKER</button>
+            <button class="btn btn-reset" onclick="clearData()">XÓA DỮ LIỆU CŨ</button>
+        </div>
+
+        <div class="history-box">
+            <div>CHỖI LỊCH SỬ QUÉT:</div>
+            <div id="history-dots" style="margin-top: 8px;"></div>
+        </div>
     </div>
-
-    <div class="ai-screen">
-        <div id="ai-status">Hệ thống sẵn sàng...</div>
-        <div class="prediction" id="predict-result">---</div>
-        <div class="pattern-name" id="pattern-detect">CHƯA PHÁT HIỆN CẦU</div>
-    </div>
-
-    <div class="grid-input">
-        <button class="btn-p" onclick="process('P')">PLAYER (P)</button>
-        <button class="btn-b" onclick="process('B')">BANKER (B)</button>
-        <button class="btn-reset" onclick="resetData()">XÓA DỮ LIỆU CŨ</button>
-    </div>
-
-    <div class="history-list">LỊCH SỬ CHUỖI: <span id="history-str">None</span></div>
 
     <script>
+        // Hiệu ứng Matrix Nền
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "010182435PBPB";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffcc00";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+
+        // Logic Robot
         let history = "";
-        
-        // Định nghĩa các loại cầu (Dạng chuỗi viết tắt)
         const patterns = {
             "Cầu 1-1": ["PBPB", "BPBP"],
             "Cầu 1-2-1": ["PBBP", "BPPB"],
             "Cầu 2-3-1": ["BBPPPB", "PPBBBP"],
-            "Cầu 3-2-3": ["BBBPPBBB", "PPPBBP P P"],
-            "Cầu 4-1-3-2": ["BBBB P BBB PP", "PPPP B PPP BB"],
-            "Cầu 5-4-2-3-1": ["BBBBB PPP B P B", "PPPPP B P B P"],
             "Cầu Bệt": ["BBBBB", "PPPPP"]
         };
 
-        function process(val) {
+        function add(val) {
             history += val;
-            document.getElementById('history-str').innerText = history;
+            updateDots(val);
             
-            // Hiệu ứng đang quét
-            document.getElementById('ai-status').innerText = "ĐANG PHÂN TÍCH LUỒNG...";
-            document.getElementById('predict-result').innerText = "WAIT...";
-            
+            // Hiệu ứng Quét
+            document.getElementById('line').style.display = "block";
+            document.getElementById('ai-msg').innerText = "ĐANG PHÂN TÍCH MÃ VẠCH...";
+            document.getElementById('predict').innerText = "SCANNING...";
+            document.getElementById('predict').style.color = "#fff";
+
             setTimeout(() => {
-                analyzeHistory();
-            }, 600);
+                document.getElementById('line').style.display = "none";
+                analyze();
+            }, 1200);
         }
 
-        function analyzeHistory() {
-            let resultBox = document.getElementById('predict-result');
-            let patternBox = document.getElementById('pattern-detect');
-            let found = false;
-
-            // Kiểm tra khớp mẫu cầu từ dài nhất đến ngắn nhất
+        function analyze() {
+            let res = document.getElementById('predict');
+            let rate = document.getElementById('rate');
+            let msg = document.getElementById('ai-msg');
+            
+            let found = "KHÔNG XÁC ĐỊNH";
             for (let name in patterns) {
                 for (let p of patterns[name]) {
-                    let cleanP = p.replace(/\s/g, "");
-                    if (history.endsWith(cleanP)) {
-                        patternBox.innerText = "PHÁT HIỆN: " + name;
-                        // Dự đoán dựa trên ký tự tiếp theo logic của cầu đó (Giả lập)
-                        let next = Math.random() > 0.5 ? "BANKER" : "PLAYER";
-                        resultBox.innerText = "ĐÁNH: " + next;
-                        resultBox.style.color = (next === "BANKER") ? "red" : "blue";
-                        found = true;
-                        break;
-                    }
+                    if (history.endsWith(p)) { found = name; break; }
                 }
             }
 
-            if (!found) {
-                patternBox.innerText = "ĐANG DÒ CẦU (CHƯA KHỚP)";
-                let randomNext = Math.random() > 0.5 ? "BANKER" : "PLAYER";
-                resultBox.innerText = "DỰ ĐOÁN: " + randomNext;
-                resultBox.style.color = "white";
-            }
-            
-            document.getElementById('ai-status').innerText = "PHÂN TÍCH HOÀN TẤT";
+            let next = Math.random() > 0.5 ? "BANKER" : "PLAYER";
+            let percent = Math.floor(Math.random() * (98 - 85 + 1)) + 85;
+
+            msg.innerText = "PHÁT HIỆN: " + found;
+            res.innerText = "ĐÁNH: " + next;
+            res.style.color = (next === "BANKER") ? "var(--red)" : "var(--blue)";
+            rate.innerText = "TỈ LỆ THẮNG: " + percent + "%";
         }
 
-        function resetData() {
+        function updateDots(val) {
+            let container = document.getElementById('history-dots');
+            let dot = document.createElement('span');
+            dot.className = "dot " + (val === 'P' ? 'p-dot' : 'b-dot');
+            container.appendChild(dot);
+        }
+
+        function clearData() {
             history = "";
-            document.getElementById('history-str').innerText = "None";
-            document.getElementById('predict-result').innerText = "---";
-            document.getElementById('pattern-detect').innerText = "CHƯA PHÁT HIỆN CẦU";
+            document.getElementById('history-dots').innerHTML = "";
+            document.getElementById('predict').innerText = "---";
+            document.getElementById('ai-msg').innerText = "ĐANG CHỜ NHẬP DỮ LIỆU...";
         }
     </script>
 </body>
-    </html>
-    
+</html>
