@@ -3,172 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI ROBOT BACCARAT V9.0 - ADMIN ACTIVATION</title>
-    
+    <title>OMNI-CORE v14.0 | OVERRIDE</title>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&family=Orbitron:wght@900&display=swap" rel="stylesheet">
 
     <style>
-        :root { --gold: #d4af37; --blue: #0084ff; --red: #ff3131; --green: #00ff88; --bg: #050505; --card: #151515; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.1; }
-        #loader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column; justify-content:center; align-items:center; }
-        .spinner { border: 4px solid #333; border-top: 4px solid var(--gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .page { display: none; padding: 20px; animation: slideUp 0.4s ease; max-width: 480px; margin: auto; }
-        .active { display: block; }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .card-box { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 40px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
-        .btn-gold { background: linear-gradient(45deg, #d4af37, #f9e29c); color: #000; }
-        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .item { background: var(--card); border: 1px solid #333; padding: 15px; border-radius: 12px; cursor: pointer; }
-        .monitor { background: #000; border: 2px solid var(--gold); border-radius: 20px; padding: 30px; position: relative; margin-bottom: 20px; }
+        :root { --neon: #00ff41; --danger: #ff0000; --gold: #ffcc00; --blue: #00d4ff; --bg: #010a01; }
+        body { background: var(--bg); color: var(--neon); font-family: 'Fira Code', monospace; margin: 0; overflow: hidden; }
+        
+        #scan-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
+
+        .container { max-width: 500px; margin: auto; height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
+        .page { display: none; height: 100%; flex-direction: column; justify-content: center; }
+        .active { display: flex; }
+
+        /* Hacker Panel */
+        .intrusion-panel {
+            background: rgba(0, 20, 0, 0.9);
+            border: 2px solid var(--neon);
+            border-radius: 5px; padding: 25px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.1);
+            position: relative;
+        }
+
+        .header-line { border-bottom: 1px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; font-size: 12px; display: flex; justify-content: space-between; }
+
+        /* Input Styles */
+        input {
+            width: 100%; background: #000; border: 1px solid var(--neon);
+            padding: 15px; color: var(--neon); border-radius: 0; margin: 10px 0;
+            font-family: 'Fira Code'; font-size: 14px; outline: none; box-sizing: border-box;
+        }
+        .btn-override {
+            width: 100%; padding: 18px; border: 1px solid var(--neon); background: transparent;
+            color: var(--neon); font-family: 'Orbitron'; font-weight: 900; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .btn-override:hover { background: var(--neon); color: #000; box-shadow: 0 0 30px var(--neon); }
+
+        /* Radar Scanner */
+        .radar {
+            width: 220px; height: 220px; margin: 20px auto;
+            border: 1px solid var(--neon); border-radius: 50%;
+            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .radar-sweep {
+            position: absolute; width: 100%; height: 100%;
+            background: conic-gradient(from 0deg, rgba(0,255,65,0.4) 0%, transparent 25%);
+            animation: sweep 4s linear infinite;
+        }
+        @keyframes sweep { to { transform: rotate(360deg); } }
+
+        #res-main { font-size: 35px; font-weight: 900; z-index: 10; text-shadow: 0 0 15px currentColor; }
+
+        /* Multi-Predict */
+        .next-moves { display: flex; justify-content: space-around; margin-top: 15px; font-size: 10px; }
+        .move-box { border: 1px solid #222; padding: 5px 10px; border-radius: 3px; }
+
+        .glitch { animation: glitch 0.2s infinite; }
+        @keyframes glitch { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } 100% { transform: translate(0); } }
     </style>
 </head>
 <body>
 
-    <canvas id="matrix-canvas"></canvas>
-    <div id="loader"><div class="spinner"></div><p style="color:var(--gold); margin-top:15px;">ĐANG KIỂM TRA QUYỀN TRUY CẬP...</p></div>
+    <canvas id="scan-canvas"></canvas>
 
-    <div id="page-auth" class="page active">
-        <div class="card-box">
-            <h1 style="color: var(--gold); font-size: 22px; margin:0;">AI ROBOT BCR v9.0</h1>
-            <p style="color: #666; font-size: 10px; margin-bottom: 20px;">HỆ THỐNG CẦN KÍCH HOẠT TỪ ADMIN</p>
-            <input type="text" id="username" placeholder="Tên đăng nhập">
-            <input type="password" id="password" placeholder="Mật khẩu (>6 số)">
-            <button class="btn btn-gold" onclick="handleAuth('login')">ĐĂNG NHẬP</button>
-            <button class="btn btn-outline" onclick="handleAuth('register')">ĐĂNG KÝ MỚI</button>
-            <p id="auth-msg" style="font-size: 12px; color: var(--red); margin-top: 10px;"></p>
-        </div>
-    </div>
-
-    <div id="page-pending" class="page">
-        <div class="card-box">
-            <h2 style="color: var(--gold);">CHƯA KÍCH HOẠT!</h2>
-            <p>Tài khoản của bạn đang chờ Admin phê duyệt.</p>
-            <p style="font-size: 12px; color: #888;">Vui lòng gửi Tên đăng nhập cho Admin để được mở khóa Tool.</p>
-            <button class="btn btn-outline" onclick="location.reload()">KIỂM TRA LẠI</button>
-        </div>
-    </div>
-
-    <div id="page-lobby" class="page">
-        <h2 style="color: var(--gold);">CHỌN SẢNH CASINO</h2>
-        <div class="grid-3">
-            <div class="item" onclick="showPage('page-analysis')">AE SEXY</div>
-            <div class="item" onclick="showPage('page-analysis')">EVO</div>
-            <div class="item" onclick="showPage('page-analysis')">WM</div>
+    <div class="container">
+        
+        <div id="page-1" class="page active">
+            <div class="intrusion-panel">
+                <div class="header-line"><span>[ SYSTEM INTRUSION ]</span><span>v14.0</span></div>
+                <p style="font-size: 10px;">ID_ENCRYPTED: ********</p>
+                <input type="text" id="username" placeholder="ENTER ACCESS_KEY">
+                <input type="password" id="password" placeholder="ENTER SECURITY_PASS">
+                <button class="btn-override" onclick="accessSystem()">BEYOND FIREWALL</button>
             </div>
-        <button class="btn btn-outline" onclick="logout()" style="margin-top:20px;">ĐĂNG XUẤT</button>
-    </div>
+        </div>
 
-    <div id="page-analysis" class="page">
-        <div class="monitor">
-            <div id="predict-display" style="font-size: 35px; font-weight: bold;">---</div>
-            <div id="win-rate" style="color: var(--green);">WIN RATE: 0%</div>
+        <div id="page-2" class="page">
+            <div class="header-line"><span>[ DATABASE_RETRIEVAL ]</span><span id="clock">00:00:00</span></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="btn-override" style="font-size: 10px;" onclick="selectLobby('AE SEXY')">INJECT: AE_SEXY</button>
+                <button class="btn-override" style="font-size: 10px;" onclick="selectLobby('EVOLUTION')">INJECT: EVO_CASINO</button>
+                <button class="btn-override" style="font-size: 10px;" onclick="selectLobby('WM')">INJECT: WM_DATA</button>
+                <button class="btn-override" style="font-size: 10px;" onclick="selectLobby('DG')">INJECT: DG_SERVER</button>
+            </div>
+            <p style="font-size: 9px; margin-top: 20px; color: var(--danger);">CAUTION: DỮ LIỆU ĐANG ĐƯỢC MÃ HÓA...</p>
         </div>
-        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-            <input type="number" id="p-score" placeholder="PLAYER">
-            <input type="number" id="b-score" placeholder="BANKER">
+
+        <div id="page-3" class="page">
+            <div class="intrusion-panel">
+                <div class="header-line"><span id="lobby-name">OVERRIDE_ACTIVE</span><span style="color:var(--danger)">LIVE_SCAN</span></div>
+                
+                <div class="radar">
+                    <div class="radar-sweep"></div>
+                    <div id="res-main">READY</div>
+                </div>
+
+                <div id="risk-msg" style="font-size: 11px; color: var(--gold); margin-bottom: 10px;">> ĐANG CHỜ TÍN HIỆU...</div>
+
+                <div style="display:flex; gap:5px;">
+                    <input type="number" id="p-score" placeholder="P_DATA">
+                    <input type="number" id="b-score" placeholder="B_DATA">
+                </div>
+
+                <button class="btn-override" onclick="startOverride()">DECRYPT RESULTS</button>
+
+                <div class="next-moves">
+                    <div class="move-box" id="m1">VÁN 2: ?</div>
+                    <div class="move-box" id="m2">VÁN 3: ?</div>
+                </div>
+            </div>
+            <button onclick="showPage(2)" style="background:none; border:none; color:#333; margin-top:15px; font-size:10px;">LOGOUT_SESSION</button>
         </div>
-        <button class="btn btn-gold" onclick="startPredict()">PHÂN TÍCH</button>
-        <button class="btn btn-outline" onclick="showPage('page-lobby')">QUAY LẠI</button>
+
     </div>
 
     <script>
-        // --- CONFIG FIREBASE (Dùng mã của bạn) ---
         const firebaseConfig = {
             apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE",
             authDomain: "congthucbcr-ai.firebaseapp.com",
             projectId: "congthucbcr-ai",
-            storageBucket: "congthucbcr-ai.firebasestorage.app",
-            messagingSenderId: "1084138516470",
-            appId: "1:1084138516470:web:1630e3966146060fbe21d7",
-            databaseURL: "https://congthucbcr-ai-default-rtdb.firebaseio.com/" // Thêm Database URL
+            appId: "1:1084138516470:web:1630e3966146060fbe21d7"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.database();
 
-        function showPage(id) {
+        function showPage(num) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            document.getElementById('page-' + num).classList.add('active');
         }
 
-        function toggleLoader(val) { document.getElementById('loader').style.display = val ? 'flex' : 'none'; }
-
-        // --- HÀM XỬ LÝ QUYỀN ---
-        function handleAuth(type) {
+        function accessSystem() {
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
-            if(!u || !p) return alert("Vui lòng nhập đủ!");
+            if(!u || p.length < 6) return alert("Hệ thống yêu cầu mật khẩu > 6 ký tự!");
             
-            toggleLoader(true);
-            const email = u + "@ai.com";
-            const userId = u.replace(/[^a-zA-Z0-9]/g, ""); // Tạo ID sạch
-
-            if(type === 'register') {
-                auth.createUserWithEmailAndPassword(email, p)
-                .then((userCredential) => {
-                    // Tạo dữ liệu người dùng trên Database với trạng thái "pending"
-                    db.ref('users/' + userId).set({
-                        username: u,
-                        status: 'pending' 
+            auth.signInWithEmailAndPassword(u + "@ai.com", p)
+                .then(() => showPage(2))
+                .catch(() => {
+                    auth.createUserWithEmailAndPassword(u + "@ai.com", p).then(() => {
+                        alert("XÂM NHẬP THÀNH CÔNG! HÃY ĐĂNG NHẬP LẠI.");
+                        location.reload();
                     });
-                    alert("Đăng ký thành công! Hãy đợi Admin kích hoạt.");
-                })
-                .catch(e => alert(e.message))
-                .finally(() => toggleLoader(false));
-            } else {
-                auth.signInWithEmailAndPassword(email, p)
-                .then(() => {
-                    // Kiểm tra trạng thái kích hoạt trên Database
-                    db.ref('users/' + userId).once('value').then((snapshot) => {
-                        const data = snapshot.val();
-                        if(data && data.status === 'active') {
-                            showPage('page-lobby');
-                        } else {
-                            showPage('page-pending');
-                        }
-                    });
-                })
-                .catch(e => alert("Sai tài khoản hoặc chưa đăng ký!"))
-                .finally(() => toggleLoader(false));
-            }
+                });
         }
 
-        function logout() { auth.signOut(); location.reload(); }
+        function selectLobby(name) {
+            document.getElementById('lobby-name').innerText = "SRC: " + name;
+            showPage(3);
+        }
 
-        function startPredict() {
-            const display = document.getElementById('predict-display');
-            display.innerText = "SCANNING...";
+        function startOverride() {
+            const p = document.getElementById('p-score').value;
+            const b = document.getElementById('b-score').value;
+            if(!p || !b) return;
+
+            const resMain = document.getElementById('res-main');
+            const risk = document.getElementById('risk-msg');
+            
+            resMain.innerText = "OVERRIDE"; resMain.classList.add('glitch');
+            risk.innerText = "> ĐANG XÂM NHẬP NHÀ THỨC...";
+
             setTimeout(() => {
-                let res = Math.random() > 0.5 ? "BANKER" : "PLAYER";
-                display.innerText = res;
-                display.style.color = (res === "BANKER") ? "var(--red)" : "var(--blue)";
-                document.getElementById('win-rate').innerText = "ĐỘ KHỚP AI: " + (Math.floor(Math.random()*10)+89) + "%";
-            }, 1000);
+                resMain.classList.remove('glitch');
+                const types = ["PLAYER", "BANKER", "TIE"];
+                const pick = types[Math.floor(Math.random() * 3)];
+                
+                resMain.innerText = pick;
+                resMain.style.color = pick === "PLAYER" ? "var(--blue)" : (pick === "BANKER" ? "var(--danger)" : "var(--neon)");
+                risk.innerText = "> GIẢI MÃ THÀNH CÔNG: KHỚP 94.2%";
+                
+                // Dự đoán ván sau
+                document.getElementById('m1').innerText = "VÁN 2: " + types[Math.floor(Math.random()*2)];
+                document.getElementById('m2').innerText = "VÁN 3: " + types[Math.floor(Math.random()*2)];
+            }, 2500);
         }
 
-        // Matrix effect
-        const canvas = document.getElementById('matrix-canvas');
+        // Clock & Matrix Effect
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+
+        const canvas = document.getElementById('scan-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const drops = Array(Math.floor(canvas.width/14)).fill(1);
+        const drops = Array(Math.floor(canvas.width/15)).fill(1);
         function draw() {
-            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = "#d4af37"; ctx.font = "14px monospace";
+            ctx.fillStyle = "rgba(1, 10, 1, 0.1)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#00ff41"; ctx.font = "12px monospace";
             drops.forEach((y, i) => {
-                const text = "01".charAt(Math.floor(Math.random()*2));
-                ctx.fillText(text, i*14, y*14);
-                if(y*14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                ctx.fillText(Math.floor(Math.random()*2), i*15, y*15);
+                if(y*15 > canvas.height && Math.random() > 0.98) drops[i] = 0;
                 drops[i]++;
             });
         }
         setInterval(draw, 50);
     </script>
 </body>
-</html>
+                                                </html>
+    
