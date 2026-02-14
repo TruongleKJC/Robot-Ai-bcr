@@ -3,66 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMNI-CORE v14.0 | OVERRIDE</title>
+    <title>OMNI-CORE v15.0 | ELITE</title>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;700&family=Orbitron:wght@900&display=swap" rel="stylesheet">
 
     <style>
         :root { --neon: #00ff41; --danger: #ff0000; --gold: #ffcc00; --blue: #00d4ff; --bg: #010a01; }
         body { background: var(--bg); color: var(--neon); font-family: 'Fira Code', monospace; margin: 0; overflow: hidden; }
         
-        #scan-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
+        #scan-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.2; }
 
         .container { max-width: 500px; margin: auto; height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
-        .page { display: none; height: 100%; flex-direction: column; justify-content: center; }
+        .page { display: none; height: 100%; flex-direction: column; justify-content: center; animation: slideUp 0.4s ease; }
         .active { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Hacker Panel */
-        .intrusion-panel {
-            background: rgba(0, 20, 0, 0.9);
-            border: 2px solid var(--neon);
-            border-radius: 5px; padding: 25px;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2), inset 0 0 10px rgba(0, 255, 65, 0.1);
-            position: relative;
-        }
+        .panel { background: rgba(0, 20, 0, 0.9); border: 1px solid var(--neon); padding: 25px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); position: relative; }
+        .header { border-bottom: 1px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; font-size: 11px; display: flex; justify-content: space-between; }
 
-        .header-line { border-bottom: 1px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; font-size: 12px; display: flex; justify-content: space-between; }
+        input { width: 100%; background: #000; border: 1px solid var(--neon); padding: 15px; color: var(--neon); margin: 10px 0; font-family: 'Fira Code'; outline: none; box-sizing: border-box; }
+        
+        .btn { width: 100%; padding: 15px; border: 1px solid var(--neon); background: transparent; color: var(--neon); font-family: 'Orbitron'; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
+        .btn-danger { border-color: var(--danger); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: #fff; box-shadow: 0 0 20px var(--danger); }
 
-        /* Input Styles */
-        input {
-            width: 100%; background: #000; border: 1px solid var(--neon);
-            padding: 15px; color: var(--neon); border-radius: 0; margin: 10px 0;
-            font-family: 'Fira Code'; font-size: 14px; outline: none; box-sizing: border-box;
-        }
-        .btn-override {
-            width: 100%; padding: 18px; border: 1px solid var(--neon); background: transparent;
-            color: var(--neon); font-family: 'Orbitron'; font-weight: 900; cursor: pointer;
-            text-transform: uppercase; transition: 0.3s; position: relative; overflow: hidden;
-        }
-        .btn-override:hover { background: var(--neon); color: #000; box-shadow: 0 0 30px var(--neon); }
+        /* Chọn bàn Grid */
+        .table-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+        .table-item { border: 1px solid var(--neon); padding: 15px 5px; text-align: center; cursor: pointer; font-size: 12px; }
+        .table-item:hover { background: rgba(0,255,65,0.2); }
 
-        /* Radar Scanner */
-        .radar {
-            width: 220px; height: 220px; margin: 20px auto;
-            border: 1px solid var(--neon); border-radius: 50%;
-            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .radar-sweep {
-            position: absolute; width: 100%; height: 100%;
-            background: conic-gradient(from 0deg, rgba(0,255,65,0.4) 0%, transparent 25%);
-            animation: sweep 4s linear infinite;
-        }
-        @keyframes sweep { to { transform: rotate(360deg); } }
-
-        #res-main { font-size: 35px; font-weight: 900; z-index: 10; text-shadow: 0 0 15px currentColor; }
-
-        /* Multi-Predict */
-        .next-moves { display: flex; justify-content: space-around; margin-top: 15px; font-size: 10px; }
-        .move-box { border: 1px solid #222; padding: 5px 10px; border-radius: 3px; }
-
-        .glitch { animation: glitch 0.2s infinite; }
-        @keyframes glitch { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } 100% { transform: translate(0); } }
+        /* Radar & Results */
+        .radar { width: 180px; height: 180px; margin: 15px auto; border: 1px solid var(--neon); border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .sweep { position: absolute; width: 100%; height: 100%; background: conic-gradient(from 0deg, rgba(0,255,65,0.3) 0%, transparent 30%); animation: rotate 3s linear infinite; }
+        @keyframes rotate { to { transform: rotate(360deg); } }
+        #res-main { font-size: 28px; font-weight: 900; z-index: 5; text-shadow: 0 0 10px currentColor; }
     </style>
 </head>
 <body>
@@ -72,50 +48,50 @@
     <div class="container">
         
         <div id="page-1" class="page active">
-            <div class="intrusion-panel">
-                <div class="header-line"><span>[ SYSTEM INTRUSION ]</span><span>v14.0</span></div>
-                <p style="font-size: 10px;">ID_ENCRYPTED: ********</p>
-                <input type="text" id="username" placeholder="ENTER ACCESS_KEY">
-                <input type="password" id="password" placeholder="ENTER SECURITY_PASS">
-                <button class="btn-override" onclick="accessSystem()">BEYOND FIREWALL</button>
+            <div class="panel">
+                <div class="header"><span>[ ACCESS_CONTROL ]</span><span>v15.0</span></div>
+                <input type="text" id="username" placeholder="USER_ID">
+                <input type="password" id="password" placeholder="SECURE_PASS">
+                <button class="btn" onclick="authSystem()">DECRYPT ACCESS</button>
             </div>
         </div>
 
         <div id="page-2" class="page">
-            <div class="header-line"><span>[ DATABASE_RETRIEVAL ]</span><span id="clock">00:00:00</span></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button class="btn-override" style="font-size: 10px;" onclick="selectLobby('AE SEXY')">INJECT: AE_SEXY</button>
-                <button class="btn-override" style="font-size: 10px;" onclick="selectLobby('EVOLUTION')">INJECT: EVO_CASINO</button>
-                <button class="btn-override" style="font-size: 10px;" onclick="selectLobby('WM')">INJECT: WM_DATA</button>
-                <button class="btn-override" style="font-size: 10px;" onclick="selectLobby('DG')">INJECT: DG_SERVER</button>
-            </div>
-            <p style="font-size: 9px; margin-top: 20px; color: var(--danger);">CAUTION: DỮ LIỆU ĐANG ĐƯỢC MÃ HÓA...</p>
+            <div class="header"><span>[ SERVER_SELECT ]</span><span>ONLINE</span></div>
+            <button class="btn" onclick="selectLobby('AE SEXY')">AE_SEXY_LINK</button>
+            <button class="btn" onclick="selectLobby('EVOLUTION')">EVO_NODE_01</button>
+            <button class="btn" onclick="selectLobby('WM CASINO')">WM_DATABASE</button>
+            <button class="btn" onclick="selectLobby('DG GAMING')">DG_CORE_04</button>
+            <button class="btn-danger" style="margin-top:20px;" onclick="location.reload()">TERMINATE</button>
         </div>
 
         <div id="page-3" class="page">
-            <div class="intrusion-panel">
-                <div class="header-line"><span id="lobby-name">OVERRIDE_ACTIVE</span><span style="color:var(--danger)">LIVE_SCAN</span></div>
-                
-                <div class="radar">
-                    <div class="radar-sweep"></div>
-                    <div id="res-main">READY</div>
-                </div>
-
-                <div id="risk-msg" style="font-size: 11px; color: var(--gold); margin-bottom: 10px;">> ĐANG CHỜ TÍN HIỆU...</div>
-
-                <div style="display:flex; gap:5px;">
-                    <input type="number" id="p-score" placeholder="P_DATA">
-                    <input type="number" id="b-score" placeholder="B_DATA">
-                </div>
-
-                <button class="btn-override" onclick="startOverride()">DECRYPT RESULTS</button>
-
-                <div class="next-moves">
-                    <div class="move-box" id="m1">VÁN 2: ?</div>
-                    <div class="move-box" id="m2">VÁN 3: ?</div>
-                </div>
+            <div class="header"><span>[ TABLE_INJECTION ]</span><span id="lobby-tag">LOBBY</span></div>
+            <p style="font-size: 10px;">CHỌN MÃ BÀN ĐỂ XÂM NHẬP:</p>
+            <div class="table-grid">
+                <div class="table-item" onclick="selectTable('001')">TABLE 01</div>
+                <div class="table-item" onclick="selectTable('002')">TABLE 02</div>
+                <div class="table-item" onclick="selectTable('003')">TABLE 03</div>
+                <div class="table-item" onclick="selectTable('005')">TABLE 05</div>
+                <div class="table-item" onclick="selectTable('008')">TABLE 08</div>
+                <div class="table-item" onclick="selectTable('009')">TABLE 09</div>
             </div>
-            <button onclick="showPage(2)" style="background:none; border:none; color:#333; margin-top:15px; font-size:10px;">LOGOUT_SESSION</button>
+            <button class="btn" onclick="showPage(2)">QUAY LẠI SẢNH</button>
+        </div>
+
+        <div id="page-4" class="page">
+            <div class="panel">
+                <div class="header"><span id="info-tag">DECRYPTING...</span><span style="color:var(--danger)">LIVE</span></div>
+                <div class="radar"><div class="sweep"></div><div id="res-main">READY</div></div>
+                <div id="risk-msg" style="font-size: 10px; color: var(--gold); margin-bottom: 10px;">> CHỜ DỮ LIỆU ĐẦU VÀO...</div>
+                <div style="display:flex; gap:5px;">
+                    <input type="number" id="p-score" placeholder="P_VAL">
+                    <input type="number" id="b-score" placeholder="B_VAL">
+                </div>
+                <button class="btn" onclick="executeScan()">SCAN DATA</button>
+                <button class="btn btn-danger" onclick="purgeData()">PURGE HISTORY (XOÁ)</button>
+            </div>
+            <button onclick="showPage(3)" style="background:none; border:none; color:#333; margin-top:15px; font-size:10px;">BACK_TO_TABLES</button>
         </div>
 
     </div>
@@ -135,55 +111,53 @@
             document.getElementById('page-' + num).classList.add('active');
         }
 
-        function accessSystem() {
+        function authSystem() {
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
-            if(!u || p.length < 6) return alert("Hệ thống yêu cầu mật khẩu > 6 ký tự!");
-            
+            if(!u || p.length < 6) return alert("Security Code > 6 chars!");
             auth.signInWithEmailAndPassword(u + "@ai.com", p)
                 .then(() => showPage(2))
-                .catch(() => {
-                    auth.createUserWithEmailAndPassword(u + "@ai.com", p).then(() => {
-                        alert("XÂM NHẬP THÀNH CÔNG! HÃY ĐĂNG NHẬP LẠI.");
-                        location.reload();
-                    });
-                });
+                .catch(() => auth.createUserWithEmailAndPassword(u + "@ai.com", p).then(() => location.reload()));
         }
 
         function selectLobby(name) {
-            document.getElementById('lobby-name').innerText = "SRC: " + name;
+            document.getElementById('lobby-tag').innerText = name;
             showPage(3);
         }
 
-        function startOverride() {
+        function selectTable(id) {
+            const lobby = document.getElementById('lobby-tag').innerText;
+            document.getElementById('info-tag').innerText = lobby + " | T-" + id;
+            showPage(4);
+        }
+
+        function executeScan() {
             const p = document.getElementById('p-score').value;
             const b = document.getElementById('b-score').value;
             if(!p || !b) return;
 
-            const resMain = document.getElementById('res-main');
-            const risk = document.getElementById('risk-msg');
+            const res = document.getElementById('res-main');
+            res.innerText = "SCANNING"; res.style.color = "var(--gold)";
             
-            resMain.innerText = "OVERRIDE"; resMain.classList.add('glitch');
-            risk.innerText = "> ĐANG XÂM NHẬP NHÀ THỨC...";
-
             setTimeout(() => {
-                resMain.classList.remove('glitch');
-                const types = ["PLAYER", "BANKER", "TIE"];
-                const pick = types[Math.floor(Math.random() * 3)];
-                
-                resMain.innerText = pick;
-                resMain.style.color = pick === "PLAYER" ? "var(--blue)" : (pick === "BANKER" ? "var(--danger)" : "var(--neon)");
-                risk.innerText = "> GIẢI MÃ THÀNH CÔNG: KHỚP 94.2%";
-                
-                // Dự đoán ván sau
-                document.getElementById('m1').innerText = "VÁN 2: " + types[Math.floor(Math.random()*2)];
-                document.getElementById('m2').innerText = "VÁN 3: " + types[Math.floor(Math.random()*2)];
-            }, 2500);
+                const pick = ["PLAYER", "BANKER", "TIE"][Math.floor(Math.random()*3)];
+                res.innerText = pick;
+                res.style.color = pick === "PLAYER" ? "var(--blue)" : (pick === "BANKER" ? "var(--danger)" : "var(--neon)");
+                document.getElementById('risk-msg').innerText = "> KHỚP DỮ LIỆU: " + (Math.floor(Math.random()*10)+89) + "%";
+            }, 1500);
         }
 
-        // Clock & Matrix Effect
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+        function purgeData() {
+            if(confirm("XÁC NHẬN XOÁ TOÀN BỘ LỊCH SỬ DỮ LIỆU?")) {
+                document.getElementById('p-score').value = "";
+                document.getElementById('b-score').value = "";
+                document.getElementById('res-main').innerText = "PURGED";
+                document.getElementById('res-main').style.color = "var(--danger)";
+                document.getElementById('risk-msg').innerText = "> DỮ LIỆU ĐÃ ĐƯỢC LÀM SẠCH.";
+            }
+        }
 
+        // Matrix Background
         const canvas = document.getElementById('scan-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -200,5 +174,4 @@
         setInterval(draw, 50);
     </script>
 </body>
-                                                </html>
-    
+</html>
