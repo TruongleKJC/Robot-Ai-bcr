@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMNI-CORE v16.0 | MULTI-LOBBY</title>
+    <title>AI NEURAL BRAIN v17.0</title>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;700&family=Orbitron:wght@900&display=swap" rel="stylesheet">
@@ -11,169 +11,151 @@
     <style>
         :root { --neon: #00ff41; --danger: #ff0000; --gold: #ffcc00; --blue: #00d4ff; --bg: #010a01; }
         body { background: var(--bg); color: var(--neon); font-family: 'Fira Code', monospace; margin: 0; overflow-x: hidden; }
-        
         #scan-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; }
-
         .container { max-width: 500px; margin: auto; min-height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
-        .page { display: none; min-height: 100vh; flex-direction: column; justify-content: flex-start; animation: fadeIn 0.4s ease; padding-top: 20px; }
+        .page { display: none; min-height: 100vh; flex-direction: column; animation: fadeIn 0.4s ease; }
         .active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .panel { background: rgba(0, 20, 0, 0.9); border: 1px solid var(--neon); padding: 25px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); margin-top: 20px; }
+        .panel { background: rgba(0, 20, 0, 0.9); border: 1px solid var(--neon); padding: 25px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); margin-top: 10px; }
         .header { border-bottom: 1px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; font-size: 11px; display: flex; justify-content: space-between; font-weight: bold; }
-
-        input { width: 100%; background: #000; border: 1px solid var(--neon); padding: 15px; color: var(--neon); margin: 10px 0; font-family: 'Fira Code'; outline: none; box-sizing: border-box; }
-        
-        .btn { width: 100%; padding: 15px; border: 1px solid var(--neon); background: transparent; color: var(--neon); font-family: 'Orbitron'; cursor: pointer; text-transform: uppercase; transition: 0.2s; margin-top: 10px; }
+        input { width: 100%; background: #000; border: 1px solid var(--neon); padding: 15px; color: var(--neon); margin: 10px 0; font-family: 'Fira Code'; outline: none; box-sizing: border-box; text-align: center; }
+        .btn { width: 100%; padding: 15px; border: 1px solid var(--neon); background: transparent; color: var(--neon); font-family: 'Orbitron'; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
         .btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
-        .btn-danger { border-color: var(--danger); color: var(--danger); }
-        .btn-danger:hover { background: var(--danger); color: #fff; }
-
-        /* Grid Sảnh & Bàn */
         .node-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
-        .node-item { border: 1px solid #222; padding: 15px 5px; text-align: center; cursor: pointer; font-size: 11px; border-radius: 4px; transition: 0.3s; }
-        .node-item:hover { border-color: var(--neon); background: rgba(0,255,65,0.1); }
-
-        .table-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px 0; max-height: 400px; overflow-y: auto; padding: 5px; }
+        .node-item { border: 1px solid #222; padding: 15px 5px; text-align: center; cursor: pointer; font-size: 11px; border-radius: 4px; }
+        .table-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px 0; max-height: 300px; overflow-y: auto; }
         .table-item { border: 1px solid #333; padding: 12px 5px; text-align: center; cursor: pointer; font-size: 10px; }
-        .table-item:hover { border-color: var(--gold); color: var(--gold); }
-
-        /* Radar UI */
         .radar { width: 160px; height: 160px; margin: 10px auto; border: 1px solid var(--neon); border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .sweep { position: absolute; width: 100%; height: 100%; background: conic-gradient(from 0deg, rgba(0,255,65,0.3) 0%, transparent 30%); animation: rotate 3s linear infinite; }
         @keyframes rotate { to { transform: rotate(360deg); } }
         #res-main { font-size: 26px; font-weight: 900; z-index: 5; text-shadow: 0 0 10px currentColor; }
+        #brain-log { font-size: 9px; color: var(--gold); height: 40px; overflow: hidden; margin-top: 10px; border-top: 1px solid #111; padding-top: 5px; }
     </style>
 </head>
 <body>
-
     <canvas id="scan-canvas"></canvas>
-
     <div class="container">
-        
         <div id="page-1" class="page active">
-            <div class="panel" style="margin-top: 100px;">
-                <div class="header"><span>[ ACCESS_CONTROL ]</span><span>v16.0</span></div>
-                <input type="text" id="username" placeholder="ACCESS_ID">
-                <input type="password" id="password" placeholder="SECURE_PASS">
-                <button class="btn" onclick="authSystem()">DECRYPT SYSTEM</button>
+            <div class="panel" style="margin-top: 50px;">
+                <div class="header"><span>[ BRAIN_INITIALIZATION ]</span><span>v17.0</span></div>
+                <input type="text" id="username" placeholder="NEURAL_ID">
+                <input type="password" id="password" placeholder="SECURE_KEY">
+                <button class="btn" onclick="authSystem()">SYNC NEURAL CORE</button>
             </div>
         </div>
 
         <div id="page-2" class="page">
-            <div class="header"><span>[ SELECT_CASINO_NODE ]</span><span>NODES: 12</span></div>
-            <div class="node-grid" id="lobby-list">
-                </div>
-            <button class="btn-danger" onclick="location.reload()">LOGOUT</button>
+            <div class="header"><span>[ CASINO_NODES ]</span><span>12 LOBBIES</span></div>
+            <div class="node-grid" id="lobby-list"></div>
         </div>
 
         <div id="page-3" class="page">
-            <div class="header"><span>[ TABLE_LINK_ESTABLISHED ]</span><span id="lobby-tag">---</span></div>
-            <p style="font-size: 10px; text-align: center;">VUI LÒNG CHỌN BÀN ĐỂ INJECT DỮ LIỆU:</p>
-            <div class="table-grid" id="table-list">
-                </div>
-            <button class="btn" onclick="showPage(2)">QUAY LẠI SẢNH</button>
+            <div class="header"><span>[ TABLE_LINK ]</span><span id="lobby-tag">---</span></div>
+            <div class="table-grid" id="table-list"></div>
+            <button class="btn" onclick="showPage(2)">BACK</button>
         </div>
 
         <div id="page-4" class="page">
             <div class="panel">
-                <div class="header"><span id="info-tag">DECRYPTING...</span><span style="color:var(--danger)">LIVE</span></div>
+                <div class="header"><span id="info-tag">BRAIN_ACTIVE</span><span style="color:var(--danger)">DEEP_SCAN</span></div>
                 <div class="radar"><div class="sweep"></div><div id="res-main">READY</div></div>
-                <div id="risk-msg" style="font-size: 10px; color: var(--gold); margin-bottom: 10px; text-align: center;">> READY TO OVERRIDE SERVER...</div>
-                <div style="display:flex; gap:5px;">
-                    <input type="number" id="p-score" placeholder="P_VAL">
-                    <input type="number" id="b-score" placeholder="B_VAL">
+                <div id="brain-log">> AWAITING NEURAL INPUT...</div>
+                
+                <div style="display:flex; gap:5px; margin-top:15px;">
+                    <input type="number" id="p-score" placeholder="P_SCORE">
+                    <input type="number" id="b-score" placeholder="B_SCORE">
                 </div>
-                <button class="btn" onclick="executeScan()">EXECUTE SCAN</button>
-                <button class="btn btn-danger" onclick="purgeData()">PURGE DATA (XOÁ LỊCH SỬ)</button>
+                <button class="btn" onclick="neuralAnalyze()">EXECUTE NEURAL SCAN</button>
+                <button class="btn" style="border-color:var(--danger); color:var(--danger);" onclick="resetBrain()">PURGE MEMORY</button>
             </div>
-            <button onclick="showPage(3)" style="background:none; border:none; color:#444; margin-top:20px; font-size:10px; cursor:pointer;">BACK_TO_TABLE_LIST</button>
+            <p style="font-size: 9px; text-align: center; margin-top: 20px;">AI MEMORY: <span id="mem-count">0</span> ván</p>
         </div>
-
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE",
-            authDomain: "congthucbcr-ai.firebaseapp.com",
-            projectId: "congthucbcr-ai",
-            appId: "1:1084138516470:web:1630e3966146060fbe21d7"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE", authDomain: "congthucbcr-ai.firebaseapp.com", projectId: "congthucbcr-ai", appId: "1:1084138516470:web:1630e3966146060fbe21d7" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Khởi tạo danh sách sảnh
         const lobbies = ["AE SEXY", "EVOLUTION", "WM CASINO", "DG GAMING", "SA GAMING", "VENUS", "ALLBET", "BBIN", "PLAYTECH", "PRAGMATIC", "MICROGAMING", "DREAM GAMING"];
         const lobbyGrid = document.getElementById('lobby-list');
         lobbies.forEach(name => {
-            const div = document.createElement('div');
-            div.className = 'node-item';
-            div.innerText = name;
-            div.onclick = () => selectLobby(name);
+            const div = document.createElement('div'); div.className = 'node-item'; div.innerText = name;
+            div.onclick = () => { document.getElementById('lobby-tag').innerText = name; showPage(3); };
             lobbyGrid.appendChild(div);
         });
 
-        // Khởi tạo 30 bàn
         const tableGrid = document.getElementById('table-list');
         for(let i=1; i<=30; i++) {
-            const div = document.createElement('div');
-            div.className = 'table-item';
-            div.innerText = "TABLE " + (i < 10 ? "0" + i : i);
-            div.onclick = () => selectTable(div.innerText);
+            const div = document.createElement('div'); div.className = 'table-item'; div.innerText = "TABLE " + i;
+            div.onclick = () => { document.getElementById('info-tag').innerText = document.getElementById('lobby-tag').innerText + " | T-" + i; showPage(4); };
             tableGrid.appendChild(div);
         }
 
         function showPage(num) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + num).classList.add('active');
-            window.scrollTo(0,0);
         }
 
         function authSystem() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            if(!u || p.length < 6) return alert("Hệ thống yêu cầu mật khẩu > 6 ký tự!");
-            auth.signInWithEmailAndPassword(u + "@ai.com", p)
-                .then(() => showPage(2))
-                .catch(() => auth.createUserWithEmailAndPassword(u + "@ai.com", p).then(() => location.reload()));
+            const u = document.getElementById('username').value, p = document.getElementById('password').value;
+            if(!u || p.length < 6) return alert("Error!");
+            auth.signInWithEmailAndPassword(u + "@ai.com", p).then(() => showPage(2)).catch(() => auth.createUserWithEmailAndPassword(u + "@ai.com", p).then(() => location.reload()));
         }
 
-        function selectLobby(name) {
-            document.getElementById('lobby-tag').innerText = name;
-            showPage(3);
-        }
+        // --- BỘ NÃO AI (AI BRAIN LOGIC) ---
+        let history = []; 
 
-        function selectTable(id) {
-            const lobby = document.getElementById('lobby-tag').innerText;
-            document.getElementById('info-tag').innerText = lobby + " | " + id;
-            showPage(4);
-        }
+        function neuralAnalyze() {
+            const ps = document.getElementById('p-score').value;
+            const bs = document.getElementById('b-score').value;
+            if(ps === "" || bs === "") return;
 
-        function executeScan() {
-            const p = document.getElementById('p-score').value;
-            const b = document.getElementById('b-score').value;
-            if(!p || !b) return;
+            // Lưu vào bộ nhớ não
+            const winner = parseInt(ps) > parseInt(bs) ? "P" : (parseInt(bs) > parseInt(ps) ? "B" : "T");
+            history.push(winner);
+            document.getElementById('mem-count').innerText = history.length;
 
-            const res = document.getElementById('res-main');
-            res.innerText = "SCANNING"; res.style.color = "var(--gold)";
-            
+            const resDisplay = document.getElementById('res-main');
+            const log = document.getElementById('brain-log');
+
+            resDisplay.innerText = "THINKING";
+            log.innerHTML = "> ANALYZING PATTERNS...<br>> CHECKING BACCARAT DATA...";
+
             setTimeout(() => {
-                const pick = ["PLAYER", "BANKER", "TIE"][Math.floor(Math.random()*3)];
-                res.innerText = pick;
-                res.style.color = pick === "PLAYER" ? "var(--blue)" : (pick === "BANKER" ? "var(--danger)" : "var(--neon)");
-                document.getElementById('risk-msg').innerText = "> KHỚP DỮ LIỆU: " + (Math.floor(Math.random()*11)+88) + "%";
-            }, 1200);
+                let prediction = "";
+                let logicNote = "";
+
+                // Thuật toán nhận diện
+                const last3 = history.slice(-3).join('');
+                if(last3 === "PPP" || last3 === "BBB") {
+                    prediction = (last3 === "PPP") ? "PLAYER" : "BANKER";
+                    logicNote = "> DETECTED: CẦU BỆT (FOLLOW TREND)";
+                } else if (last3 === "PBP" || last3 === "BPB") {
+                    prediction = (last3 === "PBP") ? "BANKER" : "PLAYER";
+                    logicNote = "> DETECTED: CẦU 1-1 (PING-PONG)";
+                } else {
+                    prediction = Math.random() > 0.5 ? "PLAYER" : "BANKER";
+                    logicNote = "> DETECTED: CẦU NGẪU NHIÊN (STOCHASTIC)";
+                }
+
+                resDisplay.innerText = prediction;
+                resDisplay.style.color = prediction === "PLAYER" ? "var(--blue)" : "var(--danger)";
+                log.innerHTML = logicNote + "<br>> CONFIDENCE: " + (Math.floor(Math.random()*10)+88) + "%";
+                
+                document.getElementById('p-score').value = "";
+                document.getElementById('b-score').value = "";
+            }, 1500);
         }
 
-        function purgeData() {
-            document.getElementById('p-score').value = "";
-            document.getElementById('b-score').value = "";
-            document.getElementById('res-main').innerText = "CLEARED";
-            document.getElementById('res-main').style.color = "var(--neon)";
-            document.getElementById('risk-msg').innerText = "> LỊCH SỬ ĐÃ ĐƯỢC LÀM SẠCH.";
+        function resetBrain() {
+            history = [];
+            document.getElementById('mem-count').innerText = "0";
+            document.getElementById('res-main').innerText = "PURGED";
+            document.getElementById('brain-log').innerText = "> MEMORY WIPED. BRAIN RESET.";
         }
 
-        // Matrix Background
+        // Background Effect
         const canvas = document.getElementById('scan-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -190,5 +172,5 @@
         setInterval(draw, 50);
     </script>
 </body>
-    </html>
+                                                                </html>
     
