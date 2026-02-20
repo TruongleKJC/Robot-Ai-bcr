@@ -3,77 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI ROBOT BACCARAT V8.0 - FULL UPGRADE</title>
-    
+    <title>AI ROBOT BACCARAT v10.0 - NEURAL SYSTEM</title>
+    <script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-auth-compat.js"></script>
     <style>
-        :root { --gold: #d4af37; --blue: #0084ff; --red: #ff3131; --green: #00ff88; --bg: #050505; --card: #151515; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.1; }
-        #loader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column; justify-content:center; align-items:center; }
-        .spinner { border: 4px solid #333; border-top: 4px solid var(--gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .page { display: none; padding: 20px; animation: slideUp 0.4s ease; max-width: 480px; margin: auto; text-align: center; }
+        :root { --gold: #ffd700; --blue: #00d2ff; --red: #ff4b2b; --green: #33ff00; --bg: #020205; --panel: #12121c; }
+        body { background: var(--bg); color: #fff; font-family: 'Orbitron', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Hiệu ứng Sóng não AI */
+        .brain-wave { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); position: relative; display: flex; align-items: center; justify-content: center; margin: 20px auto; }
+        .wave { position: absolute; width: 100%; height: 100%; border: inherit; border-radius: inherit; animation: pulse 2s infinite; opacity: 0; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.8); opacity: 0; } }
+
+        .page { display: none; width: 90%; max-width: 450px; padding: 20px; animation: slideIn 0.5s ease; }
         .active { display: block; }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 60px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
-        .btn-gold { background: linear-gradient(45deg, #d4af37, #f9e29c); color: #000; }
-        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
-        .lobby-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .lobby-item { background: var(--card); border: 1px solid #333; padding: 15px 5px; border-radius: 12px; font-size: 11px; cursor: pointer; }
-        .monitor { background: #000; border: 2px solid var(--gold); border-radius: 20px; padding: 30px; position: relative; margin-bottom: 20px; overflow: hidden; }
-        .scan-bar { position: absolute; width: 100%; height: 2px; background: var(--gold); top: 0; left: 0; animation: scan 2s linear infinite; display: none; box-shadow: 0 0 15px var(--gold); }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        .predict-res { font-size: 40px; font-weight: 900; margin: 20px 0; letter-spacing: 2px; text-shadow: 0 0 10px currentColor; }
-        .score-box { display: flex; gap: 15px; margin: 20px 0; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .panel { background: var(--panel); border: 1px solid #333; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-top: 3px solid var(--gold); }
+        .predict-box { font-size: 42px; font-weight: 800; margin: 15px 0; min-height: 50px; }
+        
+        /* Input & Button */
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid #444; color: var(--gold); border-radius: 10px; text-align: center; font-size: 18px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-family: 'Orbitron'; }
+        .btn-gold { background: linear-gradient(90deg, #ffd700, #b8860b); color: #000; }
+        
+        /* Bảng Roadmap */
+        #roadmap { display: flex; flex-wrap: wrap; gap: 4px; margin: 15px 0; justify-content: center; min-height: 30px; }
+        .cell { width: 14px; height: 14px; border-radius: 50%; font-size: 8px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .cell-p { background: var(--blue); }
+        .cell-b { background: var(--red); }
+        .cell-t { background: var(--green); color: #000; }
     </style>
 </head>
 <body>
 
-    <canvas id="matrix-canvas"></canvas>
-    <div id="loader"><div class="spinner"></div><p style="color:var(--gold); margin-top:15px;">ĐANG KẾT NỐI SERVER AI...</p></div>
-
-    <div class="container">
-        <div id="page-auth" class="page active">
-            <div class="auth-card">
-                <h1 style="color: var(--gold); margin: 0; font-size: 22px;">AI ROBOT BCR v8.0</h1>
-                <p style="color: #666; font-size: 11px; margin-bottom: 25px;">HỆ THỐNG PHÂN TÍCH CAO CẤP</p>
-                <input type="text" id="username" placeholder="Tên đăng nhập">
-                <input type="password" id="password" placeholder="Mật khẩu (>= 6 ký tự)">
-                <button class="btn btn-gold" id="btnLogin">ĐĂNG NHẬP</button>
-                <button class="btn btn-outline" id="btnReg">ĐĂNG KÝ MỚI</button>
-            </div>
-        </div>
-
-        <div id="page-lobby" class="page">
-            <h2 style="color: var(--gold); letter-spacing: 2px;">CHỌN SẢNH CASINO</h2>
-            <div class="lobby-grid" id="lobbyGrid"></div>
-            <button id="btnLogout" class="btn btn-outline" style="margin-top: 30px;">ĐĂNG XUẤT</button>
-        </div>
-
-        <div id="page-analysis" class="page">
-            <div id="lobby-tag" style="font-size: 12px; color: var(--gold); margin-bottom: 10px; border: 1px solid #333; display: inline-block; padding: 5px 15px; border-radius: 20px;"></div>
-            <div class="monitor">
-                <div class="scan-bar" id="scan-line"></div>
-                <div id="ai-status" style="font-size: 12px; color: #555;">SẴN SÀNG NHẬN DỮ LIỆU...</div>
-                <div id="predict-display" class="predict-res">---</div>
-                <div id="win-rate" style="color: var(--green); font-size: 14px; font-weight: bold;">CHỜ NHẬP ĐIỂM</div>
-            </div>
-            <div class="score-box">
-                <div style="flex:1"><label style="font-size:10px;color:var(--blue)">PLAYER (P)</label><input type="number" id="p-score" placeholder="0"></div>
-                <div style="flex:1"><label style="font-size:10px;color:var(--red)">BANKER (B)</label><input type="number" id="b-score" placeholder="0"></div>
-            </div>
-            <button class="btn btn-gold" id="btnPredict">BẮT ĐẦU PHÂN TÍCH</button>
-            <button onclick="document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('page-lobby').classList.add('active')" class="btn btn-outline">QUAY LẠI CHỌN SẢNH</button>
+    <div id="page-auth" class="page active">
+        <div class="panel" style="margin-top: 60px;">
+            <h2 style="color: var(--gold); letter-spacing: 3px;">NEURAL ROBOT</h2>
+            <p style="font-size: 10px; color: #888;">AI DEEP ANALYSIS v10.0</p>
+            <input type="text" id="username" placeholder="USERNAME">
+            <input type="password" id="password" placeholder="PASSWORD">
+            <button class="btn btn-gold" id="btnLogin">ACCESS SYSTEM</button>
+            <button class="btn" style="background:none; color:#666; font-size: 10px;" id="btnReg">CREATE NEW ACCOUNT</button>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+    <div id="page-lobby" class="page">
+        <h3 style="color: var(--gold);">SELECT SERVER</h3>
+        <div id="lobbyGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
+    </div>
 
-        // Firebase của bạn
+    <div id="page-analysis" class="page">
+        <div class="brain-wave" id="brain-ui">
+            <div class="wave" style="animation-delay: 0s;"></div>
+            <div class="wave" style="animation-delay: 0.5s;"></div>
+            <span id="ai-percent" style="font-size: 12px; font-weight: bold;">AI</span>
+        </div>
+
+        <div class="panel">
+            <div id="ai-status" style="font-size: 10px; color: #888;">WAITING FOR INPUT...</div>
+            <div id="predict-display" class="predict-box">---</div>
+            <div id="money-advise" style="font-size: 12px; color: var(--gold); margin-bottom: 10px;">GỢI Ý: CHỜ DỮ LIỆU</div>
+            <div id="roadmap"></div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <div style="flex:1"><label style="font-size:9px; color:var(--blue)">PLAYER</label><input type="number" id="p-score" placeholder="0"></div>
+            <div style="flex:1"><label style="font-size:9px; color:var(--red)">BANKER</label><input type="number" id="b-score" placeholder="0"></div>
+        </div>
+        <button class="btn btn-gold" id="btnPredict">ANALYZE PATTERN</button>
+        <button class="btn" style="background:transparent; color:#444; font-size: 10px;" onclick="location.reload()">BACK TO LOBBY</button>
+    </div>
+
+    <script type="module">
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE",
             authDomain: "congthucbcr-ai.firebaseapp.com",
@@ -82,129 +85,97 @@
             messagingSenderId: "1084138516470",
             appId: "1:1084138516470:web:1630e3966146060fbe21d7"
         };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+        // --- BỘ NÃO SIÊU AI (NEURAL LOGIC) ---
+        let memory = [];
 
-        // --- CÀI ĐẶT BỘ NÃO AI (BRAIN UPGRADE) ---
-        let historySequence = []; 
+        function neuralAnalysis(p, b) {
+            let currentWinner = p > b ? 'P' : (b > p ? 'B' : 'T');
+            memory.push(currentWinner);
+            if(memory.length > 24) memory.shift();
 
-        function brainAnalyze(pScore, bScore) {
-            let gap = Math.abs(pScore - bScore);
-            let winner = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
-            
-            if (winner !== "T") historySequence.push(winner);
-            if (historySequence.length > 8) historySequence.shift();
+            // Tính toán trọng số (Weights)
+            let wP = 0, wB = 0, wT = 0;
+            let gap = Math.abs(p - b);
 
-            let tieChance = Math.random() * 100;
-            if (tieChance < 9) return "TIE (HÒA)";
+            // 1. Phân tích Gap (Hiệu số)
+            if(gap >= 5) { currentWinner === 'P' ? wP += 40 : wB += 40; } // Bệt mạnh
+            else if(gap <= 2) { currentWinner === 'P' ? wB += 30 : wP += 30; } // Đảo cầu
 
-            // Logic chính: Thắng cách biệt lớn (>=5) thường đi bệt tiếp
-            // Thắng sát nút (<=2) thường dễ bẻ cầu
-            if (gap >= 5) return winner === "P" ? "PLAYER" : "BANKER";
-            if (gap <= 2) return winner === "P" ? "BANKER" : "PLAYER";
+            // 2. Phân tích Chuỗi (Sequence)
+            let last3 = memory.slice(-3).join('');
+            if(last3 === 'PPP' || last3 === 'BBB') { last3[0] === 'P' ? wP += 50 : wB += 50; } // Xu hướng bệt trường
 
-            return Math.random() > 0.48 ? "BANKER" : "PLAYER";
+            // 3. Ưu thế Banker mặc định (Casino Edge)
+            wB += 5;
+
+            // Quyết định
+            let result = "---";
+            let advise = "VÀO TIỀN NHẸ";
+            let confidence = 0;
+
+            if (wP > wB) { result = "PLAYER"; confidence = 85 + (wP/10); }
+            else { result = "BANKER"; confidence = 85 + (wB/10); }
+
+            // Random Tie xác suất thấp
+            if(Math.random() < 0.08) { result = "TIE (HÒA)"; advise = "ĐÁNH HÒA LÓT"; }
+            else if(confidence > 92) advise = "CHỐT MẠNH TAY";
+
+            return { res: result, conf: Math.min(Math.round(confidence), 99), advise: advise };
         }
 
-        // --- ĐIỀU KHIỂN GIAO DIỆN ---
-        const showPage = (id) => {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+        // --- GIAO DIỆN & FIREBASE ---
+        const showPage = (id) => { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); };
+
+        document.getElementById('btnLogin').onclick = () => {
+            auth.signInWithEmailAndPassword(document.getElementById('username').value + "@ai.com", document.getElementById('password').value)
+                .then(()=>showPage('page-lobby')).catch(e=>alert("LOGIN FAILED"));
         };
 
-        const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
-
-        // Theo dõi trạng thái đăng nhập
-        onAuthStateChanged(auth, (user) => {
-            if (user) showPage('page-lobby');
-            else showPage('page-auth');
-        });
-
-        // Đăng ký/Đăng nhập
-        document.getElementById('btnReg').onclick = async () => {
-            const email = document.getElementById('username').value + "@ai.com";
-            const pass = document.getElementById('password').value;
-            if(pass.length < 6) { alert("Mật khẩu phải từ 6 số!"); return; }
-            toggleLoader(true);
-            try { await createUserWithEmailAndPassword(auth, email, pass); } catch (e) { alert("Lỗi: " + e.message); }
-            toggleLoader(false);
+        document.getElementById('btnReg').onclick = () => {
+            auth.createUserWithEmailAndPassword(document.getElementById('username').value + "@ai.com", document.getElementById('password').value)
+                .then(()=>alert("ACCOUNT CREATED")).catch(e=>alert(e.message));
         };
 
-        document.getElementById('btnLogin').onclick = async () => {
-            const email = document.getElementById('username').value + "@ai.com";
-            const pass = document.getElementById('password').value;
-            toggleLoader(true);
-            try { await signInWithEmailAndPassword(auth, email, pass); } catch (e) { alert("Sai thông tin!"); }
-            toggleLoader(false);
-        };
-
-        document.getElementById('btnLogout').onclick = () => signOut(auth);
-
-        // Render Sảnh
-        const lobbies = ['AE SEXY', 'EVO', 'WM', 'DG', 'SA', 'VENUS', 'ALLBET', 'BBIN', 'PP', 'MG', 'PT', 'BG'];
-        const grid = document.getElementById('lobbyGrid');
+        const lobbies = ['SA-GAMING', 'AE-SEXY', 'EVOLUTION', 'WM-CASINO', 'DG-LIVE', 'VENUS-APP'];
         lobbies.forEach(name => {
-            let div = document.createElement('div');
-            div.className = 'lobby-item';
-            div.innerText = name;
-            div.onclick = () => {
-                document.getElementById('lobby-tag').innerText = "SẢNH: " + name;
-                showPage('page-analysis');
-            };
-            grid.appendChild(div);
+            let d = document.createElement('div'); d.className = 'btn btn-gold'; d.style.fontSize='10px'; d.innerText = name;
+            d.onclick = () => { showPage('page-analysis'); };
+            document.getElementById('lobbyGrid').appendChild(d);
         });
 
-        // Xử lý Phân tích
         document.getElementById('btnPredict').onclick = () => {
-            const pVal = document.getElementById('p-score').value;
-            const bVal = document.getElementById('b-score').value;
+            let pVal = parseInt(document.getElementById('p-score').value) || 0;
+            let bVal = parseInt(document.getElementById('b-score').value) || 0;
+            let display = document.getElementById('predict-display');
             
-            if (pVal === "" || bVal === "") { alert("Nhập điểm ván vừa rồi!"); return; }
-
-            const display = document.getElementById('predict-display');
-            const scanner = document.getElementById('scan-line');
-            
-            scanner.style.display = 'block';
-            display.innerText = "ĐANG SOI...";
-            display.style.color = "#fff";
+            display.innerText = "CALCULATING...";
+            display.style.fontSize = "20px";
 
             setTimeout(() => {
-                scanner.style.display = 'none';
-                const result = brainAnalyze(parseInt(pVal), parseInt(bVal));
+                let data = neuralAnalysis(pVal, bVal);
+                display.innerText = data.res;
+                display.style.fontSize = "42px";
+                display.style.color = data.res.includes("BANKER") ? "var(--red)" : (data.res.includes("PLAYER") ? "var(--blue)" : "var(--green)");
                 
-                display.innerText = result;
-                if (result.includes("TIE")) display.style.color = "var(--green)";
-                else if (result === "BANKER") display.style.color = "var(--red)";
-                else display.style.color = "var(--blue)";
-
-                let conf = (Math.abs(pVal-bVal) >= 5) ? (Math.floor(Math.random()*5)+94) : (Math.floor(Math.random()*7)+88);
-                document.getElementById('win-rate').innerText = "ĐỘ TIN CẬY: " + conf + "%";
-                document.getElementById('ai-status').innerText = "PHÂN TÍCH XONG (GAP: "+Math.abs(pVal-bVal)+")";
+                document.getElementById('win-rate').innerText = "CONFIDENCE: " + data.conf + "%";
+                document.getElementById('money-advise').innerText = "ADVISE: " + data.advise;
+                document.getElementById('ai-status').innerText = "PATTERN MATCHED: 100%";
                 
-                document.getElementById('p-score').value = "";
-                document.getElementById('b-score').value = "";
+                // Cập nhật Roadmap
+                let rm = document.getElementById('roadmap');
+                rm.innerHTML = "";
+                memory.forEach(m => {
+                    let c = document.createElement('div');
+                    c.className = 'cell cell-' + m.toLowerCase();
+                    c.innerText = m;
+                    rm.appendChild(c);
+                });
             }, 1200);
         };
     </script>
-
-    <script>
-        // Matrix Canvas Effect
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const drops = Array(Math.floor(canvas.width/14)).fill(1);
-        function draw() {
-            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = "#d4af37"; ctx.font = "14px monospace";
-            drops.forEach((y, i) => {
-                const text = "01PBTIE".charAt(Math.floor(Math.random()*7));
-                ctx.fillText(text, i*14, y*14);
-                if(y*14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            });
-        }
-        setInterval(draw, 50);
-    </script>
 </body>
-</html>
+    </html>
+    
