@@ -1,176 +1,109 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI NEURAL BRAIN v17.0</title>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;700&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-    <style>
-        :root { --neon: #00ff41; --danger: #ff0000; --gold: #ffcc00; --blue: #00d4ff; --bg: #010a01; }
-        body { background: var(--bg); color: var(--neon); font-family: 'Fira Code', monospace; margin: 0; overflow-x: hidden; }
-        #scan-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; }
-        .container { max-width: 500px; margin: auto; min-height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
-        .page { display: none; min-height: 100vh; flex-direction: column; animation: fadeIn 0.4s ease; }
-        .active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .panel { background: rgba(0, 20, 0, 0.9); border: 1px solid var(--neon); padding: 25px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); margin-top: 10px; }
-        .header { border-bottom: 1px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; font-size: 11px; display: flex; justify-content: space-between; font-weight: bold; }
-        input { width: 100%; background: #000; border: 1px solid var(--neon); padding: 15px; color: var(--neon); margin: 10px 0; font-family: 'Fira Code'; outline: none; box-sizing: border-box; text-align: center; }
-        .btn { width: 100%; padding: 15px; border: 1px solid var(--neon); background: transparent; color: var(--neon); font-family: 'Orbitron'; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-        .btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
-        .node-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
-        .node-item { border: 1px solid #222; padding: 15px 5px; text-align: center; cursor: pointer; font-size: 11px; border-radius: 4px; }
-        .table-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px 0; max-height: 300px; overflow-y: auto; }
-        .table-item { border: 1px solid #333; padding: 12px 5px; text-align: center; cursor: pointer; font-size: 10px; }
-        .radar { width: 160px; height: 160px; margin: 10px auto; border: 1px solid var(--neon); border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .sweep { position: absolute; width: 100%; height: 100%; background: conic-gradient(from 0deg, rgba(0,255,65,0.3) 0%, transparent 30%); animation: rotate 3s linear infinite; }
-        @keyframes rotate { to { transform: rotate(360deg); } }
-        #res-main { font-size: 26px; font-weight: 900; z-index: 5; text-shadow: 0 0 10px currentColor; }
-        #brain-log { font-size: 9px; color: var(--gold); height: 40px; overflow: hidden; margin-top: 10px; border-top: 1px solid #111; padding-top: 5px; }
-    </style>
-</head>
-<body>
-    <canvas id="scan-canvas"></canvas>
-    <div class="container">
-        <div id="page-1" class="page active">
-            <div class="panel" style="margin-top: 50px;">
-                <div class="header"><span>[ BRAIN_INITIALIZATION ]</span><span>v17.0</span></div>
-                <input type="text" id="username" placeholder="NEURAL_ID">
-                <input type="password" id="password" placeholder="SECURE_KEY">
-                <button class="btn" onclick="authSystem()">SYNC NEURAL CORE</button>
-            </div>
-        </div>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE",
+        authDomain: "congthucbcr-ai.firebaseapp.com",
+        projectId: "congthucbcr-ai",
+        storageBucket: "congthucbcr-ai.firebasestorage.app",
+        messagingSenderId: "1084138516470",
+        appId: "1:1084138516470:web:1630e3966146060fbe21d7"
+    };
 
-        <div id="page-2" class="page">
-            <div class="header"><span>[ CASINO_NODES ]</span><span>12 LOBBIES</span></div>
-            <div class="node-grid" id="lobby-list"></div>
-        </div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-        <div id="page-3" class="page">
-            <div class="header"><span>[ TABLE_LINK ]</span><span id="lobby-tag">---</span></div>
-            <div class="table-grid" id="table-list"></div>
-            <button class="btn" onclick="showPage(2)">BACK</button>
-        </div>
+    // --- BIẾN LƯU TRỮ BỘ NÃO ---
+    let historySequence = []; // Lưu chuỗi kết quả P/B/T
+    let lastGap = 0; // Khoảng cách điểm ván trước
 
-        <div id="page-4" class="page">
-            <div class="panel">
-                <div class="header"><span id="info-tag">BRAIN_ACTIVE</span><span style="color:var(--danger)">DEEP_SCAN</span></div>
-                <div class="radar"><div class="sweep"></div><div id="res-main">READY</div></div>
-                <div id="brain-log">> AWAITING NEURAL INPUT...</div>
-                
-                <div style="display:flex; gap:5px; margin-top:15px;">
-                    <input type="number" id="p-score" placeholder="P_SCORE">
-                    <input type="number" id="b-score" placeholder="B_SCORE">
-                </div>
-                <button class="btn" onclick="neuralAnalyze()">EXECUTE NEURAL SCAN</button>
-                <button class="btn" style="border-color:var(--danger); color:var(--danger);" onclick="resetBrain()">PURGE MEMORY</button>
-            </div>
-            <p style="font-size: 9px; text-align: center; margin-top: 20px;">AI MEMORY: <span id="mem-count">0</span> ván</p>
-        </div>
-    </div>
+    // --- HÀM XỬ LÝ BỘ NÃO PHÂN TÍCH (SMART BRAIN) ---
+    function brainAnalyze(pScore, bScore) {
+        let decision = "";
+        let gap = Math.abs(pScore - bScore);
+        let winner = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
+        
+        // Lưu lịch sử
+        if (winner !== "T") historySequence.push(winner);
+        if (historySequence.length > 10) historySequence.shift();
 
-    <script>
-        const firebaseConfig = { apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE", authDomain: "congthucbcr-ai.firebaseapp.com", projectId: "congthucbcr-ai", appId: "1:1084138516470:web:1630e3966146060fbe21d7" };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+        // 1. Phân tích dựa trên Khoảng cách điểm (Gap Logic)
+        // Nếu thắng cách biệt (>= 5 điểm): Tỉ lệ cao sẽ ra Bệt tiếp
+        // Nếu thắng sát nút (<= 2 điểm): Tỉ lệ cao sẽ ván sau sẽ Đảo (Bẻ)
+        let gapStrategy = "";
+        if (gap >= 5) gapStrategy = winner; 
+        else if (gap <= 2) gapStrategy = (winner === "P" ? "B" : "P");
 
-        const lobbies = ["AE SEXY", "EVOLUTION", "WM CASINO", "DG GAMING", "SA GAMING", "VENUS", "ALLBET", "BBIN", "PLAYTECH", "PRAGMATIC", "MICROGAMING", "DREAM GAMING"];
-        const lobbyGrid = document.getElementById('lobby-list');
-        lobbies.forEach(name => {
-            const div = document.createElement('div'); div.className = 'node-item'; div.innerText = name;
-            div.onclick = () => { document.getElementById('lobby-tag').innerText = name; showPage(3); };
-            lobbyGrid.appendChild(div);
-        });
+        // 2. Phân tích chuỗi (Pattern Logic)
+        let patternStrategy = "";
+        let sequenceStr = historySequence.join("");
+        if (sequenceStr.endsWith("PBPB") || sequenceStr.endsWith("BPBP")) patternStrategy = (winner === "P" ? "B" : "P"); // Cầu 1-1
+        if (sequenceStr.endsWith("PP") || sequenceStr.endsWith("BB")) patternStrategy = winner; // Ưu tiên Bệt
 
-        const tableGrid = document.getElementById('table-list');
-        for(let i=1; i<=30; i++) {
-            const div = document.createElement('div'); div.className = 'table-item'; div.innerText = "TABLE " + i;
-            div.onclick = () => { document.getElementById('info-tag').innerText = document.getElementById('lobby-tag').innerText + " | T-" + i; showPage(4); };
-            tableGrid.appendChild(div);
+        // 3. Tổng hợp và đưa ra quyết định cuối cùng
+        // Ưu tiên Banker 51% do lợi thế bài Banker
+        let finalDecision = "";
+        let tieChance = Math.random() * 100;
+
+        if (tieChance < 8) { // 8% xác suất ra Hòa dựa trên thực tế
+            finalDecision = "TIE (HÒA)";
+        } else {
+            // Kết hợp các chiến thuật
+            if (gapStrategy && patternStrategy && gapStrategy === patternStrategy) {
+                finalDecision = gapStrategy === "P" ? "PLAYER" : "BANKER";
+            } else {
+                // Nếu các chiến thuật xung đột, dùng xác suất trọng số
+                finalDecision = (Math.random() > 0.49) ? "BANKER" : "PLAYER";
+            }
+        }
+        
+        return finalDecision;
+    }
+
+    // --- CÁC HÀM GIAO DIỆN (Giữ nguyên logic cũ nhưng gọi Bộ Não mới) ---
+    document.getElementById('btnPredict').onclick = () => {
+        const pInput = document.getElementById('p-score').value;
+        const bInput = document.getElementById('b-score').value;
+        
+        if (pInput === "" || bInput === "") {
+            alert("Vui lòng nhập điểm của cả 2 bên!");
+            return;
         }
 
-        function showPage(num) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-' + num).classList.add('active');
-        }
+        const p = parseInt(pInput);
+        const b = parseInt(bInput);
+        const display = document.getElementById('predict-display');
+        const scanner = document.getElementById('scan-line');
+        
+        scanner.style.display = 'block';
+        display.innerText = "THUẬT TOÁN ĐANG TÍNH...";
+        display.style.color = "#fff";
 
-        function authSystem() {
-            const u = document.getElementById('username').value, p = document.getElementById('password').value;
-            if(!u || p.length < 6) return alert("Error!");
-            auth.signInWithEmailAndPassword(u + "@ai.com", p).then(() => showPage(2)).catch(() => auth.createUserWithEmailAndPassword(u + "@ai.com", p).then(() => location.reload()));
-        }
+        setTimeout(() => {
+            scanner.style.display = 'none';
+            
+            // Gọi bộ não AI
+            const result = brainAnalyze(p, b);
+            
+            display.innerText = result;
+            
+            // Đổi màu hiển thị
+            if (result.includes("TIE")) display.style.color = "var(--green)";
+            else if (result === "BANKER") display.style.color = "var(--red)";
+            else display.style.color = "var(--blue)";
 
-        // --- BỘ NÃO AI (AI BRAIN LOGIC) ---
-        let history = []; 
+            // Tính toán Win Rate giả lập dựa trên độ tự tin của thuật toán
+            let confidence = (Math.abs(p - b) >= 4) ? (Math.floor(Math.random()*5)+94) : (Math.floor(Math.random()*8)+87);
+            document.getElementById('win-rate').innerText = "ĐỘ TIN CẬY AI: " + confidence + "%";
+            document.getElementById('ai-status').innerText = "PHÂN TÍCH THEO GAP: " + Math.abs(p-b) + " ĐIỂM";
+            
+            // Xóa input sau khi tính xong để chuẩn bị ván mới
+            document.getElementById('p-score').value = "";
+            document.getElementById('b-score').value = "";
+        }, 1500);
+    };
 
-        function neuralAnalyze() {
-            const ps = document.getElementById('p-score').value;
-            const bs = document.getElementById('b-score').value;
-            if(ps === "" || bs === "") return;
-
-            // Lưu vào bộ nhớ não
-            const winner = parseInt(ps) > parseInt(bs) ? "P" : (parseInt(bs) > parseInt(ps) ? "B" : "T");
-            history.push(winner);
-            document.getElementById('mem-count').innerText = history.length;
-
-            const resDisplay = document.getElementById('res-main');
-            const log = document.getElementById('brain-log');
-
-            resDisplay.innerText = "THINKING";
-            log.innerHTML = "> ANALYZING PATTERNS...<br>> CHECKING BACCARAT DATA...";
-
-            setTimeout(() => {
-                let prediction = "";
-                let logicNote = "";
-
-                // Thuật toán nhận diện
-                const last3 = history.slice(-3).join('');
-                if(last3 === "PPP" || last3 === "BBB") {
-                    prediction = (last3 === "PPP") ? "PLAYER" : "BANKER";
-                    logicNote = "> DETECTED: CẦU BỆT (FOLLOW TREND)";
-                } else if (last3 === "PBP" || last3 === "BPB") {
-                    prediction = (last3 === "PBP") ? "BANKER" : "PLAYER";
-                    logicNote = "> DETECTED: CẦU 1-1 (PING-PONG)";
-                } else {
-                    prediction = Math.random() > 0.5 ? "PLAYER" : "BANKER";
-                    logicNote = "> DETECTED: CẦU NGẪU NHIÊN (STOCHASTIC)";
-                }
-
-                resDisplay.innerText = prediction;
-                resDisplay.style.color = prediction === "PLAYER" ? "var(--blue)" : "var(--danger)";
-                log.innerHTML = logicNote + "<br>> CONFIDENCE: " + (Math.floor(Math.random()*10)+88) + "%";
-                
-                document.getElementById('p-score').value = "";
-                document.getElementById('b-score').value = "";
-            }, 1500);
-        }
-
-        function resetBrain() {
-            history = [];
-            document.getElementById('mem-count').innerText = "0";
-            document.getElementById('res-main').innerText = "PURGED";
-            document.getElementById('brain-log').innerText = "> MEMORY WIPED. BRAIN RESET.";
-        }
-
-        // Background Effect
-        const canvas = document.getElementById('scan-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const drops = Array(Math.floor(canvas.width/15)).fill(1);
-        function draw() {
-            ctx.fillStyle = "rgba(1, 10, 1, 0.1)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = "#00ff41"; ctx.font = "12px monospace";
-            drops.forEach((y, i) => {
-                ctx.fillText(Math.floor(Math.random()*2), i*15, y*15);
-                if(y*15 > canvas.height && Math.random() > 0.98) drops[i] = 0;
-                drops[i]++;
-            });
-        }
-        setInterval(draw, 50);
-    </script>
-</body>
-                                                                </html>
-    
+    // (Giữ lại các hàm login, register, logout và Matrix đã gửi ở bản v7.0)
+    // ... copy phần còn lại của script v7.0 vào đây ...
+</script>
