@@ -1,109 +1,210 @@
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI ROBOT BACCARAT V8.0 - FULL UPGRADE</title>
+    
+    <style>
+        :root { --gold: #d4af37; --blue: #0084ff; --red: #ff3131; --green: #00ff88; --bg: #050505; --card: #151515; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.1; }
+        #loader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column; justify-content:center; align-items:center; }
+        .spinner { border: 4px solid #333; border-top: 4px solid var(--gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .page { display: none; padding: 20px; animation: slideUp 0.4s ease; max-width: 480px; margin: auto; text-align: center; }
+        .active { display: block; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 60px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; }
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
+        .btn-gold { background: linear-gradient(45deg, #d4af37, #f9e29c); color: #000; }
+        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+        .lobby-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .lobby-item { background: var(--card); border: 1px solid #333; padding: 15px 5px; border-radius: 12px; font-size: 11px; cursor: pointer; }
+        .monitor { background: #000; border: 2px solid var(--gold); border-radius: 20px; padding: 30px; position: relative; margin-bottom: 20px; overflow: hidden; }
+        .scan-bar { position: absolute; width: 100%; height: 2px; background: var(--gold); top: 0; left: 0; animation: scan 2s linear infinite; display: none; box-shadow: 0 0 15px var(--gold); }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        .predict-res { font-size: 40px; font-weight: 900; margin: 20px 0; letter-spacing: 2px; text-shadow: 0 0 10px currentColor; }
+        .score-box { display: flex; gap: 15px; margin: 20px 0; }
+    </style>
+</head>
+<body>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE",
-        authDomain: "congthucbcr-ai.firebaseapp.com",
-        projectId: "congthucbcr-ai",
-        storageBucket: "congthucbcr-ai.firebasestorage.app",
-        messagingSenderId: "1084138516470",
-        appId: "1:1084138516470:web:1630e3966146060fbe21d7"
-    };
+    <canvas id="matrix-canvas"></canvas>
+    <div id="loader"><div class="spinner"></div><p style="color:var(--gold); margin-top:15px;">ĐANG KẾT NỐI SERVER AI...</p></div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    <div class="container">
+        <div id="page-auth" class="page active">
+            <div class="auth-card">
+                <h1 style="color: var(--gold); margin: 0; font-size: 22px;">AI ROBOT BCR v8.0</h1>
+                <p style="color: #666; font-size: 11px; margin-bottom: 25px;">HỆ THỐNG PHÂN TÍCH CAO CẤP</p>
+                <input type="text" id="username" placeholder="Tên đăng nhập">
+                <input type="password" id="password" placeholder="Mật khẩu (>= 6 ký tự)">
+                <button class="btn btn-gold" id="btnLogin">ĐĂNG NHẬP</button>
+                <button class="btn btn-outline" id="btnReg">ĐĂNG KÝ MỚI</button>
+            </div>
+        </div>
 
-    // --- BIẾN LƯU TRỮ BỘ NÃO ---
-    let historySequence = []; // Lưu chuỗi kết quả P/B/T
-    let lastGap = 0; // Khoảng cách điểm ván trước
+        <div id="page-lobby" class="page">
+            <h2 style="color: var(--gold); letter-spacing: 2px;">CHỌN SẢNH CASINO</h2>
+            <div class="lobby-grid" id="lobbyGrid"></div>
+            <button id="btnLogout" class="btn btn-outline" style="margin-top: 30px;">ĐĂNG XUẤT</button>
+        </div>
 
-    // --- HÀM XỬ LÝ BỘ NÃO PHÂN TÍCH (SMART BRAIN) ---
-    function brainAnalyze(pScore, bScore) {
-        let decision = "";
-        let gap = Math.abs(pScore - bScore);
-        let winner = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
-        
-        // Lưu lịch sử
-        if (winner !== "T") historySequence.push(winner);
-        if (historySequence.length > 10) historySequence.shift();
+        <div id="page-analysis" class="page">
+            <div id="lobby-tag" style="font-size: 12px; color: var(--gold); margin-bottom: 10px; border: 1px solid #333; display: inline-block; padding: 5px 15px; border-radius: 20px;"></div>
+            <div class="monitor">
+                <div class="scan-bar" id="scan-line"></div>
+                <div id="ai-status" style="font-size: 12px; color: #555;">SẴN SÀNG NHẬN DỮ LIỆU...</div>
+                <div id="predict-display" class="predict-res">---</div>
+                <div id="win-rate" style="color: var(--green); font-size: 14px; font-weight: bold;">CHỜ NHẬP ĐIỂM</div>
+            </div>
+            <div class="score-box">
+                <div style="flex:1"><label style="font-size:10px;color:var(--blue)">PLAYER (P)</label><input type="number" id="p-score" placeholder="0"></div>
+                <div style="flex:1"><label style="font-size:10px;color:var(--red)">BANKER (B)</label><input type="number" id="b-score" placeholder="0"></div>
+            </div>
+            <button class="btn btn-gold" id="btnPredict">BẮT ĐẦU PHÂN TÍCH</button>
+            <button onclick="document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('page-lobby').classList.add('active')" class="btn btn-outline">QUAY LẠI CHỌN SẢNH</button>
+        </div>
+    </div>
 
-        // 1. Phân tích dựa trên Khoảng cách điểm (Gap Logic)
-        // Nếu thắng cách biệt (>= 5 điểm): Tỉ lệ cao sẽ ra Bệt tiếp
-        // Nếu thắng sát nút (<= 2 điểm): Tỉ lệ cao sẽ ván sau sẽ Đảo (Bẻ)
-        let gapStrategy = "";
-        if (gap >= 5) gapStrategy = winner; 
-        else if (gap <= 2) gapStrategy = (winner === "P" ? "B" : "P");
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-        // 2. Phân tích chuỗi (Pattern Logic)
-        let patternStrategy = "";
-        let sequenceStr = historySequence.join("");
-        if (sequenceStr.endsWith("PBPB") || sequenceStr.endsWith("BPBP")) patternStrategy = (winner === "P" ? "B" : "P"); // Cầu 1-1
-        if (sequenceStr.endsWith("PP") || sequenceStr.endsWith("BB")) patternStrategy = winner; // Ưu tiên Bệt
+        // Firebase của bạn
+        const firebaseConfig = {
+            apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE",
+            authDomain: "congthucbcr-ai.firebaseapp.com",
+            projectId: "congthucbcr-ai",
+            storageBucket: "congthucbcr-ai.firebasestorage.app",
+            messagingSenderId: "1084138516470",
+            appId: "1:1084138516470:web:1630e3966146060fbe21d7"
+        };
 
-        // 3. Tổng hợp và đưa ra quyết định cuối cùng
-        // Ưu tiên Banker 51% do lợi thế bài Banker
-        let finalDecision = "";
-        let tieChance = Math.random() * 100;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        if (tieChance < 8) { // 8% xác suất ra Hòa dựa trên thực tế
-            finalDecision = "TIE (HÒA)";
-        } else {
-            // Kết hợp các chiến thuật
-            if (gapStrategy && patternStrategy && gapStrategy === patternStrategy) {
-                finalDecision = gapStrategy === "P" ? "PLAYER" : "BANKER";
-            } else {
-                // Nếu các chiến thuật xung đột, dùng xác suất trọng số
-                finalDecision = (Math.random() > 0.49) ? "BANKER" : "PLAYER";
-            }
+        // --- CÀI ĐẶT BỘ NÃO AI (BRAIN UPGRADE) ---
+        let historySequence = []; 
+
+        function brainAnalyze(pScore, bScore) {
+            let gap = Math.abs(pScore - bScore);
+            let winner = pScore > bScore ? "P" : (bScore > pScore ? "B" : "T");
+            
+            if (winner !== "T") historySequence.push(winner);
+            if (historySequence.length > 8) historySequence.shift();
+
+            let tieChance = Math.random() * 100;
+            if (tieChance < 9) return "TIE (HÒA)";
+
+            // Logic chính: Thắng cách biệt lớn (>=5) thường đi bệt tiếp
+            // Thắng sát nút (<=2) thường dễ bẻ cầu
+            if (gap >= 5) return winner === "P" ? "PLAYER" : "BANKER";
+            if (gap <= 2) return winner === "P" ? "BANKER" : "PLAYER";
+
+            return Math.random() > 0.48 ? "BANKER" : "PLAYER";
         }
-        
-        return finalDecision;
-    }
 
-    // --- CÁC HÀM GIAO DIỆN (Giữ nguyên logic cũ nhưng gọi Bộ Não mới) ---
-    document.getElementById('btnPredict').onclick = () => {
-        const pInput = document.getElementById('p-score').value;
-        const bInput = document.getElementById('b-score').value;
-        
-        if (pInput === "" || bInput === "") {
-            alert("Vui lòng nhập điểm của cả 2 bên!");
-            return;
+        // --- ĐIỀU KHIỂN GIAO DIỆN ---
+        const showPage = (id) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        };
+
+        const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
+
+        // Theo dõi trạng thái đăng nhập
+        onAuthStateChanged(auth, (user) => {
+            if (user) showPage('page-lobby');
+            else showPage('page-auth');
+        });
+
+        // Đăng ký/Đăng nhập
+        document.getElementById('btnReg').onclick = async () => {
+            const email = document.getElementById('username').value + "@ai.com";
+            const pass = document.getElementById('password').value;
+            if(pass.length < 6) { alert("Mật khẩu phải từ 6 số!"); return; }
+            toggleLoader(true);
+            try { await createUserWithEmailAndPassword(auth, email, pass); } catch (e) { alert("Lỗi: " + e.message); }
+            toggleLoader(false);
+        };
+
+        document.getElementById('btnLogin').onclick = async () => {
+            const email = document.getElementById('username').value + "@ai.com";
+            const pass = document.getElementById('password').value;
+            toggleLoader(true);
+            try { await signInWithEmailAndPassword(auth, email, pass); } catch (e) { alert("Sai thông tin!"); }
+            toggleLoader(false);
+        };
+
+        document.getElementById('btnLogout').onclick = () => signOut(auth);
+
+        // Render Sảnh
+        const lobbies = ['AE SEXY', 'EVO', 'WM', 'DG', 'SA', 'VENUS', 'ALLBET', 'BBIN', 'PP', 'MG', 'PT', 'BG'];
+        const grid = document.getElementById('lobbyGrid');
+        lobbies.forEach(name => {
+            let div = document.createElement('div');
+            div.className = 'lobby-item';
+            div.innerText = name;
+            div.onclick = () => {
+                document.getElementById('lobby-tag').innerText = "SẢNH: " + name;
+                showPage('page-analysis');
+            };
+            grid.appendChild(div);
+        });
+
+        // Xử lý Phân tích
+        document.getElementById('btnPredict').onclick = () => {
+            const pVal = document.getElementById('p-score').value;
+            const bVal = document.getElementById('b-score').value;
+            
+            if (pVal === "" || bVal === "") { alert("Nhập điểm ván vừa rồi!"); return; }
+
+            const display = document.getElementById('predict-display');
+            const scanner = document.getElementById('scan-line');
+            
+            scanner.style.display = 'block';
+            display.innerText = "ĐANG SOI...";
+            display.style.color = "#fff";
+
+            setTimeout(() => {
+                scanner.style.display = 'none';
+                const result = brainAnalyze(parseInt(pVal), parseInt(bVal));
+                
+                display.innerText = result;
+                if (result.includes("TIE")) display.style.color = "var(--green)";
+                else if (result === "BANKER") display.style.color = "var(--red)";
+                else display.style.color = "var(--blue)";
+
+                let conf = (Math.abs(pVal-bVal) >= 5) ? (Math.floor(Math.random()*5)+94) : (Math.floor(Math.random()*7)+88);
+                document.getElementById('win-rate').innerText = "ĐỘ TIN CẬY: " + conf + "%";
+                document.getElementById('ai-status').innerText = "PHÂN TÍCH XONG (GAP: "+Math.abs(pVal-bVal)+")";
+                
+                document.getElementById('p-score').value = "";
+                document.getElementById('b-score').value = "";
+            }, 1200);
+        };
+    </script>
+
+    <script>
+        // Matrix Canvas Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const drops = Array(Math.floor(canvas.width/14)).fill(1);
+        function draw() {
+            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#d4af37"; ctx.font = "14px monospace";
+            drops.forEach((y, i) => {
+                const text = "01PBTIE".charAt(Math.floor(Math.random()*7));
+                ctx.fillText(text, i*14, y*14);
+                if(y*14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
         }
-
-        const p = parseInt(pInput);
-        const b = parseInt(bInput);
-        const display = document.getElementById('predict-display');
-        const scanner = document.getElementById('scan-line');
-        
-        scanner.style.display = 'block';
-        display.innerText = "THUẬT TOÁN ĐANG TÍNH...";
-        display.style.color = "#fff";
-
-        setTimeout(() => {
-            scanner.style.display = 'none';
-            
-            // Gọi bộ não AI
-            const result = brainAnalyze(p, b);
-            
-            display.innerText = result;
-            
-            // Đổi màu hiển thị
-            if (result.includes("TIE")) display.style.color = "var(--green)";
-            else if (result === "BANKER") display.style.color = "var(--red)";
-            else display.style.color = "var(--blue)";
-
-            // Tính toán Win Rate giả lập dựa trên độ tự tin của thuật toán
-            let confidence = (Math.abs(p - b) >= 4) ? (Math.floor(Math.random()*5)+94) : (Math.floor(Math.random()*8)+87);
-            document.getElementById('win-rate').innerText = "ĐỘ TIN CẬY AI: " + confidence + "%";
-            document.getElementById('ai-status').innerText = "PHÂN TÍCH THEO GAP: " + Math.abs(p-b) + " ĐIỂM";
-            
-            // Xóa input sau khi tính xong để chuẩn bị ván mới
-            document.getElementById('p-score').value = "";
-            document.getElementById('b-score').value = "";
-        }, 1500);
-    };
-
-    // (Giữ lại các hàm login, register, logout và Matrix đã gửi ở bản v7.0)
-    // ... copy phần còn lại của script v7.0 vào đây ...
-</script>
+        setInterval(draw, 50);
+    </script>
+</body>
+</html>
