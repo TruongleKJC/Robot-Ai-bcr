@@ -3,167 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE V24 - QUAD-CORE</title>
+    <title>ORACLE V27 - COSMIC SENTIENCE</title>
     <style>
-        :root { --p: #00d2ff; --b: #ff0055; --t: #00ff88; --gold: #ffd700; --bg: #050505; }
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
 
-        /* Navigation */
-        .page { display: none; height: 100vh; width: 100%; padding: 20px; overflow-y: auto; position: absolute; }
-        .active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        :root {
+            --p: #00f2ff; --b: #ff0055; --t: #00ff88; --gold: #ffd700;
+            --bg: #02040a; --glass: rgba(15, 20, 30, 0.8); --border: rgba(255, 255, 255, 0.1);
+        }
 
-        /* UI Elements */
-        .glass { background: rgba(255,255,255,0.03); border: 1px solid #1a1a1c; border-radius: 20px; padding: 20px; margin-bottom: 15px; }
-        input { width: 100%; padding: 15px; background: #000; border: 1px solid #222; border-radius: 12px; color: #fff; margin-bottom: 10px; }
-        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-p { background: var(--p); color: #000; }
-        .btn:active { transform: scale(0.98); }
+        * { box-sizing: border-box; font-family: 'Rajdhani', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, #0a1221 0%, #02040a 100%); }
 
-        /* Hall Selection */
-        .hall-box { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #111; border-radius: 15px; margin-bottom: 10px; cursor: pointer; }
-        .hall-box:active { border-color: var(--p); }
+        /* Chuyển trang */
+        .page { display: none; height: 100vh; width: 100%; padding: 15px; overflow-y: auto; position: absolute; padding-bottom: 90px; }
+        .active { display: block; animation: scaleUp 0.4s cubic-bezier(0.2, 1, 0.3, 1); }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        /* Bead Plate */
-        .bead-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin: 15px 0; }
-        .bead { aspect-ratio: 1/1; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
+        /* Container & Glassmorphism */
+        .glass-card { 
+            background: var(--glass); backdrop-filter: blur(15px); 
+            border: 1px solid var(--border); border-radius: 20px; 
+            padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
 
-        /* Nav Bar */
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #111; z-index: 100; }
-        .nav-item { font-size: 0.65rem; color: #444; text-align: center; flex: 1; }
-        .nav-item.active-nav { color: var(--p); font-weight: bold; }
+        /* Typography */
+        h1, h2, .res-text { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
+        .label { font-size: 0.7rem; color: #667; letter-spacing: 1px; }
+
+        /* Input & Buttons */
+        input { 
+            width: 100%; padding: 15px; background: rgba(0,0,0,0.3); 
+            border: 1px solid #222; border-radius: 12px; color: var(--p); 
+            font-size: 1rem; margin: 10px 0; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--p); box-shadow: 0 0 15px rgba(0,242,255,0.2); }
+
+        .btn { 
+            width: 100%; padding: 18px; border-radius: 15px; border: none; 
+            font-weight: 700; font-family: 'Orbitron'; cursor: pointer; transition: 0.3s; 
+        }
+        .btn-p { background: linear-gradient(90deg, #0088ff, var(--p)); color: #000; box-shadow: 0 5px 20px rgba(0,242,255,0.3); }
+        .btn-b { background: linear-gradient(90deg, #bb0033, var(--b)); color: #fff; box-shadow: 0 5px 20px rgba(255,0,85,0.3); }
+
+        /* Heatmap Grid */
+        .heatmap { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin: 15px 0; }
+        .dot { height: 6px; background: #1a1f2b; border-radius: 2px; transition: 0.5s; }
+
+        /* Stats HUD */
+        .hud-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .hud-item { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 15px; border-left: 3px solid var(--p); }
+
+        /* Navigation Bar */
+        .nav-bar { 
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            width: 90%; background: rgba(10, 15, 25, 0.9); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around; padding: 12px;
+            border-radius: 25px; border: 1px solid var(--border); z-index: 100;
+        }
+        .nav-item { font-size: 0.6rem; color: #445; text-align: center; font-weight: 700; font-family: 'Orbitron'; text-decoration: none; }
+        .nav-item.active-nav { color: var(--p); text-shadow: 0 0 10px var(--p); }
+
+        /* Prediction Result Animation */
+        #res-display { font-size: 7rem; margin: 0; transition: 0.5s; }
+        .glow-p { color: var(--p); text-shadow: 0 0 50px var(--p); }
+        .glow-b { color: var(--b); text-shadow: 0 0 50px var(--b); }
     </style>
 </head>
 <body>
 
-    <div id="p1" class="page active">
-        <div style="margin-top: 25vh; text-align: center;">
-            <h1 style="letter-spacing: 8px; color: var(--p);">ORACLE V24</h1>
-            <div class="glass">
-                <input type="text" placeholder="LICENSE KEY">
-                <input type="password" placeholder="SECURITY CODE">
-                <button class="btn btn-p" onclick="navTo('p2')">XÁC THỰC AI</button>
+    <div id="p-auth" class="page active">
+        <div style="margin-top: 20vh; text-align: center;">
+            <h1 style="font-size: 2rem; color: var(--p); margin-bottom: 5px;">ORACLE V27</h1>
+            <p class="label" style="margin-bottom: 30px;">QUANTUM ACCESS TERMINAL</p>
+            <div class="glass-card">
+                <input type="text" placeholder="ENTER LICENSE KEY">
+                <input type="password" placeholder="SECURITY PIN">
+                <button class="btn btn-p" onclick="navTo('p-hall')">INITIALIZE SYSTEM</button>
             </div>
-            <small style="color: #222;">ENCRYPTED END-TO-END</small>
         </div>
     </div>
 
-    <div id="p2" class="page">
-        <h2 style="color: var(--p)">SẢNH PHÂN TÍCH</h2>
-        <div class="hall-box" onclick="navTo('p3')"><span>AE SEXY</span><small style="color:var(--t)">VOL: THẤP</small></div>
-        <div class="hall-box" onclick="navTo('p3')"><span>EVOLUTION</span><small style="color:var(--t)">VOL: TRUNG BÌNH</small></div>
-        <div class="hall-box" onclick="navTo('p3')"><span>WM CASINO</span><small style="color:var(--b)">VOL: CAO</small></div>
-        <div class="hall-box" onclick="navTo('p3')"><span>DG CASINO</span><small style="color:var(--t)">VOL: THẤP</small></div>
+    <div id="p-hall" class="page">
+        <h2 style="color: var(--p); margin-bottom: 20px;">HALL SELECTION</h2>
+        <div class="glass-card" onclick="navTo('p-tool')" style="cursor: pointer; border-left: 4px solid var(--t);">
+            <div style="display:flex; justify-content: space-between;">
+                <b>AE SEXY CASINO</b>
+                <span style="color: var(--t)">98% STABLE</span>
+            </div>
+            <p class="label">Bàn cược Châu Á - Nhịp bài đều</p>
+        </div>
+        <div class="glass-card" onclick="navTo('p-tool')" style="cursor: pointer; border-left: 4px solid var(--p);">
+            <div style="display:flex; justify-content: space-between;">
+                <b>EVOLUTION</b>
+                <span style="color: var(--p)">92% ACTIVE</span>
+            </div>
+            <p class="label">Tốc độ cao - Cầu 1-1 thường xuyên</p>
+        </div>
     </div>
 
-    <div id="p3" class="page">
+    <div id="p-tool" class="page">
         <div style="display:flex; justify-content: space-between; align-items: center;">
-            <b id="status" style="color:var(--t); font-size: 0.7rem;">● ONLINE</b>
-            <b id="wr" style="color:var(--p)">WR: 0%</b>
-        </div>
-        
-        <div style="text-align: center; padding: 30px 0;">
-            <h1 id="res" style="font-size: 8rem; margin: 0; line-height: 1; color: #111;">?</h1>
-            <p id="advice" style="color: #444; font-size: 0.8rem;">NHẬP DỮ LIỆU ĐỂ SOI CẦU</p>
+            <div class="label">SYSTEM: ONLINE</div>
+            <div id="accuracy-text" style="color:var(--t); font-weight:bold;">WR: 0%</div>
         </div>
 
-        <div class="bead-grid" id="beads"></div>
+        <div style="text-align: center; padding: 20px 0;">
+            <div class="label" style="letter-spacing: 5px;">PREDICTION</div>
+            <h1 id="res-display" class="res-text">?</h1>
+            <p id="advice" style="color: #556;">WAITING FOR DATA...</p>
+        </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <button class="btn" style="background:var(--p); color:#000" onclick="input(0)">PLAYER</button>
-            <button class="btn" style="background:var(--b); color:#fff" onclick="input(1)">BANKER</button>
+        <div class="heatmap" id="heatmap"></div>
+
+        <div class="hud-grid">
+            <div class="hud-item"><span class="label">SIGNAL</span><br><b id="signal-val">-</b></div>
+            <div class="hud-item"><span class="label">VOLATILITY</span><br><b id="vol-val">LOW</b></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+            <button class="btn btn-p" onclick="process(0)" style="font-size: 0.8rem;">PLAYER</button>
+            <button class="btn btn-b" onclick="process(1)" style="font-size: 0.8rem;">BANKER</button>
         </div>
     </div>
 
-    <div id="p4" class="page">
-        <h2 style="color: var(--gold)">QUẢN LÝ VỐN</h2>
-        <div class="glass">
-            <span>TỔNG VỐN (VNĐ)</span>
-            <input type="number" id="capital" value="1000000">
-            <span>CÁCH ĐÁNH</span>
-            <select id="mode" style="width:100%; padding:15px; background:#000; color:#fff; border-radius:12px; border:1px solid #222;">
-                <option value="martingale">GẤP THẾP (MARTINGALE)</option>
-                <option value="fibonacci">DÃY SỐ (FIBONACCI)</option>
-            </select>
-            <button class="btn" style="background:var(--gold); color:#000; margin-top:15px;" onclick="calc()">LẬP KẾ HOẠCH</button>
+    <div id="p-history" class="page">
+        <h2 style="color: var(--gold)">FINANCE HUB</h2>
+        <div class="glass-card">
+            <span class="label">QUẢN LÝ VỐN SMART KELLY</span>
+            <input type="number" id="capital" placeholder="Tổng vốn hiện có...">
+            <button class="btn" style="background: #111; border: 1px solid #333; color: var(--gold);" onclick="calculateBet()">TÍNH LỆNH CƯỢC</button>
+            <div id="bet-res" style="margin-top: 15px; color: var(--t); font-weight: bold; text-align: center;"></div>
         </div>
-        <div id="plan" style="font-size: 0.8rem; line-height: 1.6; color: #888;"></div>
+        <div class="glass-card">
+            <span class="label">LỊCH SỬ PHIÊN</span>
+            <div id="log-list" style="font-size: 0.8rem; margin-top: 10px; color: #889;"></div>
+        </div>
     </div>
 
-    <div class="nav-bar" id="nav" style="display:none;">
-        <div class="nav-item active-nav" onclick="navTo('p2')">SẢNH</div>
-        <div class="nav-item" onclick="navTo('p3')">SOI CẦU</div>
-        <div class="nav-item" onclick="navTo('p4')">VỐN</div>
-        <div class="nav-item" onclick="location.reload()">THOÁT</div>
-    </div>
+    <nav class="nav-bar" id="navbar" style="display:none;">
+        <div class="nav-item active-nav" onclick="navTo('p-hall')">SẢNH</div>
+        <div class="nav-item" onclick="navTo('p-tool')">SOI CẦU</div>
+        <div class="nav-item" onclick="navTo('p-history')">VỐN</div>
+        <div class="nav-item" onclick="location.reload()">LOGOUT</div>
+    </nav>
 
-<script>
-    let logs = []; let wins = 0; let total = 0;
+    <script>
+        let logs = []; let wins = 0; let total = 0;
 
-    function navTo(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.getElementById('nav').style.display = (id === 'p1') ? 'none' : 'flex';
-        
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
-        if(id === 'p2') document.querySelectorAll('.nav-item')[0].classList.add('active-nav');
-        if(id === 'p3') {
-            document.querySelectorAll('.nav-item')[1].classList.add('active-nav');
-            renderBeads();
-        }
-        if(id === 'p4') document.querySelectorAll('.nav-item')[2].classList.add('active-nav');
-    }
-
-    function renderBeads() {
-        const grid = document.getElementById('beads');
-        grid.innerHTML = '';
-        for(let i=0; i<30; i++) {
-            const b = document.createElement('div');
-            b.className = 'bead';
-            if(logs[i] !== undefined) {
-                b.innerText = logs[i] === 0 ? 'P' : 'B';
-                b.style.background = logs[i] === 0 ? 'var(--p)' : 'var(--b)';
-                b.style.color = '#000';
+        function navTo(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('navbar').style.display = (id === 'p-auth') ? 'none' : 'flex';
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+            if(id === 'p-hall') document.querySelectorAll('.nav-item')[0].classList.add('active-nav');
+            if(id === 'p-tool') {
+                document.querySelectorAll('.nav-item')[1].classList.add('active-nav');
+                initHeatmap();
             }
-            grid.appendChild(b);
-        }
-    }
-
-    function input(v) {
-        const resDisp = document.getElementById('res');
-        if(resDisp.innerText !== '?') {
-            total++;
-            if(resDisp.innerText === (v === 0 ? 'P' : 'B')) wins++;
-            document.getElementById('wr').innerText = `WR: ${Math.round((wins/total)*100)}%`;
+            if(id === 'p-history') document.querySelectorAll('.nav-item')[2].classList.add('active-nav');
         }
 
-        logs.push(v);
-        if(logs.length > 30) logs.shift();
-        renderBeads();
+        function initHeatmap() {
+            const h = document.getElementById('heatmap');
+            h.innerHTML = '';
+            for(let i=0; i<48; i++) {
+                const d = document.createElement('div');
+                d.className = 'dot';
+                if(logs[i] !== undefined) d.style.background = logs[i] === 0 ? 'var(--p)' : 'var(--b)';
+                h.appendChild(d);
+            }
+        }
 
-        resDisp.style.opacity = '0.2';
-        setTimeout(() => {
-            const next = Math.random() > 0.5 ? 'P' : 'B';
-            resDisp.innerText = next;
-            resDisp.style.color = next === 'P' ? 'var(--p)' : 'var(--b)';
-            resDisp.style.opacity = '1';
-            document.getElementById('advice').innerText = "TÍN HIỆU: VÀO NHẸ 1%";
-        }, 500);
-    }
+        function process(v) {
+            const resEl = document.getElementById('res-display');
+            
+            // Tính độ chính xác
+            if(resEl.innerText !== '?') {
+                total++;
+                if(resEl.innerText === (v === 0 ? 'P' : 'B')) wins++;
+                document.getElementById('accuracy-text').innerText = `WR: ${Math.round((wins/total)*100)}%`;
+            }
 
-    function calc() {
-        const cap = document.getElementById('capital').value;
-        const plan = document.getElementById('plan');
-        plan.innerHTML = `
-            Kế hoạch cược gợi ý:<br>
-            - Ván 1: ${cap * 0.01} (1%)<br>
-            - Ván 2 (nếu thua): ${cap * 0.02} (2%)<br>
-            - Ván 3 (nếu thua): ${cap * 0.04} (4%)<br>
-            Lưu ý: Không nên gấp quá 4 tay.
-        `;
-    }
-</script>
+            logs.push(v);
+            if(logs.length > 48) logs.shift();
+            initHeatmap();
+
+            // Hiệu ứng AI quét
+            resEl.style.opacity = '0.2';
+            document.getElementById('advice').innerText = "ANALYZING NEURAL PATHS...";
+            
+            setTimeout(() => {
+                const next = Math.random() > 0.5 ? 0 : 1;
+                const conf = Math.floor(Math.random() * 30 + 65);
+                
+                resEl.innerText = next === 0 ? 'P' : 'B';
+                resEl.className = next === 0 ? 'res-text glow-p' : 'res-text glow-b';
+                resEl.style.opacity = '1';
+                
+                document.getElementById('signal-val').innerText = conf + "%";
+                document.getElementById('advice').innerText = conf > 80 ? "LỆNH CỰC MẠNH (STRONG)" : "VÀO NHẸ (NORMAL)";
+                document.getElementById('advice').style.color = conf > 80 ? 'var(--t)' : '#556';
+            }, 600);
+        }
+
+        function calculateBet() {
+            const cap = document.getElementById('capital').value;
+            if(!cap) return;
+            document.getElementById('bet-res').innerText = `LỆNH TIẾP THEO: ${(cap * 0.02).toLocaleString()} VNĐ`;
+        }
+    </script>
 </body>
     </html>
-    
+                
