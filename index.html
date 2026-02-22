@@ -2,97 +2,168 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Baccarat Analyzer v1.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ORACLE V24 - QUAD-CORE</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #1a1a1a; color: white; padding: 20px; }
-        .container { max-width: 400px; margin: auto; background: #2d2d2d; padding: 20px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        .btn { padding: 15px 25px; margin: 5px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .btn-b { background: #e74c3c; color: white; }
-        .btn-p { background: #3498db; color: white; }
-        .btn-t { background: #27ae60; color: white; }
-        .result-box { margin-top: 20px; padding: 15px; border: 1px solid #444; border-radius: 10px; background: #222; }
-        .probability { font-size: 24px; color: #f1c40f; margin: 10px 0; }
-        .history { word-wrap: break-word; color: #888; font-size: 12px; margin-top: 15px; }
-        #advice { color: #2ecc71; font-style: italic; }
+        :root { --p: #00d2ff; --b: #ff0055; --t: #00ff88; --gold: #ffd700; --bg: #050505; }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
+
+        /* Navigation */
+        .page { display: none; height: 100vh; width: 100%; padding: 20px; overflow-y: auto; position: absolute; }
+        .active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* UI Elements */
+        .glass { background: rgba(255,255,255,0.03); border: 1px solid #1a1a1c; border-radius: 20px; padding: 20px; margin-bottom: 15px; }
+        input { width: 100%; padding: 15px; background: #000; border: 1px solid #222; border-radius: 12px; color: #fff; margin-bottom: 10px; }
+        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-p { background: var(--p); color: #000; }
+        .btn:active { transform: scale(0.98); }
+
+        /* Hall Selection */
+        .hall-box { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #111; border-radius: 15px; margin-bottom: 10px; cursor: pointer; }
+        .hall-box:active { border-color: var(--p); }
+
+        /* Bead Plate */
+        .bead-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin: 15px 0; }
+        .bead { aspect-ratio: 1/1; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
+
+        /* Nav Bar */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #111; z-index: 100; }
+        .nav-item { font-size: 0.65rem; color: #444; text-align: center; flex: 1; }
+        .nav-item.active-nav { color: var(--p); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>🤖 AI Baccarat HTML</h2>
-    <p>Nhập kết quả ván trước:</p>
-    
-    <button class="btn btn-b" onclick="addData('B')">Banker (B)</button>
-    <button class="btn btn-p" onclick="addData('P')">Player (P)</button>
-    <button class="btn btn-t" onclick="addData('T')">Tie (T)</button>
-
-    <div class="result-box">
-        <div>Dự đoán ván tiếp theo:</div>
-        <div class="probability" id="prediction">Đang chờ dữ liệu...</div>
-        <div id="advice">Nhập ít nhất 5 ván để AI phân tích</div>
+    <div id="p1" class="page active">
+        <div style="margin-top: 25vh; text-align: center;">
+            <h1 style="letter-spacing: 8px; color: var(--p);">ORACLE V24</h1>
+            <div class="glass">
+                <input type="text" placeholder="LICENSE KEY">
+                <input type="password" placeholder="SECURITY CODE">
+                <button class="btn btn-p" onclick="navTo('p2')">XÁC THỰC AI</button>
+            </div>
+            <small style="color: #222;">ENCRYPTED END-TO-END</small>
+        </div>
     </div>
 
-    <div class="history">
-        Lịch sử: <span id="history-log">-</span>
+    <div id="p2" class="page">
+        <h2 style="color: var(--p)">SẢNH PHÂN TÍCH</h2>
+        <div class="hall-box" onclick="navTo('p3')"><span>AE SEXY</span><small style="color:var(--t)">VOL: THẤP</small></div>
+        <div class="hall-box" onclick="navTo('p3')"><span>EVOLUTION</span><small style="color:var(--t)">VOL: TRUNG BÌNH</small></div>
+        <div class="hall-box" onclick="navTo('p3')"><span>WM CASINO</span><small style="color:var(--b)">VOL: CAO</small></div>
+        <div class="hall-box" onclick="navTo('p3')"><span>DG CASINO</span><small style="color:var(--t)">VOL: THẤP</small></div>
     </div>
-    <br>
-    <button onclick="resetData()" style="background:none; border:1px solid #666; color:#666; cursor:pointer">Xóa dữ liệu</button>
-</div>
+
+    <div id="p3" class="page">
+        <div style="display:flex; justify-content: space-between; align-items: center;">
+            <b id="status" style="color:var(--t); font-size: 0.7rem;">● ONLINE</b>
+            <b id="wr" style="color:var(--p)">WR: 0%</b>
+        </div>
+        
+        <div style="text-align: center; padding: 30px 0;">
+            <h1 id="res" style="font-size: 8rem; margin: 0; line-height: 1; color: #111;">?</h1>
+            <p id="advice" style="color: #444; font-size: 0.8rem;">NHẬP DỮ LIỆU ĐỂ SOI CẦU</p>
+        </div>
+
+        <div class="bead-grid" id="beads"></div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button class="btn" style="background:var(--p); color:#000" onclick="input(0)">PLAYER</button>
+            <button class="btn" style="background:var(--b); color:#fff" onclick="input(1)">BANKER</button>
+        </div>
+    </div>
+
+    <div id="p4" class="page">
+        <h2 style="color: var(--gold)">QUẢN LÝ VỐN</h2>
+        <div class="glass">
+            <span>TỔNG VỐN (VNĐ)</span>
+            <input type="number" id="capital" value="1000000">
+            <span>CÁCH ĐÁNH</span>
+            <select id="mode" style="width:100%; padding:15px; background:#000; color:#fff; border-radius:12px; border:1px solid #222;">
+                <option value="martingale">GẤP THẾP (MARTINGALE)</option>
+                <option value="fibonacci">DÃY SỐ (FIBONACCI)</option>
+            </select>
+            <button class="btn" style="background:var(--gold); color:#000; margin-top:15px;" onclick="calc()">LẬP KẾ HOẠCH</button>
+        </div>
+        <div id="plan" style="font-size: 0.8rem; line-height: 1.6; color: #888;"></div>
+    </div>
+
+    <div class="nav-bar" id="nav" style="display:none;">
+        <div class="nav-item active-nav" onclick="navTo('p2')">SẢNH</div>
+        <div class="nav-item" onclick="navTo('p3')">SOI CẦU</div>
+        <div class="nav-item" onclick="navTo('p4')">VỐN</div>
+        <div class="nav-item" onclick="location.reload()">THOÁT</div>
+    </div>
 
 <script>
-    let history = [];
+    let logs = []; let wins = 0; let total = 0;
 
-    function addData(type) {
-        history.push(type);
-        updateUI();
-    }
-
-    function resetData() {
-        history = [];
-        updateUI();
-    }
-
-    function updateUI() {
-        document.getElementById('history-log').innerText = history.join(' > ');
+    function navTo(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.getElementById('nav').style.display = (id === 'p1') ? 'none' : 'flex';
         
-        if (history.length < 5) {
-            document.getElementById('prediction').innerText = "Đang chờ...";
-            return;
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+        if(id === 'p2') document.querySelectorAll('.nav-item')[0].classList.add('active-nav');
+        if(id === 'p3') {
+            document.querySelectorAll('.nav-item')[1].classList.add('active-nav');
+            renderBeads();
+        }
+        if(id === 'p4') document.querySelectorAll('.nav-item')[2].classList.add('active-nav');
+    }
+
+    function renderBeads() {
+        const grid = document.getElementById('beads');
+        grid.innerHTML = '';
+        for(let i=0; i<30; i++) {
+            const b = document.createElement('div');
+            b.className = 'bead';
+            if(logs[i] !== undefined) {
+                b.innerText = logs[i] === 0 ? 'P' : 'B';
+                b.style.background = logs[i] === 0 ? 'var(--p)' : 'var(--b)';
+                b.style.color = '#000';
+            }
+            grid.appendChild(b);
+        }
+    }
+
+    function input(v) {
+        const resDisp = document.getElementById('res');
+        if(resDisp.innerText !== '?') {
+            total++;
+            if(resDisp.innerText === (v === 0 ? 'P' : 'B')) wins++;
+            document.getElementById('wr').innerText = `WR: ${Math.round((wins/total)*100)}%`;
         }
 
-        // Logic AI phân tích độ lệch (Variance)
-        let bCount = history.filter(x => x === 'B').length;
-        let pCount = history.filter(x => x === 'P').length;
-        let total = history.length;
+        logs.push(v);
+        if(logs.length > 30) logs.shift();
+        renderBeads();
 
-        let bProb = (bCount / total);
-        let pProb = (pCount / total);
+        resDisp.style.opacity = '0.2';
+        setTimeout(() => {
+            const next = Math.random() > 0.5 ? 'P' : 'B';
+            resDisp.innerText = next;
+            resDisp.style.color = next === 'P' ? 'var(--p)' : 'var(--b)';
+            resDisp.style.opacity = '1';
+            document.getElementById('advice').innerText = "TÍN HIỆU: VÀO NHẸ 1%";
+        }, 500);
+    }
 
-        let nextBet = "";
-        let rate = 0;
-        let advice = "";
-
-        // Thuật toán hồi quy: Nếu một bên ra quá nhiều (>55%), ưu tiên bên kia
-        if (bProb > 0.55) {
-            nextBet = "PLAYER (P)";
-            rate = Math.round(bProb * 100);
-            advice = "Dây Banker đang quá dài, khả năng hồi quy Player cao.";
-        } else if (pProb > 0.55) {
-            nextBet = "BANKER (B)";
-            rate = Math.round(pProb * 100);
-            advice = "Dây Player đang quá dài, khả năng hồi quy Banker cao.";
-        } else {
-            // Đánh theo cầu bệt nếu xác suất cân bằng
-            nextBet = (history[history.length-1] === 'B') ? "BANKER (B)" : "PLAYER (P)";
-            rate = 52;
-            advice = "Cầu đang ổn định, đánh thuận theo kết quả gần nhất.";
-        }
-
-        document.getElementById('prediction').innerText = nextBet + " ~ " + rate + "%";
-        document.getElementById('advice').innerText = "💡 " + advice;
+    function calc() {
+        const cap = document.getElementById('capital').value;
+        const plan = document.getElementById('plan');
+        plan.innerHTML = `
+            Kế hoạch cược gợi ý:<br>
+            - Ván 1: ${cap * 0.01} (1%)<br>
+            - Ván 2 (nếu thua): ${cap * 0.02} (2%)<br>
+            - Ván 3 (nếu thua): ${cap * 0.04} (4%)<br>
+            Lưu ý: Không nên gấp quá 4 tay.
+        `;
     }
 </script>
-
 </body>
-</html>
+    </html>
+    
