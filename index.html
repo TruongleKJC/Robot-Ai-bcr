@@ -3,203 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI ROBOT BACCARAT v13.0 - NEURAL CORE</title>
-    <script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-auth-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>AI Baccarat Analyzer v1.0</title>
     <style>
-        :root { --gold: #ffd700; --blue: #00d2ff; --red: #ff4b2b; --green: #33ff00; --bg: #050508; }
-        body { background: #050508; color: #fff; font-family: 'Orbitron', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; }
-        
-        .container { width: 92%; max-width: 420px; margin-top: 20px; }
-        .glass-panel { 
-            background: rgba(20, 20, 30, 0.8); backdrop-filter: blur(10px);
-            border: 2px solid var(--gold); border-radius: 25px; padding: 20px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1); position: relative;
-        }
-
-        /* Neural Animation */
-        .neural-scan {
-            width: 100%; height: 2px; background: var(--gold);
-            position: absolute; top: 0; left: 0;
-            animation: scanLine 2.5s infinite linear;
-            box-shadow: 0 0 15px var(--gold); display: none;
-        }
-        @keyframes scanLine { 0% { top: 0; } 100% { top: 100%; } }
-
-        .predict-title { font-size: 10px; color: #888; letter-spacing: 3px; }
-        .predict-val { font-size: 45px; font-weight: 900; margin: 15px 0; text-shadow: 0 0 20px currentColor; }
-        
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .stat-item { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; border: 1px solid #333; }
-        
-        .score-input { 
-            width: 100%; background: #000; border: 1px solid #444; color: #fff;
-            padding: 15px; border-radius: 12px; font-size: 20px; text-align: center;
-            font-family: 'Orbitron'; outline: none; box-sizing: border-box;
-        }
-        .btn-predict {
-            width: 100%; padding: 18px; border-radius: 15px; border: none;
-            background: linear-gradient(90deg, #ffd700, #b8860b);
-            color: #000; font-weight: 900; font-size: 16px; cursor: pointer; margin-top: 15px;
-        }
-
-        #roadmap { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 15px; min-height: 40px; }
-        .dot { width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: bold; }
-        .dot-P { background: var(--blue); box-shadow: 0 0 8px var(--blue); }
-        .dot-B { background: var(--red); box-shadow: 0 0 8px var(--red); }
+        body { font-family: sans-serif; text-align: center; background: #1a1a1a; color: white; padding: 20px; }
+        .container { max-width: 400px; margin: auto; background: #2d2d2d; padding: 20px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .btn { padding: 15px 25px; margin: 5px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .btn-b { background: #e74c3c; color: white; }
+        .btn-p { background: #3498db; color: white; }
+        .btn-t { background: #27ae60; color: white; }
+        .result-box { margin-top: 20px; padding: 15px; border: 1px solid #444; border-radius: 10px; background: #222; }
+        .probability { font-size: 24px; color: #f1c40f; margin: 10px 0; }
+        .history { word-wrap: break-word; color: #888; font-size: 12px; margin-top: 15px; }
+        #advice { color: #2ecc71; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <div id="page-auth" class="container">
-        <div class="glass-panel" style="margin-top: 80px; text-align: center;">
-            <h2 style="color: var(--gold);">NEURAL LOGIN</h2>
-            <input type="text" id="username" class="score-input" placeholder="USERNAME" style="margin-bottom: 10px;">
-            <input type="password" id="password" class="score-input" placeholder="PASSWORD">
-            <button class="btn-predict" id="btnLogin" style="margin-top: 20px;">KÍCH HOẠT AI</button>
-            <p id="btnReg" style="font-size: 10px; color: #555; cursor: pointer; margin-top: 15px;">ĐĂNG KÝ TÀI KHOẢN MỚI</p>
-        </div>
+<div class="container">
+    <h2>🤖 AI Baccarat HTML</h2>
+    <p>Nhập kết quả ván trước:</p>
+    
+    <button class="btn btn-b" onclick="addData('B')">Banker (B)</button>
+    <button class="btn btn-p" onclick="addData('P')">Player (P)</button>
+    <button class="btn btn-t" onclick="addData('T')">Tie (T)</button>
+
+    <div class="result-box">
+        <div>Dự đoán ván tiếp theo:</div>
+        <div class="probability" id="prediction">Đang chờ dữ liệu...</div>
+        <div id="advice">Nhập ít nhất 5 ván để AI phân tích</div>
     </div>
 
-    <div id="page-app" class="container" style="display: none;">
-        <div class="glass-panel">
-            <div class="neural-scan" id="scanner"></div>
-            <div class="predict-title">NEURAL PREDICTION</div>
-            <div id="predict-display" class="predict-val">WAITING</div>
-            
-            <div class="stat-grid">
-                <div class="stat-item">
-                    <div style="font-size: 8px; color: #666;">ĐỘ TIN CẬY</div>
-                    <div id="conf-val" style="color: var(--green); font-size: 14px;">0%</div>
-                </div>
-                <div class="stat-item">
-                    <div style="font-size: 8px; color: #666;">THẾ CẦU</div>
-                    <div id="pattern-val" style="color: var(--gold); font-size: 12px;">N/A</div>
-                </div>
-            </div>
-
-            <div id="advise-box" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; font-size: 10px; color: #aaa;">
-                HỆ THỐNG: VUI LÒNG NHẬP ĐIỂM VÁN VỪA RA ĐỂ AI PHÂN TÍCH
-            </div>
-
-            <div id="roadmap"></div>
-        </div>
-
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <input type="number" id="p-score" class="score-input" placeholder="P" style="border-bottom: 3px solid var(--blue);">
-            <input type="number" id="b-score" class="score-input" placeholder="B" style="border-bottom: 3px solid var(--red);">
-        </div>
-
-        <button class="btn-predict" id="btnPredict">ANALYZE DATA</button>
-        <p onclick="location.reload()" style="color: #444; font-size: 10px; text-align: center; cursor: pointer; margin-top: 15px;">THOÁT HỆ THỐNG</p>
+    <div class="history">
+        Lịch sử: <span id="history-log">-</span>
     </div>
+    <br>
+    <button onclick="resetData()" style="background:none; border:1px solid #666; color:#666; cursor:pointer">Xóa dữ liệu</button>
+</div>
 
-    <script type="module">
-        const firebaseConfig = {
-            apiKey: "AIzaSyDktpJ50474uK7YRRWe-BmsxqCIdURqXfE",
-            authDomain: "congthucbcr-ai.firebaseapp.com",
-            projectId: "congthucbcr-ai",
-            storageBucket: "congthucbcr-ai.firebasestorage.app",
-            messagingSenderId: "1084138516470",
-            appId: "1:1084138516470:web:1630e3966146060fbe21d7"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+<script>
+    let history = [];
 
-        // --- BỘ NÃO AI v13.0 (MARKOV & GAP REVERSION) ---
-        let history = [];
-        let martingaleStep = 1;
+    function addData(type) {
+        history.push(type);
+        updateUI();
+    }
 
-        function advancedBrain(p, b) {
-            let lastWinner = p > b ? 'P' : (b > p ? 'B' : 'T');
-            if(lastWinner !== 'T') history.push(lastWinner);
-            if(history.length > 20) history.shift();
+    function resetData() {
+        history = [];
+        updateUI();
+    }
 
-            let pWeight = 0, bWeight = 0;
-            let gap = Math.abs(p - b);
-            let pattern = "PHÂN TÍCH TỰ DO";
-
-            // 1. Logic Markov (Dựa trên ván trước đó)
-            let last3 = history.slice(-3).join('');
-            if(last3 === 'PPP' || last3 === 'BBB') { 
-                last3 === 'PPP' ? pWeight += 45 : bWeight += 45; 
-                pattern = "CẦU BỆT TRƯỜNG";
-            }
-            if(last3 === 'PBP' || last3 === 'BPB') {
-                last3 === 'PBP' ? bWeight += 40 : pWeight += 40;
-                pattern = "CẦU NHẢY 1-1";
-            }
-
-            // 2. Logic Gap Reversion (Hồi quy điểm số)
-            if(gap >= 7) { 
-                lastWinner === 'P' ? pWeight += 35 : bWeight += 35;
-                pattern = "THẾ CẦU ÁP ĐẢO";
-            } else if(gap <= 2 && gap > 0) {
-                lastWinner === 'P' ? bWeight += 30 : pWeight += 30;
-                pattern = "THẾ CẦU SÁT NÚT";
-            }
-
-            // 3. Quyết định
-            let result = pWeight > bWeight ? 'PLAYER' : 'BANKER';
-            let confidence = 88 + (Math.random() * 11.5);
-
-            // Gợi ý quản lý vốn
-            let money = confidence > 97 ? "VÀO MẠNH (TAY 1)" : "ĐI ĐỀU TIỀN";
-            
-            return { res: result, conf: confidence.toFixed(1), pat: pattern, adv: money };
+    function updateUI() {
+        document.getElementById('history-log').innerText = history.join(' > ');
+        
+        if (history.length < 5) {
+            document.getElementById('prediction').innerText = "Đang chờ...";
+            return;
         }
 
-        // --- XỬ LÝ GIAO DIỆN ---
-        document.getElementById('btnLogin').onclick = () => {
-            let u = document.getElementById('username').value;
-            let p = document.getElementById('password').value;
-            auth.signInWithEmailAndPassword(u + "@ai.com", p).then(() => {
-                document.getElementById('page-auth').style.display = 'none';
-                document.getElementById('page-app').style.display = 'block';
-            }).catch(() => alert("SAI THÔNG TIN"));
-        };
+        // Logic AI phân tích độ lệch (Variance)
+        let bCount = history.filter(x => x === 'B').length;
+        let pCount = history.filter(x => x === 'P').length;
+        let total = history.length;
 
-        document.getElementById('btnReg').onclick = () => {
-            let u = document.getElementById('username').value;
-            let p = document.getElementById('password').value;
-            auth.createUserWithEmailAndPassword(u + "@ai.com", p).then(() => alert("ĐÃ TẠO TÀI KHOẢN")).catch(e => alert(e.message));
-        };
+        let bProb = (bCount / total);
+        let pProb = (pCount / total);
 
-        document.getElementById('btnPredict').onclick = () => {
-            let pS = parseInt(document.getElementById('p-score').value);
-            let bS = parseInt(document.getElementById('b-score').value);
-            if(isNaN(pS) || isNaN(bS)) return alert("NHẬP ĐIỂM!");
+        let nextBet = "";
+        let rate = 0;
+        let advice = "";
 
-            document.getElementById('scanner').style.display = 'block';
-            document.getElementById('predict-display').innerText = "CALC...";
-            
-            setTimeout(() => {
-                let data = advancedBrain(pS, bS);
-                document.getElementById('scanner').style.display = 'none';
-                
-                let disp = document.getElementById('predict-display');
-                disp.innerText = data.res;
-                disp.style.color = data.res === 'BANKER' ? 'var(--red)' : 'var(--blue)';
-                
-                document.getElementById('conf-val').innerText = data.conf + "%";
-                document.getElementById('pattern-val').innerText = data.pat;
-                document.getElementById('advise-box').innerText = "GỢI Ý: " + data.adv;
+        // Thuật toán hồi quy: Nếu một bên ra quá nhiều (>55%), ưu tiên bên kia
+        if (bProb > 0.55) {
+            nextBet = "PLAYER (P)";
+            rate = Math.round(bProb * 100);
+            advice = "Dây Banker đang quá dài, khả năng hồi quy Player cao.";
+        } else if (pProb > 0.55) {
+            nextBet = "BANKER (B)";
+            rate = Math.round(pProb * 100);
+            advice = "Dây Player đang quá dài, khả năng hồi quy Banker cao.";
+        } else {
+            // Đánh theo cầu bệt nếu xác suất cân bằng
+            nextBet = (history[history.length-1] === 'B') ? "BANKER (B)" : "PLAYER (P)";
+            rate = 52;
+            advice = "Cầu đang ổn định, đánh thuận theo kết quả gần nhất.";
+        }
 
-                // Cập nhật Roadmap
-                let rm = document.getElementById('roadmap');
-                rm.innerHTML = "";
-                history.forEach(h => {
-                    let d = document.createElement('div');
-                    d.className = `dot dot-${h}`;
-                    d.innerText = h;
-                    rm.appendChild(d);
-                });
+        document.getElementById('prediction').innerText = nextBet + " ~ " + rate + "%";
+        document.getElementById('advice').innerText = "💡 " + advice;
+    }
+</script>
 
-                document.getElementById('p-score').value = "";
-                document.getElementById('b-score').value = "";
-            }, 1500);
-        };
-    </script>
 </body>
 </html>
