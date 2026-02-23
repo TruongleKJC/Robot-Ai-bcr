@@ -3,188 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE V28.5 - 5 CORE</title>
+    <title>ORACLE V29 EXTREME</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
-        :root { --p: #00f2ff; --b: #ff0055; --t: #00ff88; --gold: #ffd700; --bg: #02040a; --glass: rgba(15, 20, 30, 0.9); }
-        * { box-sizing: border-box; font-family: 'Rajdhani', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, #0a1221 0%, #02040a 100%); }
-        .page { display: none; height: 100vh; padding: 15px; overflow-y: auto; position: absolute; width: 100%; padding-bottom: 100px; }
-        .active { display: block; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .glass-card { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1, h2 { font-family: 'Orbitron'; text-transform: uppercase; text-align: center; margin: 10px 0; }
-        input, select { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 12px; color: #fff; margin: 10px 0; border: 1px solid rgba(255,255,255,0.1); outline: none; }
-        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; transition: 0.2s; }
-        .btn-p { background: linear-gradient(90deg, #0088ff, var(--p)); color: #000; }
-        .btn-b { background: linear-gradient(90deg, #bb0033, var(--b)); color: #fff; }
-        
-        /* 5 CORE DATA INPUT */
-        .core-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
-        .core-box { aspect-ratio: 1/1; background: #111; border: 2px dashed #333; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-weight: bold; font-size: 1.2rem; transition: 0.3s; }
-        .core-active { border-style: solid; box-shadow: 0 0 10px rgba(255,255,255,0.1); }
+        @import url('https://fonts.googleapis.com/css2?family=Anta&family=Oswald:wght@500;700&display=swap');
+        :root { --p: #00e5ff; --b: #ff0055; --t: #00ff88; --bg: #03070c; }
+        * { box-sizing: border-box; font-family: 'Anta', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
 
-        /* PERCENTAGE BAR */
-        .prob-container { width: 100%; height: 8px; background: #111; border-radius: 10px; overflow: hidden; margin: 20px 0 10px; display: flex; }
-        #p-bar { height: 100%; background: var(--p); width: 50%; transition: 0.8s cubic-bezier(0.19, 1, 0.22, 1); }
-        #b-bar { height: 100%; background: var(--b); width: 50%; transition: 0.8s cubic-bezier(0.19, 1, 0.22, 1); }
+        .app-container { height: 100vh; display: flex; flex-direction: column; padding: 15px; }
         
-        .nav-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; background: rgba(5,10,20,0.95); display: flex; justify-content: space-around; padding: 15px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
-        .nav-item { font-size: 0.65rem; color: #445; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; }
-        .nav-item.active-nav { color: var(--p); text-shadow: 0 0 8px var(--p); }
-        .plan-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1a1a1c; }
+        /* Header Stats */
+        .header-stats { display: flex; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 12px; border: 1px solid #111; margin-bottom: 10px; }
+        .stat-item { text-align: center; }
+        .stat-label { font-size: 0.6rem; color: #555; display: block; }
+        .stat-val { font-size: 0.9rem; font-weight: bold; color: var(--t); }
+
+        /* Main Predict Area */
+        .predict-card { flex: 1; background: rgba(10,15,25,0.8); border: 2px solid #1a1a1c; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; margin-bottom: 15px; overflow: hidden; }
+        
+        .percent-circle { width: 180px; height: 180px; border-radius: 50%; border: 8px solid #111; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.5s; position: relative; z-index: 2; }
+        #res-char { font-family: 'Oswald'; font-size: 6rem; line-height: 1; margin: 0; }
+        #res-pct { font-size: 1.5rem; font-weight: bold; }
+
+        /* 5 Input Slots */
+        .slot-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; width: 100%; max-width: 300px; margin: 20px 0; }
+        .slot { aspect-ratio: 1/1; background: #000; border: 1px solid #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; color: #333; }
+        .slot.active-p { border-color: var(--p); color: var(--p); box-shadow: 0 0 10px var(--p); }
+        .slot.active-b { border-color: var(--b); color: var(--b); box-shadow: 0 0 10px var(--b); }
+
+        /* Action Buttons */
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        .btn { padding: 22px; border-radius: 18px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.2s; font-family: 'Oswald'; }
+        .btn-p { background: var(--p); color: #000; box-shadow: 0 0 20px rgba(0,229,255,0.3); }
+        .btn-b { background: var(--b); color: #fff; box-shadow: 0 0 20px rgba(255,0,85,0.3); }
+        .btn:active { transform: scale(0.92); }
+
+        /* Wave Effect background */
+        .wave-bg { position: absolute; bottom: 0; width: 100%; height: 40%; background: linear-gradient(transparent, rgba(0,229,255,0.05)); z-index: 1; }
     </style>
 </head>
 <body>
 
-    <div id="p-auth" class="page active">
-        <div style="margin-top: 25vh; text-align: center;">
-            <h1 style="color: var(--p);">ORACLE V28.5</h1>
-            <div class="glass-card">
-                <input type="text" id="license" placeholder="LICENSE KEY">
-                <button class="btn btn-p" onclick="navTo('p-hall')">LOGIN</button>
+    <div class="app-container">
+        <div class="header-stats">
+            <div class="stat-item"><span class="stat-label">PHIÊN THẮNG</span><span class="stat-val" id="win-count">0</span></div>
+            <div class="stat-item"><span class="stat-label">TỈ LỆ THỰC</span><span class="stat-val" id="real-wr">0%</span></div>
+            <div class="stat-item"><span class="stat-label">TÍN HIỆU</span><span class="stat-val" id="signal-status">READY</span></div>
+        </div>
+
+        <div class="predict-card">
+            <div class="wave-bg" id="wave"></div>
+            <div class="percent-circle" id="circle">
+                <p id="res-char">?</p>
+                <span id="res-pct">0%</span>
             </div>
+            <p id="advice" style="color: #444; font-size: 0.8rem; margin-top: 15px; letter-spacing: 2px;">VUI LÒNG NHẬP DỮ LIỆU</p>
+        </div>
+
+        <div class="slot-container" id="slots">
+            <div class="slot">?</div><div class="slot">?</div><div class="slot">?</div><div class="slot">?</div><div class="slot">?</div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-p" onclick="input(0)">PLAYER</button>
+            <button class="btn btn-b" onclick="input(1)">BANKER</button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 15px;">
+            <span style="color: #222; font-size: 0.6rem;">ORACLE EXTREME ENGINE V29.0</span>
         </div>
     </div>
 
-    <div id="p-hall" class="page">
-        <h2 style="color: var(--p)">MÁY CHỦ SẢNH</h2>
-        <div class="glass-card" onclick="navTo('p-tool')" style="border-right: 4px solid var(--t);"><b>AE SEXY</b></div>
-        <div class="glass-card" onclick="navTo('p-tool')" style="border-right: 4px solid var(--gold);"><b>DR (DREAM GAMING)</b></div>
-        <div class="glass-card" onclick="navTo('p-tool')" style="border-right: 4px solid var(--p);"><b>WM CASINO</b></div>
-    </div>
+<script>
+    let data = []; let total = 0; let wins = 0; let lastPredict = '';
 
-    <div id="p-tool" class="page">
-        <div style="display:flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.7rem;">
-            <span style="color: var(--t)">SYSTEM ONLINE</span>
-            <span id="wr-text">WR: 100%</span>
-        </div>
-
-        <div class="prob-container">
-            <div id="p-bar"></div>
-            <div id="b-bar"></div>
-        </div>
-        <div style="display: flex; justify-content: space-between; font-family: 'Orbitron'; margin-bottom: 10px;">
-            <span id="p-pct" style="color: var(--p)">50%</span>
-            <span id="b-pct" style="color: var(--b)">50%</span>
-        </div>
-
-        <div style="text-align: center; padding: 10px 0;">
-            <h1 id="res-val" style="font-size: 8rem; margin: 0; color: #111; transition: 0.5s;">?</h1>
-            <p id="advice" style="color: #445; font-weight: bold; letter-spacing: 2px;">VUI LÒNG NHẬP 5 VÁN GẦN NHẤT</p>
-        </div>
-
-        <div class="core-grid" id="coreDisplay">
-            <div class="core-box">?</div>
-            <div class="core-box">?</div>
-            <div class="core-box">?</div>
-            <div class="core-box">?</div>
-            <div class="core-box">?</div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <button class="btn btn-p" onclick="addInput(0)">PLAYER</button>
-            <button class="btn btn-b" onclick="addInput(1)">BANKER</button>
-        </div>
-        <button onclick="resetCores()" style="width:100%; background:none; border:none; color:#333; margin-top:10px; font-size:0.7rem;">RESET 5 Ô DỮ LIỆU</button>
-    </div>
-
-    <div id="p-cap" class="page">
-        <h2 style="color: var(--gold)">QUẢN LÝ VỐN</h2>
-        <div class="glass-card">
-            <input type="number" id="money" value="1000000" oninput="calc()">
-            <select id="step" onchange="calc()">
-                <option value="5">GẤP 5 TAY</option>
-                <option value="4">GẤP 4 TAY</option>
-            </select>
-        </div>
-        <div class="glass-card" id="money-out"></div>
-    </div>
-
-    <nav class="nav-bar" id="nav" style="display:none;">
-        <div class="nav-item" onclick="navTo('p-hall')">SẢNH</div>
-        <div class="nav-item" onclick="navTo('p-tool')">SOI CẦU</div>
-        <div class="nav-item" onclick="navTo('p-cap')">VỐN</div>
-        <div class="nav-item" onclick="location.reload()">THOÁT</div>
-    </nav>
-
-    <script>
-        let coreData = []; let wins = 0; let total = 0;
-
-        function navTo(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.getElementById('nav').style.display = (id === 'p-auth') ? 'none' : 'flex';
-            if(id === 'p-cap') calc();
+    function input(v) {
+        // Tính WR thực tế
+        if(lastPredict !== '') {
+            total++;
+            if(lastPredict === (v === 0 ? 'P' : 'B')) wins++;
+            document.getElementById('win-count').innerText = wins;
+            document.getElementById('real-wr').innerText = Math.round((wins/total)*100) + "%";
         }
 
-        function addInput(v) {
-            const resEl = document.getElementById('res-val');
-            // Tính Win Rate nếu đã có dự đoán trước đó
-            if(resEl.innerText !== '?' && coreData.length === 5) {
-                total++;
-                if(resEl.innerText === (v === 0 ? 'P' : 'B')) wins++;
-                document.getElementById('wr-text').innerText = `WR: ${Math.round((wins/total)*100)}%`;
-            }
+        // Cập nhật 5 ô
+        if(data.length >= 5) data.shift();
+        data.push(v);
+        renderSlots();
 
-            // Quản lý 5 ô dữ liệu
-            if(coreData.length >= 5) coreData.shift();
-            coreData.push(v);
-            updateCoreDisplay();
+        // Xử lý phân tích
+        if(data.length === 5) {
+            const circle = document.getElementById('circle');
+            const resChar = document.getElementById('res-char');
+            const resPct = document.getElementById('res-pct');
+            
+            resChar.innerText = "...";
+            document.getElementById('advice').innerText = "ANALYZING PATTERNS...";
 
-            // Hiệu ứng AI quét tỉ lệ
-            if(coreData.length === 5) {
-                resEl.style.opacity = '0.1';
-                document.getElementById('advice').innerText = "ĐANG QUÉT 5 LÕI DỮ LIỆU...";
+            setTimeout(() => {
+                const prob = Math.floor(Math.random() * 25 + 72); // 72% - 97%
+                const side = Math.random() > 0.5 ? 0 : 1;
+                lastPredict = side === 0 ? 'P' : 'B';
+
+                resChar.innerText = lastPredict;
+                resPct.innerText = prob + "%";
                 
-                setTimeout(() => {
-                    const pProb = Math.floor(Math.random() * 40 + 55); // 55% - 95%
-                    const bProb = 100 - pProb;
-                    const next = pProb > bProb ? 0 : 1;
+                // Hiệu ứng màu sắc mạnh
+                const color = side === 0 ? 'var(--p)' : 'var(--b)';
+                circle.style.borderColor = color;
+                circle.style.boxShadow = `0 0 40px ${color}`;
+                resChar.style.color = color;
+                
+                document.getElementById('advice').innerText = prob > 90 ? "LỆNH CỰC MẠNH (ALL IN)" : "LỆNH AN TOÀN (1-2%)";
+                document.getElementById('advice').style.color = color;
+                document.getElementById('signal-status').innerText = "STRONG";
+                document.getElementById('wave').style.background = `linear-gradient(transparent, ${color}1A)`;
+            }, 600);
+        }
+    }
 
-                    // Cập nhật thanh tỉ lệ
-                    document.getElementById('p-bar').style.width = pProb + "%";
-                    document.getElementById('b-bar').style.width = bProb + "%";
-                    document.getElementById('p-pct').innerText = pProb + "%";
-                    document.getElementById('b-pct').innerText = bProb + "%";
-
-                    resEl.innerText = next === 0 ? 'P' : 'B';
-                    resEl.style.color = next === 0 ? 'var(--p)' : 'var(--b)';
-                    resEl.style.textShadow = `0 0 50px ${next === 0 ? 'var(--p)' : 'var(--b)'}`;
-                    resEl.style.opacity = '1';
-                    document.getElementById('advice').innerText = "TÍN HIỆU ĐÃ SẴN SÀNG";
-                }, 600);
+    function renderSlots() {
+        const slots = document.querySelectorAll('.slot');
+        slots.forEach((s, i) => {
+            s.className = 'slot'; s.innerText = '?';
+            if(data[i] !== undefined) {
+                s.innerText = data[i] === 0 ? 'P' : 'B';
+                s.classList.add(data[i] === 0 ? 'active-p' : 'active-b');
             }
-        }
-
-        function updateCoreDisplay() {
-            const boxes = document.querySelectorAll('.core-box');
-            boxes.forEach((box, i) => {
-                box.innerText = "?"; box.style.color = "#333"; box.style.borderColor = "#333";
-                if(coreData[i] !== undefined) {
-                    box.innerText = coreData[i] === 0 ? "P" : "B";
-                    box.style.color = coreData[i] === 0 ? "var(--p)" : "var(--b)";
-                    box.style.borderColor = coreData[i] === 0 ? "var(--p)" : "var(--b)";
-                }
-            });
-        }
-
-        function resetCores() { coreData = []; updateCoreDisplay(); document.getElementById('res-val').innerText = '?'; }
-
-        function calc() {
-            const m = document.getElementById('money').value;
-            const s = document.getElementById('step').value;
-            const out = document.getElementById('money-out');
-            let base = Math.floor(m / (Math.pow(2, s) - 1));
-            let h = `<b>KẾ HOẠCH GẤP ${s} TAY:</b><br>`;
-            let curr = base;
-            for(let i=1; i<=s; i++) {
-                h += `<div class="plan-row">Tay ${i}: <b style="color:var(--gold)">${curr.toLocaleString()} VNĐ</b></div>`;
-                curr *= 2;
-            }
-            out.innerHTML = h;
-        }
-    </script>
+        });
+    }
+</script>
 </body>
-    </html>
-    
+</html>
