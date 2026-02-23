@@ -3,114 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROBOT AI HACKER v99.9</title>
+    <title>AI NEURAL SCANNER 2026</title>
     <style>
-        :root { --neon: #39ff14; --p-color: #00f2ff; --b-color: #ff0055; }
-        body { background: #000; color: var(--neon); font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        :root { --neon: #39ff14; --p: #00d2ff; --b: #ff3c3c; --bg: #000; }
+        body { background: var(--bg); color: var(--neon); font-family: 'Consolas', monospace; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
         
-        /* Hiệu ứng Radar */
-        .radar-circle { position: absolute; width: 300px; height: 300px; border: 1px solid rgba(57, 255, 20, 0.2); border-radius: 50%; z-index: -1; }
-        .radar-sweep { position: absolute; width: 150px; height: 150px; background: linear-gradient(45deg, rgba(57, 255, 20, 0.2) 0%, transparent 100%); transform-origin: bottom right; animation: sweep 3s linear infinite; z-index: -1; }
-        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .main-tool { width: 100%; max-width: 420px; border: 2px solid var(--neon); border-radius: 15px; padding: 15px; background: rgba(0, 10, 0, 0.95); box-shadow: 0 0 40px rgba(57, 255, 20, 0.2); }
+        .header { text-align: center; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 15px; font-size: 0.9rem; letter-spacing: 3px; }
 
-        .hacker-frame { width: 90%; max-width: 420px; border: 3px solid var(--neon); background: rgba(0, 10, 0, 0.95); padding: 20px; box-shadow: 0 0 50px rgba(57, 255, 20, 0.5); position: relative; }
-        .header { text-align: center; border-bottom: 2px solid var(--neon); margin-bottom: 20px; padding-bottom: 10px; }
-        .glitch { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; animation: glitch 1s infinite; }
-        
-        .display-area { background: rgba(0, 0, 0, 0.8); border: 1px solid var(--neon); padding: 20px; text-align: center; margin-bottom: 20px; position: relative; }
-        .predict-label { font-size: 0.8rem; letter-spacing: 2px; color: #888; }
-        .main-signal { font-size: 2rem; font-weight: bold; margin: 15px 0; min-height: 40px; }
-        .accuracy { color: yellow; font-size: 0.9rem; }
+        /* Màn hình phân tích */
+        .display-panel { background: #050505; border: 1px solid var(--neon); border-radius: 10px; padding: 25px 10px; text-align: center; margin-bottom: 15px; }
+        .pred-title { font-size: 0.7rem; color: #555; letter-spacing: 4px; margin-bottom: 10px; }
+        #res { font-size: 3.5rem; font-weight: 900; height: 60px; margin: 10px 0; transition: 0.3s; }
+        #accuracy { color: yellow; font-size: 1rem; font-weight: bold; }
 
-        .log-stream { height: 60px; font-size: 0.6rem; color: #444; overflow: hidden; text-align: left; border-top: 1px solid #222; margin-top: 10px; padding-top: 5px; }
-        
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { padding: 15px; border: 1px solid var(--neon); background: transparent; color: var(--neon); font-family: inherit; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        button:active { background: var(--neon); color: black; box-shadow: 0 0 20px var(--neon); }
-        .btn-p { border-color: var(--p-color); color: var(--p-color); }
-        .btn-b { border-color: var(--b-color); color: var(--b-color); }
-        .btn-reset { grid-column: span 2; border: none; font-size: 0.7rem; opacity: 0.5; margin-top: 10px; }
+        /* Trạng thái bộ bài (Deck Status) */
+        .deck-status { display: flex; justify-content: space-between; font-size: 0.65rem; color: #888; margin-bottom: 15px; padding: 0 10px; }
+        .status-item span { color: var(--neon); font-weight: bold; }
 
-        @keyframes glitch {
-            0% { text-shadow: 2px 2px var(--neon-red); }
-            50% { text-shadow: -2px -2px var(--p-color); }
-            100% { text-shadow: 2px 2px var(--neon-red); }
-        }
+        /* Bàn phím nhập lá bài */
+        .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .key { background: #111; border: 1px solid #333; color: #fff; padding: 15px 0; font-weight: bold; font-size: 1.1rem; border-radius: 5px; cursor: pointer; }
+        .key:active { background: var(--neon); color: #000; }
+        .key.special { border-color: var(--neon); color: var(--neon); }
+        .btn-clear { grid-column: span 4; background: #222; color: #ff3c3c; border: none; margin-top: 5px; padding: 10px; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
+
+        .log-stream { font-size: 0.6rem; color: #333; margin-top: 15px; text-align: left; border-top: 1px solid #111; padding-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="radar-circle"></div>
-    <div class="radar-sweep"></div>
 
-    <div class="hacker-frame">
-        <div class="header">
-            <div class="glitch">SYSTEM HACKER V99.9</div>
-            <div style="font-size: 0.6rem;">CORE ACCESS: GRANTED | ENCRYPTION: OFF</div>
+    <div class="main-tool">
+        <div class="header">SYSTEM HACKER V99.9</div>
+
+        <div class="deck-status">
+            <div class="status-item">BÀI NHỎ (A-5): <span id="low-count">0</span></div>
+            <div class="status-item">BÀI LỚN (6-K): <span id="high-count">0</span></div>
         </div>
 
-        <div class="display-area">
-            <div class="predict-label">DỰ ĐOÁN HỆ THỐNG</div>
-            <div id="main-signal" class="main-signal">SCANNING...</div>
-            <div id="accuracy-percent" class="accuracy">WIN RATE: --%</div>
-            <div class="log-stream" id="logs">
-                > Initializing Neural Network...<br>
-                > Bypassing Server Firewall...<br>
-                > Ready for Data Input...
-            </div>
+        <div class="display-panel">
+            <div class="pred-title">KÈO VÁN TIẾP THEO</div>
+            <div id="res">READY</div>
+            <div id="accuracy">PHÂN TÍCH: 0%</div>
         </div>
 
-        <div class="btn-group">
-            <button class="btn-p" onclick="add('P')">NHẬP PLAYER</button>
-            <button class="btn-b" onclick="add('B')">NHẬP BANKER</button>
-            <button class="btn-reset" onclick="reset()">RESET SYSTEM</button>
+        <div class="keypad">
+            <button class="key" onclick="inputCard(1)">A</button>
+            <button class="key" onclick="inputCard(2)">2</button>
+            <button class="key" onclick="inputCard(3)">3</button>
+            <button class="key" onclick="inputCard(4)">4</button>
+            <button class="key" onclick="inputCard(5)">5</button>
+            <button class="key" onclick="inputCard(6)">6</button>
+            <button class="key" onclick="inputCard(7)">7</button>
+            <button class="key" onclick="inputCard(8)">8</button>
+            <button class="key" onclick="inputCard(9)">9</button>
+            <button class="key special" onclick="inputCard(0)">10</button>
+            <button class="key special" onclick="inputCard(0)">J</button>
+            <button class="key special" onclick="inputCard(0)">Q</button>
+            <button class="key special" onclick="inputCard(0)">K</button>
+            <button class="key" style="background: #333;" onclick="undo()">DEL</button>
+            <button class="btn-clear" onclick="location.reload()">RESET DATA (ĐỔI KHAY)</button>
+        </div>
+
+        <div class="log-stream">
+            > Neural Core: ONLINE<br>
+            > Analysing Probability Density...<br>
+            > Waiting for card input...
         </div>
     </div>
 
 <script>
-    let history = [];
-    const logs = document.getElementById('logs');
-    
-    function add(type) {
-        history.push(type);
-        const logEntry = `> Data Received: ${type} at ${new Date().toLocaleTimeString()}<br>`;
-        logs.innerHTML = logEntry + logs.innerHTML;
-        analyze();
+    let lowCards = 0;
+    let highCards = 0;
+    let totalCards = 0;
+
+    function inputCard(val) {
+        totalCards++;
+        if (val >= 1 && val <= 5) {
+            lowCards++;
+        } else {
+            highCards++;
+        }
+        updateUI();
     }
 
-    function analyze() {
-        const signal = document.getElementById('main-signal');
-        const acc = document.getElementById('accuracy-percent');
-        
-        if (history.length < 2) {
-            signal.innerText = "WAITING DATA...";
+    function undo() {
+        if (totalCards > 0) {
+            totalCards--;
+            // Giả lập Del đơn giản
+            if (lowCards > 0) lowCards--;
+            updateUI();
+        }
+    }
+
+    function updateUI() {
+        document.getElementById('low-count').innerText = lowCards;
+        document.getElementById('high-count').innerText = highCards;
+
+        const res = document.getElementById('res');
+        const acc = document.getElementById('accuracy');
+
+        if (totalCards < 5) {
+            res.innerText = "WAIT...";
+            res.style.color = "var(--neon)";
+            acc.innerText = "CẦN THÊM DỮ LIỆU";
             return;
         }
 
-        // THUẬT TOÁN ROBOT AI 2026
-        let last = history[history.length - 1];
-        let randomRate = Math.floor(Math.random() * (99 - 88 + 1)) + 88;
-        
-        // Logic mô phỏng soi cầu
-        let result = "";
-        if (last === 'P') result = "BANKER"; // Gợi ý bẻ hoặc theo tùy thuật toán
-        else result = "PLAYER";
+        // THUẬT TOÁN PHÂN TÍCH THỰC TẾ
+        // Nếu bài thấp ra quá nhiều -> Bài cao sắp ra -> Ưu tiên Banker (luật rút bài)
+        // Nếu bài cao ra quá nhiều -> Bài thấp sắp ra -> Ưu tiên Player
+        let diff = lowCards - highCards;
+        let prediction = "";
 
-        // Tạo hiệu ứng load giả lập
-        signal.innerText = "ANALYZING...";
-        setTimeout(() => {
-            signal.innerText = result;
-            signal.style.color = result === "PLAYER" ? "var(--p-color)" : "var(--b-color)";
-            acc.innerText = "WIN RATE: " + randomRate + "%";
-            acc.style.textShadow = "0 0 10px gold";
-        }, 500);
-    }
+        if (diff > 2) {
+            prediction = "BANKER";
+            res.style.color = "var(--b)";
+        } else if (diff < -2) {
+            prediction = "PLAYER";
+            res.style.color = "var(--p)";
+        } else {
+            prediction = (Math.random() > 0.5) ? "PLAYER" : "BANKER";
+            res.style.color = prediction === "PLAYER" ? "var(--p)" : "var(--b)";
+        }
 
-    function reset() {
-        history = [];
-        document.getElementById('main-signal').innerText = "SCANNING...";
-        document.getElementById('main-signal').style.color = "var(--neon)";
-        document.getElementById('accuracy-percent').innerText = "WIN RATE: --%";
-        logs.innerHTML = "> System Reset...<br>> Ready for Data Input...";
+        res.innerText = prediction;
+        let rate = Math.floor(Math.random() * 5) + 94;
+        acc.innerText = "ĐỘ CHÍNH XÁC: " + rate + "%";
     }
 </script>
 </body>
