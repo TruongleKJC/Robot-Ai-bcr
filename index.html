@@ -3,135 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE V29 EXTREME</title>
+    <title>ORACLE V27.1 - TRIPLE CORE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Anta&family=Oswald:wght@500;700&display=swap');
-        :root { --p: #00e5ff; --b: #ff0055; --t: #00ff88; --bg: #03070c; }
-        * { box-sizing: border-box; font-family: 'Anta', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
-
-        .app-container { height: 100vh; display: flex; flex-direction: column; padding: 15px; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap');
+        :root {
+            --p: #00f2ff; --b: #ff0055; --t: #00ff88; --tie: #ffd700;
+            --bg: #02040a; --glass: rgba(15, 20, 30, 0.85); --border: rgba(255, 255, 255, 0.1);
+        }
+        * { box-sizing: border-box; font-family: 'Rajdhani', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, #0a1221 0%, #02040a 100%); }
+        .page { display: none; height: 100vh; width: 100%; padding: 15px; overflow-y: auto; position: absolute; padding-bottom: 100px; }
+        .active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 15px; text-align: center; }
+        h1 { font-family: 'Orbitron'; margin: 0; transition: 0.5s; }
+        .label { font-size: 0.7rem; color: #556677; letter-spacing: 1px; text-transform: uppercase; }
         
-        /* Header Stats */
-        .header-stats { display: flex; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 12px; border: 1px solid #111; margin-bottom: 10px; }
-        .stat-item { text-align: center; }
-        .stat-label { font-size: 0.6rem; color: #555; display: block; }
-        .stat-val { font-size: 0.9rem; font-weight: bold; color: var(--t); }
+        /* Hiển thị kết quả */
+        #res-display { font-size: 7.5rem; color: #0d1117; line-height: 1; }
+        .glow-p { color: var(--p) !important; text-shadow: 0 0 40px var(--p); }
+        .glow-b { color: var(--b) !important; text-shadow: 0 0 40px var(--b); }
+        .glow-t { color: var(--tie) !important; text-shadow: 0 0 40px var(--tie); }
 
-        /* Main Predict Area */
-        .predict-card { flex: 1; background: rgba(10,15,25,0.8); border: 2px solid #1a1a1c; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; margin-bottom: 15px; overflow: hidden; }
-        
-        .percent-circle { width: 180px; height: 180px; border-radius: 50%; border: 8px solid #111; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.5s; position: relative; z-index: 2; }
-        #res-char { font-family: 'Oswald'; font-size: 6rem; line-height: 1; margin: 0; }
-        #res-pct { font-size: 1.5rem; font-weight: bold; }
+        /* Nút bấm 3 cột */
+        .btn-group { display: grid; grid-template-columns: 1fr 0.8fr 1fr; gap: 10px; }
+        .btn { padding: 18px 5px; border-radius: 12px; border: none; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; transition: 0.2s; font-size: 0.8rem; }
+        .btn-p { background: var(--p); color: #000; }
+        .btn-tie { background: var(--tie); color: #000; }
+        .btn-b { background: var(--b); color: #fff; }
+        .btn:active { transform: scale(0.9); }
 
-        /* 5 Input Slots */
-        .slot-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; width: 100%; max-width: 300px; margin: 20px 0; }
-        .slot { aspect-ratio: 1/1; background: #000; border: 1px solid #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; color: #333; }
-        .slot.active-p { border-color: var(--p); color: var(--p); box-shadow: 0 0 10px var(--p); }
-        .slot.active-b { border-color: var(--b); color: var(--b); box-shadow: 0 0 10px var(--b); }
+        /* Heatmap cập nhật màu Hòa */
+        .heatmap { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin: 15px 0; }
+        .dot { height: 7px; background: #1a1f2b; border-radius: 2px; }
 
-        /* Action Buttons */
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
-        .btn { padding: 22px; border-radius: 18px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.2s; font-family: 'Oswald'; }
-        .btn-p { background: var(--p); color: #000; box-shadow: 0 0 20px rgba(0,229,255,0.3); }
-        .btn-b { background: var(--b); color: #fff; box-shadow: 0 0 20px rgba(255,0,85,0.3); }
-        .btn:active { transform: scale(0.92); }
-
-        /* Wave Effect background */
-        .wave-bg { position: absolute; bottom: 0; width: 100%; height: 40%; background: linear-gradient(transparent, rgba(0,229,255,0.05)); z-index: 1; }
+        .nav-bar { position: fixed; bottom: 15px; left: 5%; width: 90%; background: rgba(10, 15, 25, 0.95); display: flex; justify-content: space-around; padding: 12px; border-radius: 25px; border: 1px solid var(--border); }
+        .nav-item { font-size: 0.65rem; color: #445566; font-weight: bold; font-family: 'Orbitron'; }
+        .active-nav { color: var(--p); text-shadow: 0 0 10px var(--p); }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div class="header-stats">
-            <div class="stat-item"><span class="stat-label">PHIÊN THẮNG</span><span class="stat-val" id="win-count">0</span></div>
-            <div class="stat-item"><span class="stat-label">TỈ LỆ THỰC</span><span class="stat-val" id="real-wr">0%</span></div>
-            <div class="stat-item"><span class="stat-label">TÍN HIỆU</span><span class="stat-val" id="signal-status">READY</span></div>
+    <div id="p-tool" class="page active">
+        <div style="display:flex; justify-content: space-between; margin-bottom: 10px;">
+            <span class="label">STATUS: ANALYZING</span>
+            <span id="win-rate" style="color:var(--t); font-weight:bold;">WR: 100%</span>
         </div>
 
-        <div class="predict-card">
-            <div class="wave-bg" id="wave"></div>
-            <div class="percent-circle" id="circle">
-                <p id="res-char">?</p>
-                <span id="res-pct">0%</span>
-            </div>
-            <p id="advice" style="color: #444; font-size: 0.8rem; margin-top: 15px; letter-spacing: 2px;">VUI LÒNG NHẬP DỮ LIỆU</p>
+        <div class="glass-card">
+            <div class="label" style="margin-bottom: 10px;">DỰ ĐOÁN KẾ TIẾP</div>
+            <h1 id="res-display">?</h1>
+            <p id="advice" style="color: #345; font-size: 0.8rem; margin-top: 15px;">VUI LÒNG NHẬP DỮ LIỆU</p>
         </div>
 
-        <div class="slot-container" id="slots">
-            <div class="slot">?</div><div class="slot">?</div><div class="slot">?</div><div class="slot">?</div><div class="slot">?</div>
+        <div style="display: flex; justify-content: space-around; margin-bottom: 15px;">
+            <div style="text-align:center;"><small class="label">P</small><br><b id="count-p">0</b></div>
+            <div style="text-align:center;"><small class="label">TIE</small><br><b id="count-t" style="color:var(--tie)">0</b></div>
+            <div style="text-align:center;"><small class="label">B</small><br><b id="count-b">0</b></div>
         </div>
+
+        <div class="heatmap" id="heatmap"></div>
 
         <div class="btn-group">
-            <button class="btn btn-p" onclick="input(0)">PLAYER</button>
-            <button class="btn btn-b" onclick="input(1)">BANKER</button>
-        </div>
-        
-        <div style="text-align: center; margin-top: 15px;">
-            <span style="color: #222; font-size: 0.6rem;">ORACLE EXTREME ENGINE V29.0</span>
+            <button class="btn btn-p" onclick="process(0)">PLAYER</button>
+            <button class="btn btn-tie" onclick="process(2)">HÒA</button>
+            <button class="btn btn-b" onclick="process(1)">BANKER</button>
         </div>
     </div>
 
-<script>
-    let data = []; let total = 0; let wins = 0; let lastPredict = '';
+    <nav class="nav-bar">
+        <div class="nav-item">SẢNH DR</div>
+        <div class="nav-item active-nav">SOI CẦU</div>
+        <div class="nav-item" onclick="location.reload()">LÀM MỚI</div>
+    </nav>
 
-    function input(v) {
-        // Tính WR thực tế
-        if(lastPredict !== '') {
-            total++;
-            if(lastPredict === (v === 0 ? 'P' : 'B')) wins++;
-            document.getElementById('win-count').innerText = wins;
-            document.getElementById('real-wr').innerText = Math.round((wins/total)*100) + "%";
+    <script>
+        let history = []; let wins = 0; let total = 0;
+        let cP = 0, cB = 0, cT = 0;
+
+        function renderHeatmap() {
+            const h = document.getElementById('heatmap');
+            h.innerHTML = '';
+            for(let i=0; i<48; i++) {
+                const d = document.createElement('div');
+                d.className = 'dot';
+                if(history[i] === 0) d.style.background = 'var(--p)';
+                else if(history[i] === 1) d.style.background = 'var(--b)';
+                else if(history[i] === 2) d.style.background = 'var(--tie)';
+                h.appendChild(d);
+            }
         }
 
-        // Cập nhật 5 ô
-        if(data.length >= 5) data.shift();
-        data.push(v);
-        renderSlots();
-
-        // Xử lý phân tích
-        if(data.length === 5) {
-            const circle = document.getElementById('circle');
-            const resChar = document.getElementById('res-char');
-            const resPct = document.getElementById('res-pct');
+        function process(v) {
+            const resEl = document.getElementById('res-display');
             
-            resChar.innerText = "...";
-            document.getElementById('advice').innerText = "ANALYZING PATTERNS...";
+            // Tính toán WR
+            if(resEl.innerText !== '?') {
+                total++;
+                let currentSign = resEl.innerText;
+                if((currentSign === 'P' && v === 0) || (currentSign === 'B' && v === 1) || (currentSign === 'T' && v === 2)) {
+                    wins++;
+                }
+                document.getElementById('win-rate').innerText = `WR: ${Math.round((wins/total)*100)}%`;
+            }
+
+            // Cập nhật số lượng
+            if(v === 0) cP++; else if(v === 1) cB++; else cT++;
+            document.getElementById('count-p').innerText = cP;
+            document.getElementById('count-b').innerText = cB;
+            document.getElementById('count-t').innerText = cT;
+
+            history.push(v);
+            if(history.length > 48) history.shift();
+            renderHeatmap();
+
+            resEl.style.opacity = '0.1';
+            document.getElementById('advice').innerText = "AI ĐANG TÍNH NHỊP CẦU HÒA...";
 
             setTimeout(() => {
-                const prob = Math.floor(Math.random() * 25 + 72); // 72% - 97%
-                const side = Math.random() > 0.5 ? 0 : 1;
-                lastPredict = side === 0 ? 'P' : 'B';
+                // Thuật toán: 10% ra Hòa, còn lại 45/45 cho P và B
+                const rand = Math.random() * 100;
+                let next;
+                if(rand < 10) next = 2; // Dự đoán Hòa
+                else if(rand < 55) next = 0; // Dự đoán Player
+                else next = 1; // Dự đoán Banker
 
-                resChar.innerText = lastPredict;
-                resPct.innerText = prob + "%";
+                if(next === 0) {
+                    resEl.innerText = 'P'; resEl.className = 'glow-p';
+                } else if(next === 1) {
+                    resEl.innerText = 'B'; resEl.className = 'glow-b';
+                } else {
+                    resEl.innerText = 'T'; resEl.className = 'glow-t';
+                }
                 
-                // Hiệu ứng màu sắc mạnh
-                const color = side === 0 ? 'var(--p)' : 'var(--b)';
-                circle.style.borderColor = color;
-                circle.style.boxShadow = `0 0 40px ${color}`;
-                resChar.style.color = color;
-                
-                document.getElementById('advice').innerText = prob > 90 ? "LỆNH CỰC MẠNH (ALL IN)" : "LỆNH AN TOÀN (1-2%)";
-                document.getElementById('advice').style.color = color;
-                document.getElementById('signal-status').innerText = "STRONG";
-                document.getElementById('wave').style.background = `linear-gradient(transparent, ${color}1A)`;
+                resEl.style.opacity = '1';
+                document.getElementById('advice').innerText = next === 2 ? "CẢNH BÁO: CÓ TÍN HIỆU HÒA" : "TÍN HIỆU ỔN ĐỊNH";
+                document.getElementById('advice').style.color = next === 2 ? 'var(--tie)' : 'var(--t)';
             }, 600);
         }
-    }
-
-    function renderSlots() {
-        const slots = document.querySelectorAll('.slot');
-        slots.forEach((s, i) => {
-            s.className = 'slot'; s.innerText = '?';
-            if(data[i] !== undefined) {
-                s.innerText = data[i] === 0 ? 'P' : 'B';
-                s.classList.add(data[i] === 0 ? 'active-p' : 'active-b');
-            }
-        });
-    }
-</script>
+        renderHeatmap();
+    </script>
 </body>
 </html>
