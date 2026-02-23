@@ -3,133 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI NEURAL SCANNER 2026</title>
+    <title>GHOST SYSTEM V2026</title>
     <style>
         :root { --neon: #39ff14; --p: #00d2ff; --b: #ff3c3c; --bg: #000; }
-        body { background: var(--bg); color: var(--neon); font-family: 'Consolas', monospace; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        body { background: var(--bg); color: var(--neon); font-family: 'Arial Black', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
         
-        .main-tool { width: 100%; max-width: 420px; border: 2px solid var(--neon); border-radius: 15px; padding: 15px; background: rgba(0, 10, 0, 0.95); box-shadow: 0 0 40px rgba(57, 255, 20, 0.2); }
-        .header { text-align: center; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 15px; font-size: 0.9rem; letter-spacing: 3px; }
+        /* Box chính */
+        .container { width: 100%; max-width: 400px; border: 4px solid var(--neon); border-radius: 25px; padding: 20px; background: rgba(0, 15, 0, 0.95); box-shadow: 0 0 50px rgba(57, 255, 20, 0.4); }
+        .header { text-align: center; border-bottom: 2px solid var(--neon); padding-bottom: 15px; margin-bottom: 25px; }
+        .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 5px; text-transform: uppercase; }
 
-        /* Màn hình phân tích */
-        .display-panel { background: #050505; border: 1px solid var(--neon); border-radius: 10px; padding: 25px 10px; text-align: center; margin-bottom: 15px; }
-        .pred-title { font-size: 0.7rem; color: #555; letter-spacing: 4px; margin-bottom: 10px; }
-        #res { font-size: 3.5rem; font-weight: 900; height: 60px; margin: 10px 0; transition: 0.3s; }
-        #accuracy { color: yellow; font-size: 1rem; font-weight: bold; }
+        /* Monitor Hiển Thị */
+        .monitor { background: #000; border: 2px solid #222; border-radius: 20px; padding: 40px 10px; text-align: center; margin-bottom: 25px; }
+        .label { font-size: 0.8rem; letter-spacing: 4px; color: #555; margin-bottom: 15px; }
+        #res { font-size: 4rem; font-weight: 900; margin: 10px 0; height: 80px; display: flex; align-items: center; justify-content: center; }
+        .win-rate { font-size: 1.2rem; color: #ffd700; margin-top: 10px; }
 
-        /* Trạng thái bộ bài (Deck Status) */
-        .deck-status { display: flex; justify-content: space-between; font-size: 0.65rem; color: #888; margin-bottom: 15px; padding: 0 10px; }
-        .status-item span { color: var(--neon); font-weight: bold; }
+        /* Bàn phím điều khiển */
+        .grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-cmd { padding: 25px 0; border: none; border-radius: 15px; font-weight: 900; font-size: 1.1rem; color: white; cursor: pointer; text-transform: uppercase; transition: 0.1s; }
+        .btn-p { background: var(--p); box-shadow: 0 8px 0 #0056b3; }
+        .btn-b { background: var(--b); box-shadow: 0 8px 0 #8b0000; }
+        .btn-cmd:active { transform: translateY(4px); box-shadow: 0 4px 0 #000; }
 
-        /* Bàn phím nhập lá bài */
-        .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .key { background: #111; border: 1px solid #333; color: #fff; padding: 15px 0; font-weight: bold; font-size: 1.1rem; border-radius: 5px; cursor: pointer; }
-        .key:active { background: var(--neon); color: #000; }
-        .key.special { border-color: var(--neon); color: var(--neon); }
-        .btn-clear { grid-column: span 4; background: #222; color: #ff3c3c; border: none; margin-top: 5px; padding: 10px; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
-
-        .log-stream { font-size: 0.6rem; color: #333; margin-top: 15px; text-align: left; border-top: 1px solid #111; padding-top: 10px; }
+        .footer { text-align: center; margin-top: 25px; font-size: 0.7rem; color: #333; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-    <div class="main-tool">
-        <div class="header">SYSTEM HACKER V99.9</div>
-
-        <div class="deck-status">
-            <div class="status-item">BÀI NHỎ (A-5): <span id="low-count">0</span></div>
-            <div class="status-item">BÀI LỚN (6-K): <span id="high-count">0</span></div>
+    <div class="container">
+        <div class="header">
+            <h1>HACKER V99.9</h1>
+            <div style="font-size: 0.6rem; color: #888;">CORE: ACTIVE | SẢNH: AE SEXY</div>
         </div>
 
-        <div class="display-panel">
-            <div class="pred-title">KÈO VÁN TIẾP THEO</div>
+        <div class="monitor">
+            <div class="label">AI DỰ ĐOÁN</div>
             <div id="res">READY</div>
-            <div id="accuracy">PHÂN TÍCH: 0%</div>
+            <div id="rate" class="win-rate">ĐỘ CHÍNH XÁC: --%</div>
         </div>
 
-        <div class="keypad">
-            <button class="key" onclick="inputCard(1)">A</button>
-            <button class="key" onclick="inputCard(2)">2</button>
-            <button class="key" onclick="inputCard(3)">3</button>
-            <button class="key" onclick="inputCard(4)">4</button>
-            <button class="key" onclick="inputCard(5)">5</button>
-            <button class="key" onclick="inputCard(6)">6</button>
-            <button class="key" onclick="inputCard(7)">7</button>
-            <button class="key" onclick="inputCard(8)">8</button>
-            <button class="key" onclick="inputCard(9)">9</button>
-            <button class="key special" onclick="inputCard(0)">10</button>
-            <button class="key special" onclick="inputCard(0)">J</button>
-            <button class="key special" onclick="inputCard(0)">Q</button>
-            <button class="key special" onclick="inputCard(0)">K</button>
-            <button class="key" style="background: #333;" onclick="undo()">DEL</button>
-            <button class="btn-clear" onclick="location.reload()">RESET DATA (ĐỔI KHAY)</button>
+        <div class="grid-btns">
+            <button class="btn-cmd btn-p" onclick="hack('PLAYER')">PLAYER</button>
+            <button class="btn-cmd btn-b" onclick="hack('BANKER')">BANKER</button>
         </div>
 
-        <div class="log-stream">
-            > Neural Core: ONLINE<br>
-            > Analysing Probability Density...<br>
-            > Waiting for card input...
+        <div class="footer">
+            > BYPASSING SERVER... SUCCESS<br>
+            <span onclick="location.reload()" style="cursor:pointer; text-decoration:underline;">RESET SYSTEM</span>
         </div>
     </div>
 
 <script>
-    let lowCards = 0;
-    let highCards = 0;
-    let totalCards = 0;
-
-    function inputCard(val) {
-        totalCards++;
-        if (val >= 1 && val <= 5) {
-            lowCards++;
-        } else {
-            highCards++;
-        }
-        updateUI();
-    }
-
-    function undo() {
-        if (totalCards > 0) {
-            totalCards--;
-            // Giả lập Del đơn giản
-            if (lowCards > 0) lowCards--;
-            updateUI();
-        }
-    }
-
-    function updateUI() {
-        document.getElementById('low-count').innerText = lowCards;
-        document.getElementById('high-count').innerText = highCards;
-
+    function hack(type) {
         const res = document.getElementById('res');
-        const acc = document.getElementById('accuracy');
+        const rate = document.getElementById('rate');
+        res.innerText = "...";
+        res.style.color = "white";
 
-        if (totalCards < 5) {
-            res.innerText = "WAIT...";
-            res.style.color = "var(--neon)";
-            acc.innerText = "CẦN THÊM DỮ LIỆU";
-            return;
-        }
-
-        // THUẬT TOÁN PHÂN TÍCH THỰC TẾ
-        // Nếu bài thấp ra quá nhiều -> Bài cao sắp ra -> Ưu tiên Banker (luật rút bài)
-        // Nếu bài cao ra quá nhiều -> Bài thấp sắp ra -> Ưu tiên Player
-        let diff = lowCards - highCards;
-        let prediction = "";
-
-        if (diff > 2) {
-            prediction = "BANKER";
-            res.style.color = "var(--b)";
-        } else if (diff < -2) {
-            prediction = "PLAYER";
-            res.style.color = "var(--p)";
-        } else {
-            prediction = (Math.random() > 0.5) ? "PLAYER" : "BANKER";
-            res.style.color = prediction === "PLAYER" ? "var(--p)" : "var(--b)";
-        }
-
-        res.innerText = prediction;
-        let rate = Math.floor(Math.random() * 5) + 94;
-        acc.innerText = "ĐỘ CHÍNH XÁC: " + rate + "%";
+        setTimeout(() => {
+            let winRate = Math.floor(Math.random() * (99 - 92 + 1)) + 92;
+            let prediction = (Math.random() > 0.5) ? "PLAYER" : "BANKER";
+            
+            res.innerText = prediction;
+            res.style.color = (prediction === "PLAYER") ? "var(--p)" : "var(--b)";
+            rate.innerText = "ĐỘ CHÍNH XÁC: " + winRate + "%";
+        }, 500);
     }
 </script>
 </body>
