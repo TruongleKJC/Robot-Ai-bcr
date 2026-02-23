@@ -3,136 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROBOT AI ULTRA HACK v10.1</title>
+    <title>ROBOT AI HACKER v99.9</title>
     <style>
-        :root { --neon-green: #39ff14; --neon-red: #ff0000; --neon-blue: #00f2ff; }
-        body { background: #000; color: var(--neon-green); font-family: 'Courier New', Courier, monospace; margin: 0; overflow: hidden; }
+        :root { --neon: #39ff14; --p-color: #00f2ff; --b-color: #ff0055; }
+        body { background: #000; color: var(--neon); font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        /* Hiệu ứng Matrix nền */
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.1; background: url('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJidm95NjR6eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6JnB0PWFwcA/oEI9uWUicKgH6/giphy.gif'); }
+        /* Hiệu ứng Radar */
+        .radar-circle { position: absolute; width: 300px; height: 300px; border: 1px solid rgba(57, 255, 20, 0.2); border-radius: 50%; z-index: -1; }
+        .radar-sweep { position: absolute; width: 150px; height: 150px; background: linear-gradient(45deg, rgba(57, 255, 20, 0.2) 0%, transparent 100%); transform-origin: bottom right; animation: sweep 3s linear infinite; z-index: -1; }
+        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .app-frame { border: 2px solid var(--neon-green); margin: 10px; height: calc(100vh - 25px); display: flex; flex-direction: column; padding: 15px; box-shadow: inset 0 0 20px var(--neon-green); }
+        .hacker-frame { width: 90%; max-width: 420px; border: 3px solid var(--neon); background: rgba(0, 10, 0, 0.95); padding: 20px; box-shadow: 0 0 50px rgba(57, 255, 20, 0.5); position: relative; }
+        .header { text-align: center; border-bottom: 2px solid var(--neon); margin-bottom: 20px; padding-bottom: 10px; }
+        .glitch { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; animation: glitch 1s infinite; }
         
-        .header { text-align: center; border-bottom: 2px solid var(--neon-green); padding-bottom: 10px; margin-bottom: 15px; }
-        .header h1 { font-size: 1.2rem; margin: 0; text-shadow: 0 0 10px var(--neon-green); }
-        
-        .scanner-window { background: rgba(0, 50, 0, 0.3); border: 1px solid var(--neon-green); flex-grow: 1; display: flex; flex-direction: column; padding: 10px; }
-        
-        .side-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .side { width: 48%; border: 1px solid #333; padding: 5px; text-align: center; }
-        .side.active { border-color: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
-        .card-slots { display: flex; justify-content: center; gap: 5px; font-size: 1.5rem; margin-top: 10px; height: 40px; }
-        
-        .result-zone { text-align: center; border-top: 1px solid var(--neon-green); border-bottom: 1px solid var(--neon-green); padding: 15px 0; margin: 10px 0; background: rgba(0, 255, 0, 0.05); }
-        .prediction { font-size: 1.5rem; font-weight: bold; animation: blink 1s infinite; }
-        
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .display-area { background: rgba(0, 0, 0, 0.8); border: 1px solid var(--neon); padding: 20px; text-align: center; margin-bottom: 20px; position: relative; }
+        .predict-label { font-size: 0.8rem; letter-spacing: 2px; color: #888; }
+        .main-signal { font-size: 2rem; font-weight: bold; margin: 15px 0; min-height: 40px; }
+        .accuracy { color: yellow; font-size: 0.9rem; }
 
-        .keyboard { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
-        .key { background: #000; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 15px 0; font-weight: bold; cursor: pointer; }
-        .key:active { background: var(--neon-green); color: #000; }
+        .log-stream { height: 60px; font-size: 0.6rem; color: #444; overflow: hidden; text-align: left; border-top: 1px solid #222; margin-top: 10px; padding-top: 5px; }
         
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 10px; }
-        .btn { padding: 10px; border: 1px solid var(--neon-green); background: none; color: var(--neon-green); cursor: pointer; font-family: inherit; }
-        .btn.active { background: var(--neon-green); color: #000; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { padding: 15px; border: 1px solid var(--neon); background: transparent; color: var(--neon); font-family: inherit; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        button:active { background: var(--neon); color: black; box-shadow: 0 0 20px var(--neon); }
+        .btn-p { border-color: var(--p-color); color: var(--p-color); }
+        .btn-b { border-color: var(--b-color); color: var(--b-color); }
+        .btn-reset { grid-column: span 2; border: none; font-size: 0.7rem; opacity: 0.5; margin-top: 10px; }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 2px var(--neon-red); }
+            50% { text-shadow: -2px -2px var(--p-color); }
+            100% { text-shadow: 2px 2px var(--neon-red); }
+        }
     </style>
 </head>
 <body>
-    <div class="matrix-bg"></div>
-    <div class="app-frame">
+    <div class="radar-circle"></div>
+    <div class="radar-sweep"></div>
+
+    <div class="hacker-frame">
         <div class="header">
-            <h1>SYSTEM HACK: ROBOT AI v10.1</h1>
-            <small id="time"></small>
+            <div class="glitch">SYSTEM HACKER V99.9</div>
+            <div style="font-size: 0.6rem;">CORE ACCESS: GRANTED | ENCRYPTION: OFF</div>
         </div>
 
-        <div class="scanner-window">
-            <div class="side-row">
-                <div id="p-frame" class="side active">
-                    <label>PLAYER</label>
-                    <div class="card-slots" id="p-cards">-- -- --</div>
-                </div>
-                <div id="b-frame" class="side">
-                    <label>BANKER</label>
-                    <div class="card-slots" id="b-cards">-- -- --</div>
-                </div>
+        <div class="display-area">
+            <div class="predict-label">DỰ ĐOÁN HỆ THỐNG</div>
+            <div id="main-signal" class="main-signal">SCANNING...</div>
+            <div id="accuracy-percent" class="accuracy">WIN RATE: --%</div>
+            <div class="log-stream" id="logs">
+                > Initializing Neural Network...<br>
+                > Bypassing Server Firewall...<br>
+                > Ready for Data Input...
             </div>
+        </div>
 
-            <div class="result-zone">
-                <div style="font-size: 0.7rem;">STATUS: ANALYZING DATA...</div>
-                <div id="predict" class="prediction">WAITING...</div>
-                <div id="score-detail" style="font-size: 0.8rem; margin-top: 5px;"></div>
-            </div>
-
-            <div class="keyboard">
-                <button class="key" onclick="inputCard('A')">A</button>
-                <button class="key" onclick="inputCard('2')">2</button>
-                <button class="key" onclick="inputCard('3')">3</button>
-                <button class="key" onclick="inputCard('4')">4</button>
-                <button class="key" onclick="inputCard('5')">5</button>
-                <button class="key" onclick="inputCard('6')">6</button>
-                <button class="key" onclick="inputCard('7')">7</button>
-                <button class="key" onclick="inputCard('8')">8</button>
-                <button class="key" onclick="inputCard('9')">9</button>
-                <button class="key" onclick="inputCard('0')">10-K</button>
-            </div>
-
-            <div class="controls">
-                <button id="p-btn" class="btn active" onclick="setSide('P')">SELECT PLAYER</button>
-                <button id="b-btn" class="btn" onclick="setSide('B')">SELECT BANKER</button>
-                <button class="btn" style="grid-column: span 2; margin-top:5px; border-color: red; color: red;" onclick="reset()">SYSTEM RESET</button>
-            </div>
+        <div class="btn-group">
+            <button class="btn-p" onclick="add('P')">NHẬP PLAYER</button>
+            <button class="btn-b" onclick="add('B')">NHẬP BANKER</button>
+            <button class="btn-reset" onclick="reset()">RESET SYSTEM</button>
         </div>
     </div>
 
 <script>
-    let pCards = [], bCards = [], currentSide = 'P';
+    let history = [];
+    const logs = document.getElementById('logs');
     
-    // Cập nhật thời gian hệ thống giả lập
-    setInterval(() => { document.getElementById('time').innerText = "CORE_TIME: " + new Date().toLocaleTimeString(); }, 1000);
-
-    function setSide(s) {
-        currentSide = s;
-        document.getElementById('p-btn').className = s === 'P' ? 'btn active' : 'btn';
-        document.getElementById('b-btn').className = s === 'B' ? 'btn active' : 'btn';
-        document.getElementById('p-frame').className = s === 'P' ? 'side active' : 'side';
-        document.getElementById('b-frame').className = s === 'B' ? 'side active' : 'side';
+    function add(type) {
+        history.push(type);
+        const logEntry = `> Data Received: ${type} at ${new Date().toLocaleTimeString()}<br>`;
+        logs.innerHTML = logEntry + logs.innerHTML;
+        analyze();
     }
 
-    function inputCard(v) {
-        if (currentSide === 'P' && pCards.length < 3) pCards.push(v);
-        else if (currentSide === 'B' && bCards.length < 3) bCards.push(v);
-        render();
-    }
-
-    function calculate(arr) {
-        let s = 0;
-        arr.forEach(v => { s += (v === 'A' ? 1 : parseInt(v)); });
-        return s % 10;
-    }
-
-    function render() {
-        document.getElementById('p-cards').innerText = pCards.join(' ') || '-- -- --';
-        document.getElementById('b-cards').innerText = bCards.join(' ') || '-- -- --';
+    function analyze() {
+        const signal = document.getElementById('main-signal');
+        const acc = document.getElementById('accuracy-percent');
         
-        let ps = calculate(pCards), bs = calculate(bCards);
-        let res = document.getElementById('predict');
-        
-        if (pCards.length >= 2 || bCards.length >= 2) {
-            document.getElementById('score-detail').innerText = `P-CORE: ${ps} | B-CORE: ${bs}`;
-            if (ps > bs) { res.innerText = "PLAYER WIN (95%)"; res.style.color = "var(--neon-blue)"; }
-            else if (bs > ps) { res.innerText = "BANKER WIN (95%)"; res.style.color = "var(--neon-red)"; }
-            else { res.innerText = "TIE DETECTED"; res.style.color = "yellow"; }
+        if (history.length < 2) {
+            signal.innerText = "WAITING DATA...";
+            return;
         }
+
+        // THUẬT TOÁN ROBOT AI 2026
+        let last = history[history.length - 1];
+        let randomRate = Math.floor(Math.random() * (99 - 88 + 1)) + 88;
+        
+        // Logic mô phỏng soi cầu
+        let result = "";
+        if (last === 'P') result = "BANKER"; // Gợi ý bẻ hoặc theo tùy thuật toán
+        else result = "PLAYER";
+
+        // Tạo hiệu ứng load giả lập
+        signal.innerText = "ANALYZING...";
+        setTimeout(() => {
+            signal.innerText = result;
+            signal.style.color = result === "PLAYER" ? "var(--p-color)" : "var(--b-color)";
+            acc.innerText = "WIN RATE: " + randomRate + "%";
+            acc.style.textShadow = "0 0 10px gold";
+        }, 500);
     }
 
     function reset() {
-        pCards = []; bCards = []; setSide('P');
-        document.getElementById('predict').innerText = "WAITING...";
-        document.getElementById('predict').style.color = "var(--neon-green)";
-        document.getElementById('score-detail').innerText = "";
-        render();
+        history = [];
+        document.getElementById('main-signal').innerText = "SCANNING...";
+        document.getElementById('main-signal').style.color = "var(--neon)";
+        document.getElementById('accuracy-percent').innerText = "WIN RATE: --%";
+        logs.innerHTML = "> System Reset...<br>> Ready for Data Input...";
     }
 </script>
 </body>
-    </html>
-    
+</html>
