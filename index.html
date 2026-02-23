@@ -3,151 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROBOT AI HACKER PRO 2026</title>
+    <title>ROBOT AI ULTIMATE v18.0</title>
     <style>
-        :root { --neon: #39ff14; --p: #00f2ff; --b: #ff0055; --t: #ffeb3b; }
-        body { background: #000; color: var(--neon); font-family: 'Consolas', monospace; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        :root { --neon: #39ff14; --p: #00e5ff; --b: #ff0055; --t: #ffeb3b; --bg: #000000; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
         
-        /* Màn hình Boot */
-        #boot-screen { position: fixed; width: 100%; height: 100%; background: #000; color: var(--neon); padding: 20px; font-size: 0.8rem; z-index: 1000; }
+        /* Màn hình Boot (Chạy mã giả) */
+        #boot-screen { position: fixed; inset: 0; background: #000; color: var(--neon); padding: 20px; font-family: monospace; font-size: 12px; z-index: 9999; }
 
-        /* Màn hình Nhập Mã (License) */
-        #license-screen { display: none; width: 320px; border: 2px solid var(--neon); padding: 30px; text-align: center; background: rgba(0, 15, 0, 0.95); box-shadow: 0 0 30px var(--neon); z-index: 500; }
-        input { width: 90%; padding: 12px; margin: 15px 0; background: #000; border: 1px solid var(--neon); color: var(--neon); text-align: center; letter-spacing: 5px; outline: none; }
-        .btn-green { width: 100%; padding: 15px; background: var(--neon); color: #000; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; }
+        /* Màn hình Đăng nhập & Chọn sảnh */
+        .card { width: 90%; max-width: 380px; background: #111; border: 2px solid var(--neon); border-radius: 15px; padding: 25px; box-shadow: 0 0 20px var(--neon); text-align: center; }
+        h2 { color: var(--neon); text-transform: uppercase; letter-spacing: 3px; margin-top: 0; }
+        select, input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; outline: none; }
+        .btn-start { width: 100%; padding: 15px; background: var(--neon); color: #000; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
 
-        /* Tool Chính */
-        #main-tool { display: none; width: 95%; max-width: 420px; border: 2px solid var(--neon); padding: 15px; background: #000; box-shadow: 0 0 40px rgba(57, 255, 20, 0.3); }
-        .monitor { border: 1px solid #333; padding: 20px; text-align: center; background: #050505; margin-bottom: 20px; position: relative; }
-        .signal { font-size: 2.5rem; font-weight: bold; margin: 10px 0; text-shadow: 0 0 20px var(--neon); }
+        /* Màn hình Tool Chính */
+        #tool-screen { display: none; width: 95%; max-width: 420px; }
+        .main-display { background: #000; border: 2px solid var(--neon); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; box-shadow: inset 0 0 15px rgba(57, 255, 20, 0.2); }
         
-        .history-row { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0; border-top: 1px solid #222; margin-top: 10px; }
-        .ball { min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: white; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); }
+        .lobby-info { font-size: 10px; color: var(--neon); text-transform: uppercase; margin-bottom: 10px; opacity: 0.8; }
+        .last-val-label { font-size: 12px; color: #666; margin-top: 10px; }
+        .last-val-text { font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; min-height: 30px; }
         
-        .grid-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        .card-btn { padding: 20px 0; border: 1px solid #444; background: #111; color: white; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        .card-btn:active { background: #fff; color: #000; }
-        .p-btn { border-color: var(--p); color: var(--p); }
-        .b-btn { border-color: var(--b); color: var(--b); }
-        .t-btn { border-color: var(--t); color: var(--t); }
+        .predict-label { font-size: 10px; letter-spacing: 4px; color: #fff; opacity: 0.5; }
+        .predict-signal { font-size: 3rem; font-weight: 900; margin: 10px 0; text-shadow: 0 0 20px var(--neon); height: 70px; display: flex; align-items: center; justify-content: center; }
+        .win-rate { color: #00ff00; font-weight: bold; font-size: 14px; }
+
+        /* Nút bấm điều khiển */
+        .button-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .btn-cmd { padding: 20px 0; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; color: #fff; font-size: 1rem; transition: 0.2s; }
+        .btn-p { background: var(--p); box-shadow: 0 6px 0 #0097a7; }
+        .btn-b { background: var(--b); box-shadow: 0 6px 0 #c2185b; }
+        .btn-t { background: var(--t); color: #000; box-shadow: 0 6px 0 #fbc02d; }
+        .btn-cmd:active { transform: translateY(4px); box-shadow: none; }
+        .btn-reset { grid-column: span 3; background: #222; margin-top: 10px; border: 1px solid #444; }
     </style>
 </head>
 <body>
 
     <div id="boot-screen"></div>
 
-    <div id="license-screen">
-        <h2 style="margin: 0;">LICENSE REQUIRED</h2>
-        <p style="font-size: 0.6rem; opacity: 0.6;">ENTER ACTIVATION KEY TO START BOT</p>
-        <input type="text" id="key-input" placeholder="XXXX-XXXX">
-        <button class="btn-green" onclick="checkKey()">ACTIVATE SYSTEM</button>
-        <p id="error" style="color: red; font-size: 0.7rem; margin-top: 10px;"></p>
+    <div id="login-card" class="card" style="display: none;">
+        <h2>ROBOT AI LOGIN</h2>
+        <select id="lobby-select">
+            <option>AE SEXY CASINO</option>
+            <option>DG CASINO</option>
+            <option>EVOLUTION GAMING</option>
+            <option>SA GAMING</option>
+            <option>WM CASINO</option>
+        </select>
+        <input type="text" id="license-key" placeholder="NHẬP MÃ KÍCH HOẠT (2026)">
+        <button class="btn-start" onclick="activate()">KÍCH HOẠT HỆ THỐNG</button>
+        <p id="msg" style="color: red; font-size: 12px; margin-top: 10px;"></p>
     </div>
 
-    <div id="main-tool">
-        <div style="font-size: 0.6rem; display: flex; justify-content: space-between; margin-bottom: 10px;">
-            <span>STATUS: <span style="color: #00ff00;">ENCRYPTED</span></span>
-            <span>USER: ADMIN_PRO_2026</span>
-        </div>
-        <div class="monitor">
-            <div style="font-size: 0.7rem; letter-spacing: 3px; color: var(--neon);">DỰ ĐOÁN KẾT QUẢ AI</div>
-            <div id="signal" class="signal">---</div>
-            <div id="percent" style="color: yellow; font-size: 0.9rem;">PHÂN TÍCH: 0%</div>
-            <div class="history-row" id="history"></div>
+    <div id="tool-screen">
+        <div class="main-display">
+            <div id="active-lobby" class="lobby-info">LOBBY: --</div>
+            <div class="last-val-label">VỪA NHẬP:</div>
+            <div id="last-val" class="last-val-text">---</div>
+
+            <div style="border-top: 1px solid #222; margin: 15px 0;"></div>
+
+            <div class="predict-label">DỰ ĐOÁN VÁN KẾ</div>
+            <div id="signal" class="predict-signal">READY</div>
+            <div id="rate" class="win-rate">TỶ LỆ THẮNG: --%</div>
         </div>
 
-        <div class="grid-btns">
-            <button class="card-btn p-btn" onclick="send('P')">PLAYER</button>
-            <button class="card-btn t-btn" onclick="send('T')">HÒA (TIE)</button>
-            <button class="card-btn b-btn" onclick="send('B')">BANKER</button>
-            <button class="card-btn" style="grid-column: span 3; color: red; border-color: red;" onclick="location.reload()">RESET / ĐỔI BÀN</button>
+        <div class="button-grid">
+            <button class="btn-cmd btn-p" onclick="add('PLAYER')">PLAYER</button>
+            <button class="btn-cmd btn-t" onclick="add('HÒA')">HÒA</button>
+            <button class="btn-cmd btn-b" onclick="add('BANKER')">BANKER</button>
+            <button class="btn-cmd btn-reset" onclick="location.reload()">RESET / ĐỔI SẢNH</button>
         </div>
     </div>
 
 <script>
-    // --- MÃ KÍCH HOẠT LÀ ĐÂY (Bạn có thể đổi thành số khác) ---
-    const SECRET_KEY = "2026"; 
-
-    // Hiệu ứng Boot
+    // 1. Hiệu ứng khởi động
     const boot = document.getElementById('boot-screen');
     const logs = [
-        "> Connecting to Neural Link...",
-        "> Initializing AI Chipset...",
-        "> Security Firewall: BYPASSED",
-        "> Database: SYNCED",
-        "> System: READY"
+        "> INITIALIZING SYSTEM...",
+        "> LOADING NEURAL NETWORK...",
+        "> BYPASSING CASINO FIREWALL...",
+        "> CONNECTION: SECURE SSL-V3",
+        "> ACCESS GRANTED."
     ];
-    let step = 0;
+    let s = 0;
     const bootTimer = setInterval(() => {
-        boot.innerHTML += logs[step] + "<br>";
-        step++;
-        if(step >= logs.length) {
+        boot.innerHTML += logs[s] + "<br>";
+        s++;
+        if(s >= logs.length) {
             clearInterval(bootTimer);
             setTimeout(() => {
                 boot.style.display = 'none';
-                document.getElementById('license-screen').style.display = 'block';
+                document.getElementById('login-card').style.display = 'block';
             }, 800);
         }
-    }, 500);
+    }, 400);
 
-    // Kiểm tra Mã License
-    function checkKey() {
-        const input = document.getElementById('key-input').value;
-        if(input === SECRET_KEY) {
-            document.getElementById('license-screen').style.display = 'none';
-            document.getElementById('main-tool').style.display = 'block';
+    // 2. Kích hoạt
+    function activate() {
+        const key = document.getElementById('license-key').value;
+        const lobby = document.getElementById('lobby-select').value;
+        if(key === "2026") {
+            document.getElementById('login-card').style.display = 'none';
+            document.getElementById('tool-screen').style.display = 'block';
+            document.getElementById('active-lobby').innerText = "LOBBY: " + lobby;
         } else {
-            document.getElementById('error').innerText = "MÃ SAI! VUI LÒNG LIÊN HỆ ADMIN.";
+            document.getElementById('msg').innerText = "MÃ SAI! LIÊN HỆ ADMIN.";
         }
     }
 
+    // 3. Xử lý dữ liệu
     let history = [];
-    function send(val) {
-        history.push(val);
-        updateUI();
-        processAI();
-    }
+    function add(val) {
+        // Hiện chữ ván vừa nhập to rõ
+        const lastDisp = document.getElementById('last-val');
+        lastDisp.innerText = val;
+        if(val === 'PLAYER') lastDisp.style.color = 'var(--p)';
+        else if(val === 'BANKER') lastDisp.style.color = 'var(--b)';
+        else lastDisp.style.color = 'var(--t)';
 
-    function updateUI() {
-        const h = document.getElementById('history');
-        h.innerHTML = "";
-        history.forEach(v => {
-            const b = document.createElement('div');
-            b.className = 'ball';
-            b.innerText = v;
-            if(v === 'P') b.style.background = 'var(--p)';
-            else if(v === 'B') b.style.background = 'var(--b)';
-            else b.style.background = 'var(--t)';
-            h.appendChild(b);
-        });
+        history.push(val);
+        processAI();
     }
 
     function processAI() {
         const sig = document.getElementById('signal');
-        const per = document.getElementById('percent');
-        sig.innerText = "SOÁN...";
+        const rateDisp = document.getElementById('rate');
         
+        sig.innerText = "WAIT...";
+        sig.style.color = "var(--neon)";
+
         setTimeout(() => {
             if(history.length < 2) {
                 sig.innerText = "CHỜ BÀI";
                 return;
             }
-            
+
             let last = history[history.length - 1];
-            let rate = Math.floor(Math.random() * (99 - 91)) + 91;
-            let pred = "";
+            let rate = Math.floor(Math.random() * (99 - 92 + 1)) + 92;
+            let result = "";
 
-            // Thuật toán: Sau Hòa đánh Banker, hoặc dựa trên xu hướng cầu
-            if(last === 'T') pred = "BANKER";
-            else if(history.filter(x => x === 'P').length > history.filter(x => x === 'B').length) pred = "BANKER";
-            else pred = "PLAYER";
+            // Thuật toán soi cầu giả lập chuyên nghiệp
+            if(last === 'HÒA') {
+                result = "BANKER";
+            } else if(history.filter(x => x === 'PLAYER').length > history.filter(x => x === 'BANKER').length) {
+                result = "BANKER";
+            } else {
+                result = "PLAYER";
+            }
 
-            sig.innerText = pred;
-            sig.style.color = (pred === "PLAYER") ? "var(--p)" : "var(--b)";
-            per.innerText = "PHÂN TÍCH: " + rate + "%";
-        }, 700);
+            sig.innerText = result;
+            sig.style.color = (result === "PLAYER") ? "var(--p)" : "var(--b)";
+            rateDisp.innerText = "TỶ LỆ THẮNG: " + rate + "%";
+        }, 600);
     }
 </script>
 </body>
-    </html>
-    
+</html>
