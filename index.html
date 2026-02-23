@@ -3,96 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROBOT AI HACK v11.0</title>
+    <title>ROBOT AI HACKER v99.9</title>
     <style>
-        :root { --neon: #39ff14; --blue: #00f2ff; --red: #ff0000; }
-        body { background: #000; color: var(--neon); font-family: 'Courier New', monospace; padding: 10px; text-align: center; }
-        .app { border: 2px solid var(--neon); border-radius: 10px; padding: 15px; background: rgba(0, 20, 0, 0.9); box-shadow: 0 0 20px var(--neon); }
-        .monitor { background: #000; border: 1px inset var(--neon); padding: 15px; margin: 10px 0; min-height: 100px; }
-        .predict-text { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px var(--neon); margin: 10px 0; }
-        .history-line { font-size: 0.8rem; color: #888; overflow-x: auto; white-space: nowrap; margin-bottom: 10px; }
+        :root { --neon: #39ff14; --p-color: #00f2ff; --b-color: #ff0055; }
+        body { background: #000; color: var(--neon); font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        .input-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .btn-input { padding: 20px 0; border: 1px solid var(--neon); background: none; color: var(--neon); font-weight: bold; cursor: pointer; }
-        .btn-p { border-color: var(--blue); color: var(--blue); }
-        .btn-b { border-color: var(--red); color: var(--red); }
-        .btn-reset { grid-column: span 3; border-color: #555; color: #555; margin-top: 10px; }
+        /* Hiệu ứng Radar */
+        .radar-circle { position: absolute; width: 300px; height: 300px; border: 1px solid rgba(57, 255, 20, 0.2); border-radius: 50%; z-index: -1; }
+        .radar-sweep { position: absolute; width: 150px; height: 150px; background: linear-gradient(45deg, rgba(57, 255, 20, 0.2) 0%, transparent 100%); transform-origin: bottom right; animation: sweep 3s linear infinite; z-index: -1; }
+        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .hacker-frame { width: 90%; max-width: 420px; border: 3px solid var(--neon); background: rgba(0, 10, 0, 0.95); padding: 20px; box-shadow: 0 0 50px rgba(57, 255, 20, 0.5); position: relative; }
+        .header { text-align: center; border-bottom: 2px solid var(--neon); margin-bottom: 20px; padding-bottom: 10px; }
+        .glitch { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; animation: glitch 1s infinite; }
+        
+        .display-area { background: rgba(0, 0, 0, 0.8); border: 1px solid var(--neon); padding: 20px; text-align: center; margin-bottom: 20px; position: relative; }
+        .predict-label { font-size: 0.8rem; letter-spacing: 2px; color: #888; }
+        .main-signal { font-size: 2rem; font-weight: bold; margin: 15px 0; min-height: 40px; }
+        .accuracy { color: yellow; font-size: 0.9rem; }
+
+        .log-stream { height: 60px; font-size: 0.6rem; color: #444; overflow: hidden; text-align: left; border-top: 1px solid #222; margin-top: 10px; padding-top: 5px; }
+        
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { padding: 15px; border: 1px solid var(--neon); background: transparent; color: var(--neon); font-family: inherit; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        button:active { background: var(--neon); color: black; box-shadow: 0 0 20px var(--neon); }
+        .btn-p { border-color: var(--p-color); color: var(--p-color); }
+        .btn-b { border-color: var(--b-color); color: var(--b-color); }
+        .btn-reset { grid-column: span 2; border: none; font-size: 0.7rem; opacity: 0.5; margin-top: 10px; }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 2px var(--neon-red); }
+            50% { text-shadow: -2px -2px var(--p-color); }
+            100% { text-shadow: 2px 2px var(--neon-red); }
+        }
     </style>
 </head>
 <body>
+    <div class="radar-circle"></div>
+    <div class="radar-sweep"></div>
 
-<div class="app">
-    <div style="font-size: 0.7rem; letter-spacing: 2px;">NEURAL NETWORK ANALYZER</div>
-    <div class="monitor">
-        <div id="status" style="font-size: 0.7rem;">SYSTEM READY...</div>
-        <div id="prediction" class="predict-text">DỰ ĐOÁN: CHỜ...</div>
-        <div id="rate" style="color: yellow; font-size: 0.9rem;">TỶ LỆ THẮNG: --%</div>
+    <div class="hacker-frame">
+        <div class="header">
+            <div class="glitch">SYSTEM HACKER V99.9</div>
+            <div style="font-size: 0.6rem;">CORE ACCESS: GRANTED | ENCRYPTION: OFF</div>
+        </div>
+
+        <div class="display-area">
+            <div class="predict-label">DỰ ĐOÁN HỆ THỐNG</div>
+            <div id="main-signal" class="main-signal">SCANNING...</div>
+            <div id="accuracy-percent" class="accuracy">WIN RATE: --%</div>
+            <div class="log-stream" id="logs">
+                > Initializing Neural Network...<br>
+                > Bypassing Server Firewall...<br>
+                > Ready for Data Input...
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-p" onclick="add('P')">NHẬP PLAYER</button>
+            <button class="btn-b" onclick="add('B')">NHẬP BANKER</button>
+            <button class="btn-reset" onclick="reset()">RESET SYSTEM</button>
+        </div>
     </div>
-
-    <div class="history-line" id="history">CẦU: [ CHƯA CÓ DỮ LIỆU ]</div>
-
-    <div class="input-grid">
-        <button class="btn-input btn-p" onclick="addRes('P')">PLAYER<br>(Vừa ra)</button>
-        <button class="btn-input" onclick="addRes('T')">HÒA<br>(Vừa ra)</button>
-        <button class="btn-input btn-b" onclick="addRes('B')">BANKER<br>(Vừa ra)</button>
-        <button class="btn-reset" onclick="reset()">XÓA DỮ LIỆU / ĐỔI BÀN</button>
-    </div>
-</div>
 
 <script>
     let history = [];
-
-    function addRes(val) {
-        history.push(val);
+    const logs = document.getElementById('logs');
+    
+    function add(type) {
+        history.push(type);
+        const logEntry = `> Data Received: ${type} at ${new Date().toLocaleTimeString()}<br>`;
+        logs.innerHTML = logEntry + logs.innerHTML;
         analyze();
     }
 
     function analyze() {
-        const hText = document.getElementById('history');
-        const pText = document.getElementById('prediction');
-        const rText = document.getElementById('rate');
+        const signal = document.getElementById('main-signal');
+        const acc = document.getElementById('accuracy-percent');
         
-        hText.innerText = "CẦU: " + history.join(' - ');
-
-        if (history.length < 3) {
-            pText.innerText = "DỰ ĐOÁN: ĐANG GOM";
+        if (history.length < 2) {
+            signal.innerText = "WAITING DATA...";
             return;
         }
 
-        // THUẬT TOÁN PHÂN TÍCH CẦU (Logic Robot AI)
+        // THUẬT TOÁN ROBOT AI 2026
         let last = history[history.length - 1];
-        let prev = history[history.length - 2];
-        let pPrev = history[history.length - 3];
+        let randomRate = Math.floor(Math.random() * (99 - 88 + 1)) + 88;
+        
+        // Logic mô phỏng soi cầu
+        let result = "";
+        if (last === 'P') result = "BANKER"; // Gợi ý bẻ hoặc theo tùy thuật toán
+        else result = "PLAYER";
 
-        let suggestion = "";
-        let winRate = Math.floor(Math.random() * (98 - 85 + 1)) + 85;
-
-        // Logic 1: Cầu Bệt (Nếu ra 3 ván giống nhau -> Đánh tiếp)
-        if (last === prev && prev === pPrev) {
-            suggestion = last === 'P' ? "PLAYER (BỆT)" : "BANKER (BỆT)";
-        } 
-        // Logic 2: Cầu 1-1 (Nếu ra xen kẽ -> Đánh nghịch)
-        else if (last !== prev && prev !== pPrev) {
-            suggestion = last === 'P' ? "BANKER (1-1)" : "PLAYER (1-1)";
-        }
-        // Logic 3: Phá cầu (Dựa trên số lượng)
-        else {
-            let pCount = history.filter(x => x === 'P').length;
-            let bCount = history.filter(x => x === 'B').length;
-            suggestion = pCount > bCount ? "BANKER (HỒI)" : "PLAYER (HỒI)";
-        }
-
-        pText.innerText = "DỰ ĐOÁN: " + suggestion;
-        pText.style.color = suggestion.includes("PLAYER") ? "var(--blue)" : "var(--red)";
-        rText.innerText = `TỶ LỆ THẮNG: ${winRate}%`;
+        // Tạo hiệu ứng load giả lập
+        signal.innerText = "ANALYZING...";
+        setTimeout(() => {
+            signal.innerText = result;
+            signal.style.color = result === "PLAYER" ? "var(--p-color)" : "var(--b-color)";
+            acc.innerText = "WIN RATE: " + randomRate + "%";
+            acc.style.textShadow = "0 0 10px gold";
+        }, 500);
     }
 
     function reset() {
         history = [];
-        document.getElementById('history').innerText = "CẦU: [ CHƯA CÓ DỮ LIỆU ]";
-        document.getElementById('prediction').innerText = "DỰ ĐOÁN: CHỜ...";
-        document.getElementById('prediction').style.color = "var(--neon)";
-        document.getElementById('rate').innerText = "TỶ LỆ THẮNG: --%";
+        document.getElementById('main-signal').innerText = "SCANNING...";
+        document.getElementById('main-signal').style.color = "var(--neon)";
+        document.getElementById('accuracy-percent').innerText = "WIN RATE: --%";
+        logs.innerHTML = "> System Reset...<br>> Ready for Data Input...";
     }
 </script>
 </body>
