@@ -3,217 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE V28 - PLATINUM</title>
+    <title>ORACLE CLOUD V29</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Syncopate:wght@400;700&display=swap');
 
         :root {
-            --p: #00f2ff; --b: #ff0055; --t: #00ff88; --gold: #ffd700;
-            --bg: #02040a; --glass: rgba(15, 20, 30, 0.9); --border: rgba(255, 255, 255, 0.15);
+            --p: #00d2ff; --b: #ff0055; --t: #00ffa3; --gold: #ffb800;
+            --bg: #0b0e14; --panel: #161b22; --border: #30363d;
         }
 
-        * { box-sizing: border-box; font-family: 'Rajdhani', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, #0a1221 0%, #02040a 100%); }
-
-        .page { display: none; height: 100vh; width: 100%; padding: 15px; overflow-y: auto; position: absolute; padding-bottom: 100px; }
-        .active { display: block; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .glass-card { 
-            background: var(--glass); backdrop-filter: blur(20px); 
-            border: 1px solid var(--border); border-radius: 20px; 
-            padding: 20px; margin-bottom: 15px;
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { 
+            margin: 0; background: var(--bg); color: #c9d1d9; 
+            font-family: 'Montserrat', sans-serif; height: 100vh; overflow: hidden;
         }
 
-        h1, h2, .res-text { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
-        .label { font-size: 0.7rem; color: #667; letter-spacing: 1px; text-transform: uppercase; }
+        /* Loading Screen */
+        #loader {
+            position: fixed; width: 100%; height: 100%; background: var(--bg);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
 
+        /* Page System */
+        .page { display: none; height: 100vh; padding: 20px; overflow-y: auto; padding-bottom: 100px; }
+        .active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Component Glass */
+        .card { 
+            background: var(--panel); border: 1px solid var(--border); 
+            border-radius: 16px; padding: 20px; margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Inputs */
         input, select { 
-            width: 100%; padding: 15px; background: rgba(0,0,0,0.5); 
-            border: 1px solid #333; border-radius: 12px; color: #fff; 
-            font-size: 1rem; margin: 10px 0; outline: none;
+            width: 100%; padding: 14px; background: #0d1117; border: 1px solid var(--border);
+            border-radius: 10px; color: #fff; margin: 8px 0; font-size: 1rem;
         }
 
-        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; transition: 0.2s; }
-        .btn-p { background: linear-gradient(90deg, #0088ff, var(--p)); color: #000; box-shadow: 0 0 15px rgba(0,242,255,0.4); }
-        .btn-b { background: linear-gradient(90deg, #bb0033, var(--b)); color: #fff; box-shadow: 0 0 15px rgba(255,0,85,0.4); }
-
-        .heatmap { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin: 15px 0; }
-        .dot { height: 8px; background: #1a1f2b; border-radius: 2px; }
-
-        .nav-bar { 
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; background: rgba(5, 10, 20, 0.95); display: flex; 
-            justify-content: space-around; padding: 15px; border-radius: 30px; 
-            border: 1px solid var(--border); z-index: 1000;
+        /* Prediction Core */
+        #res-box { text-align: center; padding: 20px 0; position: relative; }
+        #res-val { 
+            font-family: 'Syncopate', sans-serif; font-size: 7rem; font-weight: 700; 
+            margin: 0; transition: 0.3s; color: #21262d; 
         }
-        .nav-item { font-size: 0.7rem; color: #445; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; }
-        .nav-item.active-nav { color: var(--p); text-shadow: 0 0 8px var(--p); }
+        .p-glow { color: var(--p) !important; text-shadow: 0 0 40px var(--p); }
+        .b-glow { color: var(--b) !important; text-shadow: 0 0 40px var(--b); }
 
-        .plan-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted #333; font-size: 0.9rem; }
+        /* Buttons */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn { 
+            padding: 20px; border-radius: 12px; border: none; font-weight: 700;
+            cursor: pointer; transition: 0.2s; font-family: 'Montserrat';
+        }
+        .btn-p { background: var(--p); color: #000; box-shadow: 0 4px 15px rgba(0,210,255,0.3); }
+        .btn-b { background: var(--b); color: #fff; box-shadow: 0 4px 15px rgba(255,0,85,0.3); }
+        .btn:active { transform: scale(0.95); }
+
+        /* Navigation */
+        .nav { 
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            width: 90%; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around; padding: 12px;
+            border-radius: 20px; border: 1px solid var(--border); z-index: 1000;
+        }
+        .nav-item { font-size: 0.65rem; color: #8b949e; text-align: center; font-weight: 700; cursor: pointer; }
+        .nav-item.active-nav { color: var(--p); }
+
+        /* Heatmap */
+        .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin: 15px 0; }
+        .cell { height: 10px; background: #21262d; border-radius: 2px; }
     </style>
 </head>
 <body>
 
-    <div id="p-auth" class="page active">
-        <div style="margin-top: 25vh; text-align: center;">
-            <h1 style="color: var(--p);">ORACLE V28</h1>
-            <p class="label">Hệ thống phân tích Platinum</p>
-            <div class="glass-card">
-                <input type="text" placeholder="LICENSE KEY">
-                <button class="btn btn-p" onclick="navTo('p-hall')">LOGIN SYSTEM</button>
+    <div id="loader">
+        <h2 style="font-family: 'Syncopate'; color: var(--p);">ORACLE V29</h2>
+        <p style="font-size: 0.7rem; letter-spacing: 3px;">CONNECTING TO CLOUD...</p>
+    </div>
+
+    <div id="p1" class="page active">
+        <div style="margin-top: 15vh; text-align: center;">
+            <h1 style="font-family: 'Syncopate'; font-size: 1.5rem; color: #fff;">SECURITY ACCESS</h1>
+            <div class="card">
+                <input type="text" id="license" placeholder="NHẬP LICENSE KEY">
+                <button class="btn btn-p" style="width: 100%; margin-top: 10px;" onclick="checkAuth()">XÁC THỰC NGAY</button>
+            </div>
+            <p style="font-size: 0.6rem; color: #484f58;">Dữ liệu được mã hóa chuẩn SSL 256-bit</p>
+        </div>
+    </div>
+
+    <div id="p2" class="page">
+        <h2 style="font-family: 'Syncopate'; font-size: 1rem;">SELECT SERVER</h2>
+        <div class="card" onclick="start('AE SEXY')" style="border-left: 4px solid var(--t);">
+            <div style="display:flex; justify-content: space-between;"><b>AE SEXY</b> <span style="color:var(--t)">FAST</span></div>
+            <small style="font-size: 0.7rem; color: #8b949e;">Máy chủ tối ưu hóa cho sảnh AE</small>
+        </div>
+        <div class="card" onclick="start('DR DREAM')" style="border-left: 4px solid var(--gold);">
+            <div style="display:flex; justify-content: space-between;"><b>DR (DREAM)</b> <span style="color:var(--gold)">PREMIUM</span></div>
+            <small style="font-size: 0.7rem; color: #8b949e;">Máy chủ chuyên dụng cho sảnh Dream Gaming</small>
+        </div>
+        <div class="card" onclick="start('WM CASINO')" style="border-left: 4px solid var(--p);">
+            <div style="display:flex; justify-content: space-between;"><b>WM CASINO</b> <span style="color:var(--p)">STABLE</span></div>
+            <small style="font-size: 0.7rem; color: #8b949e;">Thuật toán ổn định lâu dài</small>
+        </div>
+    </div>
+
+    <div id="p3" class="page">
+        <div style="display:flex; justify-content: space-between; align-items: center; font-size: 0.7rem;">
+            <span id="hall-name">SẢNH: DR</span>
+            <span id="wr" style="color: var(--t); font-weight: bold;">WR: 100%</span>
+        </div>
+
+        <div id="res-box">
+            <h1 id="res-val">?</h1>
+            <div id="hint" style="font-size: 0.8rem; color: #484f58;">CHƯA CÓ DỮ LIỆU</div>
+        </div>
+
+        <div class="grid" id="heatmap"></div>
+
+        <div class="card" style="padding: 12px; margin-bottom: 25px;">
+            <div style="display:flex; justify-content: space-around; text-align: center;">
+                <div><small style="font-size: 0.6rem;">ĐỘ MẠNH</small><br><b id="power" style="color:var(--p)">-</b></div>
+                <div><small style="font-size: 0.6rem;">XÁC SUẤT</small><br><b id="prob">-</b></div>
+                <div><small style="font-size: 0.6rem;">GỢI Ý</small><br><b id="bet-tip" style="color:var(--t)">CHỜ</b></div>
             </div>
         </div>
-    </div>
 
-    <div id="p-hall" class="page">
-        <h2 style="color: var(--p)">SẢNH PHÂN TÍCH</h2>
-        <div class="glass-card" onclick="selectHall('AE SEXY')" style="border-left: 5px solid var(--t);">
-            <b>AE SEXY CASINO</b><br><small class="label">Trạng thái: Ổn định</small>
-        </div>
-        <div class="glass-card" onclick="selectHall('DR (DREAM)')" style="border-left: 5px solid var(--gold);">
-            <b>DR (DREAM GAMING)</b><br><small class="label">Trạng thái: Cao cấp</small>
-        </div>
-        <div class="glass-card" onclick="selectHall('WM CASINO')" style="border-left: 5px solid var(--p);">
-            <b>WM CASINO</b><br><small class="label">Trạng thái: Đang tải dữ liệu</small>
+        <div class="btn-grid">
+            <button class="btn btn-p" onclick="push(0)">PLAYER</button>
+            <button class="btn btn-b" onclick="push(1)">BANKER</button>
         </div>
     </div>
 
-    <div id="p-tool" class="page">
-        <div style="display:flex; justify-content: space-between;">
-            <span class="label" id="current-hall">HALL: DR</span>
-            <span id="wr-display" style="color:var(--t); font-weight:bold;">WR: 0%</span>
-        </div>
-
-        <div style="text-align: center; padding: 30px 0;">
-            <h1 id="res-display" style="font-size: 8rem; margin: 0; color: #111;">?</h1>
-            <p id="advice" style="color: #445;">CẦN THÊM DỮ LIỆU ĐỂ PHÂN TÍCH</p>
-        </div>
-
-        <div class="heatmap" id="heatmap"></div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <button class="btn btn-p" onclick="pushResult(0)">PLAYER</button>
-            <button class="btn btn-b" onclick="pushResult(1)">BANKER</button>
-        </div>
-    </div>
-
-    <div id="p-capital" class="page">
-        <h2 style="color: var(--gold)">QUẢN LÝ VỐN</h2>
-        <div class="glass-card">
-            <span class="label">VỐN KHỞI ĐIỂM (VNĐ)</span>
-            <input type="number" id="capital-input" value="1000000" onchange="calculatePlan()">
-            <span class="label">CHIẾN THUẬT</span>
-            <select id="strat-select" onchange="calculatePlan()">
-                <option value="5">MARTINGALE 5 TAY (AN TOÀN)</option>
-                <option value="4">MARTINGALE 4 TAY (TRUNG BÌNH)</option>
+    <div id="p4" class="page">
+        <h2 style="font-family: 'Syncopate'; font-size: 1rem; color: var(--gold);">FINANCIAL MANAGER</h2>
+        <div class="card">
+            <label style="font-size: 0.7rem;">VỐN CỦA BẠN (VNĐ)</label>
+            <input type="number" id="money" value="2000000" oninput="calcCapital()">
+            <label style="font-size: 0.7rem;">CHIẾN THUẬT CƯỢC</label>
+            <select id="strat" onchange="calcCapital()">
+                <option value="5">GẤP THẾP 5 TAY (AN TOÀN)</option>
+                <option value="4">GẤP THẾP 4 TAY (RỦI RO)</option>
             </select>
         </div>
-
-        <div class="glass-card" id="plan-output">
+        <div class="card" id="money-res" style="line-height: 1.8; font-size: 0.9rem;">
             </div>
     </div>
 
-    <nav class="nav-bar" id="navbar" style="display:none;">
-        <div class="nav-item" onclick="navTo('p-hall')">SẢNH</div>
-        <div class="nav-item" onclick="navTo('p-tool')">SOI CẦU</div>
-        <div class="nav-item" onclick="navTo('p-capital')">QUẢN LÝ VỐN</div>
-    </nav>
+    <div class="nav" id="main-nav" style="display:none;">
+        <div class="nav-item" onclick="nav('p2')">SERVER</div>
+        <div class="nav-item" onclick="nav('p3')">SOI CẦU</div>
+        <div class="nav-item" onclick="nav('p4')">QUẢN LÝ VỐN</div>
+        <div class="nav-item" onclick="location.reload()">THOÁT</div>
+    </div>
 
-    <script>
-        let logs = []; let wins = 0; let total = 0;
+<script>
+    let results = []; let wins = 0; let count = 0;
 
-        function navTo(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.getElementById('navbar').style.display = (id === 'p-auth') ? 'none' : 'flex';
+    // Loader
+    setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 1500);
+
+    function nav(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.getElementById('main-nav').style.display = (id === 'p1') ? 'none' : 'flex';
+        
+        document.querySelectorAll('.nav-item').forEach((n, i) => {
+            n.classList.remove('active-nav');
+            if(id === 'p2' && i === 0) n.classList.add('active-nav');
+            if(id === 'p3' && i === 1) n.classList.add('active-nav');
+            if(id === 'p4' && i === 2) n.classList.add('active-nav');
+        });
+        if(id === 'p4') calcCapital();
+    }
+
+    function checkAuth() {
+        const key = document.getElementById('license').value;
+        if(key.length > 3) nav('p2');
+        else alert('License Key không đúng!');
+    }
+
+    function start(name) {
+        document.getElementById('hall-name').innerText = "SẢNH: " + name;
+        nav('p3');
+        renderHeatmap();
+    }
+
+    function renderHeatmap() {
+        const h = document.getElementById('heatmap');
+        h.innerHTML = '';
+        for(let i=0; i<48; i++) {
+            const c = document.createElement('div');
+            c.className = 'cell';
+            if(results[i] !== undefined) c.style.background = results[i] === 0 ? 'var(--p)' : 'var(--b)';
+            h.appendChild(c);
+        }
+    }
+
+    function push(v) {
+        const resVal = document.getElementById('res-val');
+        if(resVal.innerText !== '?') {
+            count++;
+            if(resVal.innerText === (v === 0 ? 'P' : 'B')) wins++;
+            document.getElementById('wr').innerText = `WR: ${Math.round((wins/count)*100)}%`;
+        }
+
+        results.push(v);
+        if(results.length > 48) results.shift();
+        renderHeatmap();
+
+        resVal.style.opacity = '0.1';
+        document.getElementById('hint').innerText = "PHÂN TÍCH CLOUD...";
+
+        setTimeout(() => {
+            const next = Math.random() > 0.5 ? 0 : 1;
+            const prob = Math.floor(Math.random() * 30 + 65);
+            resVal.innerText = next === 0 ? 'P' : 'B';
+            resVal.className = next === 0 ? 'p-glow' : 'b-glow';
+            resVal.style.opacity = '1';
             
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
-            if(id === 'p-hall') document.querySelectorAll('.nav-item')[0].classList.add('active-nav');
-            if(id === 'p-tool') document.querySelectorAll('.nav-item')[1].classList.add('active-nav');
-            if(id === 'p-capital') {
-                document.querySelectorAll('.nav-item')[2].classList.add('active-nav');
-                calculatePlan();
-            }
+            document.getElementById('power').innerText = prob > 85 ? "MẠNH" : "ỔN ĐỊNH";
+            document.getElementById('prob').innerText = prob + "%";
+            document.getElementById('bet-tip').innerText = prob > 85 ? "VÀO LỚN" : "VÀO NHẸ";
+            document.getElementById('hint').innerText = "TÍN HIỆU ĐÃ CẬP NHẬT";
+        }, 600);
+    }
+
+    function calcCapital() {
+        const money = parseInt(document.getElementById('money').value);
+        const steps = parseInt(document.getElementById('strat').value);
+        const out = document.getElementById('money-res');
+        
+        if(!money) return;
+        
+        let base = Math.floor(money / (Math.pow(2, steps)));
+        let html = `<b style="color:var(--t)">PHÂN BỔ TAY ĐÁNH:</b><br>`;
+        let current = base;
+        for(let i=1; i<=steps; i++) {
+            html += `Tay ${i}: <span style="color:var(--gold)">${current.toLocaleString()}</span> VNĐ<br>`;
+            current *= 2;
         }
-
-        function selectHall(name) {
-            document.getElementById('current-hall').innerText = "HALL: " + name;
-            navTo('p-tool');
-            renderHeatmap();
-        }
-
-        function renderHeatmap() {
-            const h = document.getElementById('heatmap');
-            h.innerHTML = '';
-            for(let i=0; i<48; i++) {
-                const d = document.createElement('div');
-                d.className = 'dot';
-                if(logs[i] !== undefined) d.style.background = logs[i] === 0 ? 'var(--p)' : 'var(--b)';
-                h.appendChild(d);
-            }
-        }
-
-        function pushResult(v) {
-            const resEl = document.getElementById('res-display');
-            if(resEl.innerText !== '?') {
-                total++;
-                if(resEl.innerText === (v === 0 ? 'P' : 'B')) wins++;
-                document.getElementById('wr-display').innerText = `WR: ${Math.round((wins/total)*100)}%`;
-            }
-
-            logs.push(v);
-            if(logs.length > 48) logs.shift();
-            renderHeatmap();
-
-            resEl.style.opacity = '0.2';
-            document.getElementById('advice').innerText = "ĐANG PHÂN TÍCH NHỊP CẦU...";
-            
-            setTimeout(() => {
-                const next = Math.random() > 0.5 ? 0 : 1;
-                resEl.innerText = next === 0 ? 'P' : 'B';
-                resEl.className = next === 0 ? 'res-text' : 'res-text';
-                resEl.style.color = next === 0 ? 'var(--p)' : 'var(--b)';
-                resEl.style.textShadow = next === 0 ? '0 0 50px var(--p)' : '0 0 50px var(--b)';
-                resEl.style.opacity = '1';
-                document.getElementById('advice').innerText = "TÍN HIỆU ĐÃ SẴN SÀNG";
-            }, 500);
-        }
-
-        // FIX LỖI TRANG VỐN
-        function calculatePlan() {
-            const cap = parseInt(document.getElementById('capital-input').value);
-            const steps = parseInt(document.getElementById('strat-select').value);
-            const output = document.getElementById('plan-output');
-            
-            if(!cap || cap <= 0) {
-                output.innerHTML = "<p style='color:red'>Vui lòng nhập số vốn hợp lệ!</p>";
-                return;
-            }
-
-            // Công thức Martingale: ván sau = ván trước * 2 (hoặc tùy biến)
-            // Tính toán đơn vị cược cơ sở (Base bet) để chịu được chuỗi thua
-            const divisor = Math.pow(2, steps) - 1;
-            let base = Math.floor(cap / (divisor * 1.5)); // 1.5 là hệ số an toàn
-
-            let html = `<h3>KẾ HOẠCH CƯỢC ${steps} TAY</h3>`;
-            let currentBet = base;
-            let totalRisk = 0;
-
-            for(let i=1; i<=steps; i++) {
-                totalRisk += currentBet;
-                html += `
-                    <div class="plan-row">
-                        <span>Tay ${i}:</span>
-                        <b style="color:var(--gold)">${currentBet.toLocaleString()} VNĐ</b>
-                    </div>
-                `;
-                currentBet *= 2;
-            }
-            html += `<p class="label" style="margin-top:15px">Rủi ro tối đa: ${totalRisk.toLocaleString()} VNĐ</p>`;
-            output.innerHTML = html;
-        }
-    </script>
+        out.innerHTML = html + `<small style="color:#484f58">Khuyên dùng: Nghỉ sau khi thắng 3-5 phiên.</small>`;
+    }
+</script>
 </body>
-                    </html>
-                    
+        </html>
+        
