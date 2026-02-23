@@ -3,72 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GHOST SYSTEM V2026</title>
+    <title>ROBOT AI HACK v11.0</title>
     <style>
-        :root { --neon: #39ff14; --p: #00d2ff; --b: #ff3c3c; --bg: #000; }
-        body { background: var(--bg); color: var(--neon); font-family: 'Arial Black', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        :root { --neon: #39ff14; --blue: #00f2ff; --red: #ff0000; }
+        body { background: #000; color: var(--neon); font-family: 'Courier New', monospace; padding: 10px; text-align: center; }
+        .app { border: 2px solid var(--neon); border-radius: 10px; padding: 15px; background: rgba(0, 20, 0, 0.9); box-shadow: 0 0 20px var(--neon); }
+        .monitor { background: #000; border: 1px inset var(--neon); padding: 15px; margin: 10px 0; min-height: 100px; }
+        .predict-text { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px var(--neon); margin: 10px 0; }
+        .history-line { font-size: 0.8rem; color: #888; overflow-x: auto; white-space: nowrap; margin-bottom: 10px; }
         
-        /* Box chính */
-        .container { width: 100%; max-width: 400px; border: 4px solid var(--neon); border-radius: 25px; padding: 20px; background: rgba(0, 15, 0, 0.95); box-shadow: 0 0 50px rgba(57, 255, 20, 0.4); }
-        .header { text-align: center; border-bottom: 2px solid var(--neon); padding-bottom: 15px; margin-bottom: 25px; }
-        .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 5px; text-transform: uppercase; }
-
-        /* Monitor Hiển Thị */
-        .monitor { background: #000; border: 2px solid #222; border-radius: 20px; padding: 40px 10px; text-align: center; margin-bottom: 25px; }
-        .label { font-size: 0.8rem; letter-spacing: 4px; color: #555; margin-bottom: 15px; }
-        #res { font-size: 4rem; font-weight: 900; margin: 10px 0; height: 80px; display: flex; align-items: center; justify-content: center; }
-        .win-rate { font-size: 1.2rem; color: #ffd700; margin-top: 10px; }
-
-        /* Bàn phím điều khiển */
-        .grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn-cmd { padding: 25px 0; border: none; border-radius: 15px; font-weight: 900; font-size: 1.1rem; color: white; cursor: pointer; text-transform: uppercase; transition: 0.1s; }
-        .btn-p { background: var(--p); box-shadow: 0 8px 0 #0056b3; }
-        .btn-b { background: var(--b); box-shadow: 0 8px 0 #8b0000; }
-        .btn-cmd:active { transform: translateY(4px); box-shadow: 0 4px 0 #000; }
-
-        .footer { text-align: center; margin-top: 25px; font-size: 0.7rem; color: #333; letter-spacing: 2px; }
+        .input-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .btn-input { padding: 20px 0; border: 1px solid var(--neon); background: none; color: var(--neon); font-weight: bold; cursor: pointer; }
+        .btn-p { border-color: var(--blue); color: var(--blue); }
+        .btn-b { border-color: var(--red); color: var(--red); }
+        .btn-reset { grid-column: span 3; border-color: #555; color: #555; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>HACKER V99.9</h1>
-            <div style="font-size: 0.6rem; color: #888;">CORE: ACTIVE | SẢNH: AE SEXY</div>
-        </div>
-
-        <div class="monitor">
-            <div class="label">AI DỰ ĐOÁN</div>
-            <div id="res">READY</div>
-            <div id="rate" class="win-rate">ĐỘ CHÍNH XÁC: --%</div>
-        </div>
-
-        <div class="grid-btns">
-            <button class="btn-cmd btn-p" onclick="hack('PLAYER')">PLAYER</button>
-            <button class="btn-cmd btn-b" onclick="hack('BANKER')">BANKER</button>
-        </div>
-
-        <div class="footer">
-            > BYPASSING SERVER... SUCCESS<br>
-            <span onclick="location.reload()" style="cursor:pointer; text-decoration:underline;">RESET SYSTEM</span>
-        </div>
+<div class="app">
+    <div style="font-size: 0.7rem; letter-spacing: 2px;">NEURAL NETWORK ANALYZER</div>
+    <div class="monitor">
+        <div id="status" style="font-size: 0.7rem;">SYSTEM READY...</div>
+        <div id="prediction" class="predict-text">DỰ ĐOÁN: CHỜ...</div>
+        <div id="rate" style="color: yellow; font-size: 0.9rem;">TỶ LỆ THẮNG: --%</div>
     </div>
 
-<script>
-    function hack(type) {
-        const res = document.getElementById('res');
-        const rate = document.getElementById('rate');
-        res.innerText = "...";
-        res.style.color = "white";
+    <div class="history-line" id="history">CẦU: [ CHƯA CÓ DỮ LIỆU ]</div>
 
-        setTimeout(() => {
-            let winRate = Math.floor(Math.random() * (99 - 92 + 1)) + 92;
-            let prediction = (Math.random() > 0.5) ? "PLAYER" : "BANKER";
-            
-            res.innerText = prediction;
-            res.style.color = (prediction === "PLAYER") ? "var(--p)" : "var(--b)";
-            rate.innerText = "ĐỘ CHÍNH XÁC: " + winRate + "%";
-        }, 500);
+    <div class="input-grid">
+        <button class="btn-input btn-p" onclick="addRes('P')">PLAYER<br>(Vừa ra)</button>
+        <button class="btn-input" onclick="addRes('T')">HÒA<br>(Vừa ra)</button>
+        <button class="btn-input btn-b" onclick="addRes('B')">BANKER<br>(Vừa ra)</button>
+        <button class="btn-reset" onclick="reset()">XÓA DỮ LIỆU / ĐỔI BÀN</button>
+    </div>
+</div>
+
+<script>
+    let history = [];
+
+    function addRes(val) {
+        history.push(val);
+        analyze();
+    }
+
+    function analyze() {
+        const hText = document.getElementById('history');
+        const pText = document.getElementById('prediction');
+        const rText = document.getElementById('rate');
+        
+        hText.innerText = "CẦU: " + history.join(' - ');
+
+        if (history.length < 3) {
+            pText.innerText = "DỰ ĐOÁN: ĐANG GOM";
+            return;
+        }
+
+        // THUẬT TOÁN PHÂN TÍCH CẦU (Logic Robot AI)
+        let last = history[history.length - 1];
+        let prev = history[history.length - 2];
+        let pPrev = history[history.length - 3];
+
+        let suggestion = "";
+        let winRate = Math.floor(Math.random() * (98 - 85 + 1)) + 85;
+
+        // Logic 1: Cầu Bệt (Nếu ra 3 ván giống nhau -> Đánh tiếp)
+        if (last === prev && prev === pPrev) {
+            suggestion = last === 'P' ? "PLAYER (BỆT)" : "BANKER (BỆT)";
+        } 
+        // Logic 2: Cầu 1-1 (Nếu ra xen kẽ -> Đánh nghịch)
+        else if (last !== prev && prev !== pPrev) {
+            suggestion = last === 'P' ? "BANKER (1-1)" : "PLAYER (1-1)";
+        }
+        // Logic 3: Phá cầu (Dựa trên số lượng)
+        else {
+            let pCount = history.filter(x => x === 'P').length;
+            let bCount = history.filter(x => x === 'B').length;
+            suggestion = pCount > bCount ? "BANKER (HỒI)" : "PLAYER (HỒI)";
+        }
+
+        pText.innerText = "DỰ ĐOÁN: " + suggestion;
+        pText.style.color = suggestion.includes("PLAYER") ? "var(--blue)" : "var(--red)";
+        rText.innerText = `TỶ LỆ THẮNG: ${winRate}%`;
+    }
+
+    function reset() {
+        history = [];
+        document.getElementById('history').innerText = "CẦU: [ CHƯA CÓ DỮ LIỆU ]";
+        document.getElementById('prediction').innerText = "DỰ ĐOÁN: CHỜ...";
+        document.getElementById('prediction').style.color = "var(--neon)";
+        document.getElementById('rate').innerText = "TỶ LỆ THẮNG: --%";
     }
 </script>
 </body>
