@@ -3,131 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CongthucKJC</title>
+    <title>KJC AI ANALYZER 2026</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { margin: 0; background: #000; color: #fff; overflow: hidden; }
 
-        /* --- 1. MÀN HÌNH ĐĂNG NHẬP --- */
+        /* --- 1. AUTH SCREEN --- */
         .auth-screen {
-            position: fixed; inset: 0; background: linear-gradient(to bottom, #002b2b, #000);
+            position: fixed; inset: 0; background: radial-gradient(circle, #004d4d, #000);
             display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
         }
-        .auth-box { width: 300px; padding: 25px; border: 1px solid #00ffcc; border-radius: 15px; background: rgba(0,0,0,0.9); text-align: center; }
+        .auth-box { width: 300px; padding: 25px; border: 1px solid #00ffcc; border-radius: 15px; background: rgba(0,0,0,0.9); text-align: center; box-shadow: 0 0 20px #00ffcc33; }
         .auth-box input { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: #0f0; outline: none; border-radius: 5px; }
-        .btn-auth { width: 100%; padding: 12px; background: #00ffcc; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 10px; }
+        .btn-auth { width: 100%; padding: 12px; background: #00ffcc; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
 
-        /* --- 2. SẢNH CHỌN DEALER --- */
+        /* --- 2. LOBBY --- */
         #main-app { display: none; }
-        .top-bar { position: fixed; top: 0; width: 100%; height: 50px; background: #008080; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; }
+        .top-bar { position: fixed; top: 0; width: 100%; height: 50px; background: #008080; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; font-size: 13px; font-weight: bold; }
         .lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 60px 10px 10px; height: 100vh; overflow-y: auto; }
-        .card { border: 2px solid #00ffcc; border-radius: 10px; height: 200px; background: #111; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; cursor: pointer; background-size: cover; background-position: center; }
+        .card { border: 1px solid #00ffcc; border-radius: 8px; height: 180px; background: #111; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; cursor: pointer; background-size: cover; background-position: center; border-bottom: 4px solid #00ffcc; }
 
-        /* --- 3. CÁC POPUP --- */
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; align-items: center; justify-content: center; }
-        .popup { width: 320px; background: #001a1a; border: 2px solid #00ffcc; border-radius: 15px; padding: 20px; text-align: center; position: relative; }
-        .close { position: absolute; top: 5px; right: 12px; font-size: 25px; cursor: pointer; color: #fff; }
+        /* --- 3. POPUP & TOOL --- */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; }
+        .popup { width: 340px; background: #001a1a; border: 1px solid #00ffcc; border-radius: 20px; padding: 20px; text-align: center; position: relative; box-shadow: 0 0 40px #00ffcc22; }
+        .close { position: absolute; top: 10px; right: 15px; font-size: 25px; cursor: pointer; opacity: 0.6; }
 
-        .btn-orange { background: #ff8c00; color: #fff; padding: 8px 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; min-width: 80px; }
-        .btn-p { background: #0055ff; color: #fff; padding: 20px; border-radius: 10px; border: 1px solid #fff; font-weight: bold; flex: 1; cursor: pointer; }
-        .btn-b { background: #cc0000; color: #fff; padding: 20px; border-radius: 10px; border: 1px solid #fff; font-weight: bold; flex: 1; cursor: pointer; }
-        .btn-calc { background: #fff; color: #000; width: 90%; padding: 12px; border-radius: 10px; font-weight: bold; border: none; margin-top: 15px; cursor: pointer; }
+        /* PHẦN PHÂN TÍCH MỚI (ĐẸP MẮT) */
+        .analysis-monitor {
+            background: #000; border: 1px solid #1a1a1a; border-radius: 10px; padding: 15px; margin-top: 15px;
+            position: relative; overflow: hidden;
+        }
+        .radar-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(to right, transparent, #00ffcc, transparent);
+            animation: scan 2s linear infinite; display: none;
+        }
+        @keyframes scan { from { top: 0; } to { top: 100%; } }
 
-        /* BÀN PHÍM SỐ */
+        .res-text { font-size: 1.8rem; font-weight: 900; margin: 10px 0; letter-spacing: 2px; text-shadow: 0 0 10px currentColor; }
+        .stats-row { display: flex; justify-content: space-around; font-size: 10px; color: #555; border-top: 1px solid #111; padding-top: 10px; margin-top: 5px; }
+        .stats-row b { color: #00ffcc; }
+
+        /* BUTTONS */
+        .btn-orange { background: #ff8c00; color: #fff; padding: 8px 15px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-p { background: #0055ff; color: #fff; padding: 18px; border-radius: 10px; border: none; font-weight: bold; flex: 1; cursor: pointer; box-shadow: inset 0 0 10px #ffffff44; }
+        .btn-b { background: #cc0000; color: #fff; padding: 18px; border-radius: 10px; border: none; font-weight: bold; flex: 1; cursor: pointer; box-shadow: inset 0 0 10px #ffffff44; }
+        .btn-calc { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; margin-top: 15px; cursor: pointer; letter-spacing: 1px; }
+
+        /* NUMPAD & GRID */
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
-        .num-btn { background: #222; border: 1px solid #00ffcc; color: #fff; padding: 15px; font-size: 1.2rem; font-weight: bold; border-radius: 5px; cursor: pointer; }
-        .num-btn:active { background: #00ffcc; color: #000; }
-        .display-val { background: #000; border: 1px solid #444; padding: 10px; margin-bottom: 10px; font-size: 1.5rem; color: #0f0; min-height: 45px; }
-
-        /* LƯỚI CHỌN BÀN C01-C15 */
-        .ban-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; max-height: 300px; overflow-y: auto; padding: 5px; }
-        .ban-item { background: #111; border: 1px solid #00ffcc; padding: 10px; font-size: 13px; cursor: pointer; border-radius: 4px; }
-        .ban-item:active { background: #00ffcc; color: #000; }
-        .section-title { font-size: 12px; color: #888; margin-top: 10px; text-align: left; border-left: 3px solid #ff8c00; padding-left: 5px; }
+        .num-btn { background: #0a0a0a; border: 1px solid #222; color: #fff; padding: 12px; font-size: 1.1rem; border-radius: 5px; cursor: pointer; }
+        .ban-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .ban-item { background: #0a0a0a; border: 1px solid #333; padding: 10px; font-size: 12px; cursor: pointer; border-radius: 4px; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="auth-screen">
         <div class="auth-box">
-            <h2 style="color:#00ffcc">KJC SYSTEM PRO</h2>
+            <h2 style="color:#00ffcc; margin-top: 0;">KJC AI PRO</h2>
             <input type="text" id="user" placeholder="Tên tài khoản">
             <input type="password" id="pass" placeholder="Mật khẩu">
-            <button class="btn-auth" onclick="login()">ĐĂNG NHẬP</button>
+            <button class="btn-auth" onclick="login()">ĐĂNG NHẬP HỆ THỐNG</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="top-bar" onclick="openPopup('pop-xu')">
-            <span>Xu: <b id="display-xu" style="color:yellow">0</b></span>
-            <span>NẬP KEY ☰</span>
+            <span>XU: <b id="display-xu" style="color:yellow">0</b></span>
+            <span>MÃ NẠP KEY ☰</span>
         </div>
 
         <div class="lobby">
-            <div class="card" onclick="openPopup('pop-tool')" style="background-image:url('https://i.imgur.com/8m4YvL4.png')">DREAM GAMING</div>
-            <div class="card" onclick="openPopup('pop-tool')" style="background-image:url('https://i.imgur.com/Y6K7v9s.png')">AE SEXY</div>
-            <div class="card" onclick="openPopup('pop-tool')" style="background-image:url('https://i.imgur.com/L7E1rP8.png')">WM CASINO</div>
-            <div class="card" onclick="openPopup('pop-tool')" style="background-image:url('https://i.imgur.com/9nF7A5S.png')">SA GAMING</div>
+            <div class="card" onclick="openPopup('pop-tool')" style="background-image:linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://i.imgur.com/8m4YvL4.png')">DREAM GAMING</div>
+            <div class="card" onclick="openPopup('pop-tool')" style="background-image:linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://i.imgur.com/Y6K7v9s.png')">AE SEXY</div>
+            <div class="card" onclick="openPopup('pop-tool')" style="background-image:linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://i.imgur.com/L7E1rP8.png')">WM CASINO</div>
+            <div class="card" onclick="openPopup('pop-tool')" style="background-image:linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://i.imgur.com/9nF7A5S.png')">SA GAMING</div>
         </div>
     </div>
 
     <div id="pop-tool" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-tool')">×</span>
-            <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <span>BÀN</span>
+            
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
+                <span style="font-size: 12px; color: #888;">ROOM:</span>
                 <button class="btn-orange" onclick="openPopup('pop-ban')" id="cur-ban">C01</button>
             </div>
+
             <div style="display: flex; gap: 10px;">
                 <button class="btn-p" onclick="openPopup('pop-num', 'CON')">CON</button>
                 <button class="btn-b" onclick="openPopup('pop-num', 'CÁI')">CÁI</button>
             </div>
-            <button class="btn-calc" onclick="tinhToan()">TÍNH TOÁN</button>
-            <div id="ketqua" style="margin-top: 15px; color: #39ff14; font-weight: bold; font-size: 1.2rem;"></div>
-        </div>
-    </div>
 
-    <div id="pop-ban" class="overlay">
-        <div class="popup" style="width: 340px;">
-            <span class="close" onclick="closePopup('pop-ban')">×</span>
-            <b>CHỌN BÀN HỆ THỐNG</b>
-            
-            <div class="section-title">KHU VỰC 1-10</div>
-            <div class="ban-grid" id="grid-1-10"></div>
+            <button class="btn-calc" onclick="tinhToan()">BẮT ĐẦU PHÂN TÍCH</button>
 
-            <div class="section-title">DANH SÁCH BÀN C</div>
-            <div class="ban-grid" id="grid-c"></div>
+            <div class="analysis-monitor">
+                <div class="radar-line" id="radar"></div>
+                <div style="font-size: 9px; color: #444; letter-spacing: 2px;">NEURAL NETWORK STATUS</div>
+                <div id="res-label" style="font-size: 10px; margin-top: 10px; color: #888;">DỮ LIỆU ĐANG ĐỢI...</div>
+                <div id="res-val" class="res-text" style="color: #222;">WAIT</div>
+                
+                <div class="stats-row">
+                    <span>ĐỘ TIN CẬY: <b id="stat-acc">--%</b></span>
+                    <span>TỐC ĐỘ: <b id="stat-speed">--ms</b></span>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="pop-num" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-num')">×</span>
-            <b id="num-title">NHẬP DỮ LIỆU</b>
+            <b id="num-title" style="font-size: 14px;">NHẬP DỮ LIỆU</b>
             <div class="display-val" id="num-display"></div>
             <div class="numpad">
-                <div class="num-btn" onclick="press('1')">1</div>
-                <div class="num-btn" onclick="press('2')">2</div>
-                <div class="num-btn" onclick="press('3')">3</div>
-                <div class="num-btn" onclick="press('4')">4</div>
-                <div class="num-btn" onclick="press('5')">5</div>
-                <div class="num-btn" onclick="press('6')">6</div>
-                <div class="num-btn" onclick="press('7')">7</div>
-                <div class="num-btn" onclick="press('8')">8</div>
-                <div class="num-btn" onclick="press('9')">9</div>
-                <div class="num-btn" style="background:#400" onclick="press('C')">C</div>
-                <div class="num-btn" onclick="press('0')">0</div>
-                <div class="num-btn" style="background:#044" onclick="press('OK')">OK</div>
+                <div class="num-btn" onclick="press('1')">1</div><div class="num-btn" onclick="press('2')">2</div><div class="num-btn" onclick="press('3')">3</div>
+                <div class="num-btn" onclick="press('4')">4</div><div class="num-btn" onclick="press('5')">5</div><div class="num-btn" onclick="press('6')">6</div>
+                <div class="num-btn" onclick="press('7')">7</div><div class="num-btn" onclick="press('8')">8</div><div class="num-btn" onclick="press('9')">9</div>
+                <div class="num-btn" style="color:red" onclick="press('C')">C</div><div class="num-btn" onclick="press('0')">0</div>
+                <div class="num-btn" style="color:#00ffcc" onclick="press('OK')">OK</div>
             </div>
+        </div>
+    </div>
+
+    <div id="pop-ban" class="overlay">
+        <div class="popup">
+            <span class="close" onclick="closePopup('pop-ban')">×</span>
+            <b style="font-size: 14px;">DANH SÁCH BÀN</b>
+            <div style="font-size: 10px; color: #555; margin-top: 10px; text-align: left;">BÀN 1-10</div>
+            <div class="ban-grid" id="grid-1-10"></div>
+            <div style="font-size: 10px; color: #555; margin-top: 10px; text-align: left;">BÀN C01-C15</div>
+            <div class="ban-grid" id="grid-c"></div>
         </div>
     </div>
 
     <div id="pop-xu" class="overlay">
         <div class="popup">
             <span class="close" onclick="closePopup('pop-xu')">×</span>
-            <b>NẬP MÃ KÍCH HOẠT</b>
+            <b>MÃ KÍCH HOẠT</b>
             <input type="text" id="ma-key" placeholder="Nhập Key tại đây...">
-            <button class="btn-calc" onclick="napMa()">XÁC NHẬN</button>
+            <button class="btn-calc" onclick="napMa()">XÁC NHẬN KEY</button>
         </div>
     </div>
 
@@ -147,59 +163,58 @@
     }
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
 
-    // Xử lý Bàn phím số
     function press(v) {
         const d = document.getElementById('num-display');
         if(v === 'C') currentInput = "";
-        else if(v === 'OK') {
-            closePopup('pop-num');
-            currentInput = "";
-        } else {
-            if(currentInput.length < 12) currentInput += v;
-        }
+        else if(v === 'OK') closePopup('pop-num'), currentInput = "";
+        else if(currentInput.length < 12) currentInput += v;
         d.innerText = currentInput;
     }
 
-    // Tạo lưới bàn 1-10
+    // Render bàn
     const g1 = document.getElementById('grid-1-10');
     for(let i=1; i<=10; i++){
-        let div = document.createElement('div');
-        div.className = 'ban-item';
-        div.innerText = "BÀN " + i;
-        div.onclick = () => { document.getElementById('cur-ban').innerText = i; closePopup('pop-ban'); };
-        g1.appendChild(div);
+        let d = document.createElement('div'); d.className='ban-item'; d.innerText=i;
+        d.onclick=()=>{document.getElementById('cur-ban').innerText=i; closePopup('pop-ban')}; g1.appendChild(d);
     }
-
-    // Tạo lưới bàn C01-C15
     const gc = document.getElementById('grid-c');
     for(let i=1; i<=15; i++){
-        let code = "C" + (i < 10 ? "0" + i : i);
-        let div = document.createElement('div');
-        div.className = 'ban-item';
-        div.innerText = code;
-        div.onclick = () => { document.getElementById('cur-ban').innerText = code; closePopup('pop-ban'); };
-        gc.appendChild(div);
+        let c = "C"+(i<10?"0"+i:i);
+        let d = document.createElement('div'); d.className='ban-item'; d.innerText=c;
+        d.onclick=()=>{document.getElementById('cur-ban').innerText=c; closePopup('pop-ban')}; gc.appendChild(d);
     }
 
     function napMa() {
-        let k = document.getElementById('ma-key').value;
-        if(k === "ADMIN") { 
-            xu += 9000; 
-            document.getElementById('display-xu').innerText = xu;
-            closePopup('pop-xu');
-            alert("Đã nạp 1000 Xu!");
+        if(document.getElementById('ma-key').value === "KJC2026") {
+            xu += 500; document.getElementById('display-xu').innerText = xu;
+            closePopup('pop-xu'); alert("Thành công!");
         } else alert("Key sai!");
     }
 
     function tinhToan() {
         if(xu < 10) return alert("Hết xu!");
-        let kq = document.getElementById('ketqua');
-        kq.innerText = "ĐANG SOI CẦU...";
+        const r = document.getElementById('radar');
+        const lb = document.getElementById('res-label');
+        const vl = document.getElementById('res-val');
+        const sa = document.getElementById('stat-acc');
+        const ss = document.getElementById('stat-speed');
+
+        r.style.display = 'block';
+        lb.innerText = "HỆ THỐNG ĐANG QUÉT CẦU...";
+        vl.innerText = "SCAN"; vl.style.color = "#444";
+        
         setTimeout(() => {
-            xu -= 1; document.getElementById('display-xu').innerText = xu;
-            kq.innerText = "DỰ ĐOÁN: " + (Math.random() > 0.5 ? "PLAYER" : "BANKER");
-        }, 1000);
+            xu -= 10; document.getElementById('display-xu').innerText = xu;
+            r.style.display = 'none';
+            lb.innerText = "DỰ ĐOÁN THÀNH CÔNG";
+            let p = Math.random() > 0.5;
+            vl.innerText = p ? "PLAYER" : "BANKER";
+            vl.style.color = p ? "#0055ff" : "#cc0000";
+            sa.innerText = (90 + Math.floor(Math.random()*9)) + "%";
+            ss.innerText = (100 + Math.floor(Math.random()*400)) + "ms";
+        }, 1500);
     }
 </script>
 </body>
 </html>
+    
