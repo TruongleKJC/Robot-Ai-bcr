@@ -36,36 +36,39 @@
         .tool-box {
             width: 320px; background: rgba(0, 30, 30, 0.95); border: 2px solid #00ffcc; 
             border-radius: 15px; padding: 20px; position: relative; text-align: center;
-            box-shadow: 0 0 30px #00ffcc55;
         }
         .close-btn { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; }
         
         .row { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; align-items: center; }
         .input-mini { width: 50px; padding: 8px; border-radius: 5px; border: none; text-align: center; font-weight: bold; }
-        .btn-orange { background: #ff8c00; color: #fff; padding: 8px 25px; border-radius: 10px; border: none; font-weight: bold; }
         
-        .btn-action { padding: 15px 25px; border-radius: 8px; border: none; color: #fff; font-weight: bold; cursor: pointer; flex: 1; }
-        .btn-blue { background: #0055ff; border: 1px solid #fff; }
-        .btn-red { background: #cc0000; border: 1px solid #fff; }
-        .btn-calc { background: #fff; color: #000; width: 100px; padding: 10px; border-radius: 8px; font-weight: bold; border: 1px solid #000; }
+        /* Màu cam chuẩn KJC */
+        .btn-orange { background: #ff8c00; color: #fff; padding: 8px 25px; border-radius: 10px; border: none; font-weight: bold; box-shadow: 0 4px #b36200; }
+        
+        .btn-action { padding: 15px 10px; border-radius: 8px; border: 1px solid #fff; color: #fff; font-weight: bold; cursor: pointer; flex: 1; font-size: 12px; }
+        .btn-blue { background: #0055ff; }
+        .btn-red { background: #cc0000; }
+        .btn-calc { background: #fff; color: #000; width: 120px; padding: 10px; border-radius: 8px; font-weight: bold; border: 1px solid #000; cursor: pointer; }
 
-        .nap-xu { color: #fff; font-size: 14px; text-align: left; line-height: 1.4; }
+        /* Khu vực nạp xu */
+        .deposit-area { margin-top: 15px; padding-top: 10px; border-top: 1px solid #333; }
+        .btn-deposit { background: #00ffcc; color: #000; border: none; padding: 5px 10px; font-weight: bold; cursor: pointer; border-radius: 5px; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <h2 style="color: #00ffcc; letter-spacing: 2px;">KJC SYSTEM</h2>
+        <h2 style="color: #00ffcc; letter-spacing: 2px;">KJC SYSTEM 2026</h2>
         <div class="login-box">
             <input type="text" id="user" placeholder="Tên đăng nhập">
             <input type="password" placeholder="Mật khẩu">
-            <button class="btn-login" onclick="goLobby()">ĐĂNG NHẬP</button>
+            <button class="btn-login" onclick="goLobby()">VÀO HỆ THỐNG</button>
         </div>
     </div>
 
     <div id="lobby-screen">
         <div class="top-bar">
-            <span>Xu: 0</span>
+            <span>Số dư: <b id="total-xu" style="color:yellow">0</b> Xu</span>
             <span style="font-size: 20px;">☰</span>
         </div>
 
@@ -90,7 +93,7 @@
             <span class="close-btn" onclick="closeTool()">×</span>
             
             <div class="row">
-                <span>BÀN</span>
+                <span style="font-size: 12px;">BÀN</span>
                 <button class="btn-orange">1</button>
                 <input type="text" class="input-mini" value="1">
             </div>
@@ -98,22 +101,26 @@
             <div class="row">
                 <button class="btn-action btn-blue" id="p-count">CON 0</button>
                 <button class="btn-action btn-red" id="b-count">CÁI 0</button>
-                <div class="nap-xu">VUI LÒNG NẬP<br>XU</div>
             </div>
 
             <div class="row">
                 <button class="btn-calc" onclick="tinh()">TÍNH TOÁN</button>
             </div>
 
-            <div id="ketqua" style="margin-top: 10px; font-weight: bold; color: yellow;"></div>
+            <div id="ketqua" style="margin: 10px 0; font-weight: bold; color: #39ff14; font-size: 14px; min-height: 20px;"></div>
+
+            <div class="deposit-area">
+                <input type="number" id="nap-val" placeholder="Số xu cần nạp" style="width: 100px; padding: 5px; font-size: 10px;">
+                <button class="btn-deposit" onclick="napXu()">NẠP XU</button>
+            </div>
         </div>
     </div>
 
 <script>
-    let p = 0, b = 0;
+    let p = 0, b = 0, xu = 0;
 
     function goLobby() {
-        if(!document.getElementById('user').value) return alert("Nhập tên đăng nhập!");
+        if(!document.getElementById('user').value) return alert("Nhập User!");
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('lobby-screen').style.display = 'block';
     }
@@ -126,7 +133,15 @@
         document.getElementById('tool-overlay').style.display = 'none';
     }
 
-    // Logic bấm nút tăng số
+    function napXu() {
+        let val = parseInt(document.getElementById('nap-val').value);
+        if(isNaN(val) || val <= 0) return alert("Nhập số xu hợp lệ!");
+        xu += val;
+        document.getElementById('total-xu').innerText = xu;
+        alert("Đã nạp thành công " + val + " xu!");
+        document.getElementById('nap-val').value = '';
+    }
+
     document.getElementById('p-count').onclick = function() {
         p++; this.innerText = "CON " + p;
     }
@@ -135,12 +150,18 @@
     }
 
     function tinh() {
+        if(xu < 10) return alert("Không đủ xu để phân tích (Cần tối thiểu 10 xu)");
+        
         const kq = document.getElementById('ketqua');
-        kq.innerText = "ĐANG PHÂN TÍCH...";
+        kq.innerText = "HỆ THỐNG ĐANG QUÉT...";
+        
         setTimeout(() => {
-            let predict = (Math.random() > 0.5) ? "VÀO CON (PLAYER)" : "VÀO CÁI (BANKER)";
-            kq.innerText = "DỰ ĐOÁN: " + predict;
-        }, 800);
+            xu -= 10; // Mỗi lần tính trừ 10 xu
+            document.getElementById('total-xu').innerText = xu;
+            
+            let res = (Math.random() > 0.5) ? "KẾT QUẢ: PLAYER (CON)" : "KẾT QUẢ: BANKER (CÁI)";
+            kq.innerText = res;
+        }, 1000);
     }
 </script>
 </body>
