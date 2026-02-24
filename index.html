@@ -3,164 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI SOICAU PRO 2026</title>
+    <title>KJC PRO 2026</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Arial', sans-serif; }
-        body { margin: 0; background: #001a1a; color: #fff; overflow-x: hidden; }
-
-        /* --- 1. MÀN HÌNH ĐĂNG NHẬP --- */
-        #login-screen {
-            position: fixed; inset: 0; background: radial-gradient(circle, #003333, #000);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100;
-        }
-        .login-box { width: 300px; padding: 20px; border: 1px solid #00ffcc; border-radius: 10px; text-align: center; background: rgba(0,0,0,0.8); }
-        .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: #0f0; outline: none; }
-        .btn-login { width: 100%; padding: 12px; background: #00ffcc; color: #000; border: none; font-weight: bold; cursor: pointer; }
-
-        /* --- 2. GIAO DIỆN SẢNH (DEALER) --- */
-        #lobby-screen { display: none; padding: 10px; padding-top: 50px; }
-        .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #008080; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 10; }
+        * { box-sizing: border-box; font-family: sans-serif; }
+        body { margin: 0; background: #001a1a; color: #fff; text-align: center; }
         
-        .dealer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .dealer-card { 
-            position: relative; border: 2px solid #00ffcc; border-radius: 10px; overflow: hidden; 
-            cursor: pointer; height: 250px; background-size: cover; background-position: center;
-        }
-        .dealer-name { position: absolute; bottom: 10px; width: 100%; text-align: center; font-weight: bold; background: rgba(0,0,0,0.6); padding: 5px 0; }
+        /* Giao diện Sảnh Dealer */
+        .lobby { padding-top: 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 60px 10px 10px; }
+        .top-bar { position: fixed; top: 0; inset: 0 0 auto 0; height: 50px; background: #008080; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 10; cursor: pointer; }
+        .card { border: 2px solid #00ffcc; border-radius: 10px; height: 200px; background: #111; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; font-weight: bold; cursor: pointer; }
 
-        /* --- 3. BẢNG TOOL (POPUP) --- */
-        #tool-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-            z-index: 50; align-items: center; justify-content: center;
-        }
-        .tool-box {
-            width: 320px; background: rgba(0, 30, 30, 0.95); border: 2px solid #00ffcc; 
-            border-radius: 15px; padding: 20px; position: relative; text-align: center;
-        }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; }
-        
-        .row { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; align-items: center; }
-        .input-mini { width: 50px; padding: 8px; border-radius: 5px; border: none; text-align: center; font-weight: bold; }
-        
-        /* Màu cam chuẩn KJC */
-        .btn-orange { background: #ff8c00; color: #fff; padding: 8px 25px; border-radius: 10px; border: none; font-weight: bold; box-shadow: 0 4px #b36200; }
-        
-        .btn-action { padding: 15px 10px; border-radius: 8px; border: 1px solid #fff; color: #fff; font-weight: bold; cursor: pointer; flex: 1; font-size: 12px; }
-        .btn-blue { background: #0055ff; }
-        .btn-red { background: #cc0000; }
-        .btn-calc { background: #fff; color: #000; width: 120px; padding: 10px; border-radius: 8px; font-weight: bold; border: 1px solid #000; cursor: pointer; }
+        /* Lớp phủ mờ nền */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; }
+        .popup { width: 320px; background: #002b2b; border: 2px solid #00ffcc; border-radius: 15px; padding: 20px; position: relative; }
+        .close { position: absolute; top: 5px; right: 12px; font-size: 25px; cursor: pointer; }
 
-        /* Khu vực nạp xu */
-        .deposit-area { margin-top: 15px; padding-top: 10px; border-top: 1px solid #333; }
-        .btn-deposit { background: #00ffcc; color: #000; border: none; padding: 5px 10px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        /* Các nút đặc trưng KJC */
+        .btn-orange { background: #ff8c00; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-p { background: #0055ff; color: #fff; padding: 20px; border-radius: 10px; border: 1px solid #fff; font-weight: bold; flex: 1; cursor: pointer; }
+        .btn-b { background: #cc0000; color: #fff; padding: 20px; border-radius: 10px; border: 1px solid #fff; font-weight: bold; flex: 1; cursor: pointer; }
+        .btn-calc { background: #fff; color: #000; width: 80%; padding: 12px; border-radius: 10px; font-weight: bold; border: none; margin-top: 15px; cursor: pointer; }
+
+        /* Lưới chọn bàn & kết quả */
+        .grid-select { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .item-num { padding: 10px; background: #111; border: 1px solid #00ffcc; border-radius: 5px; cursor: pointer; }
+        .item-num:active { background: #00ffcc; color: #000; }
+        
+        input { width: 100%; padding: 10px; margin-top: 10px; background: #000; border: 1px solid #00ffcc; color: #fff; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <h2 style="color: #00ffcc; letter-spacing: 2px;">KJC SYSTEM 2026</h2>
-        <div class="login-box">
-            <input type="text" id="user" placeholder="Tên đăng nhập">
-            <input type="password" placeholder="Mật khẩu">
-            <button class="btn-login" onclick="goLobby()">VÀO HỆ THỐNG</button>
+    <div class="top-bar" onclick="openPopup('pop-xu')">
+        <span>Xu: <b id="display-xu">0</b></span>
+        <span>NẠP MÃ XU ☰</span>
+    </div>
+
+    <div class="lobby">
+        <div class="card" onclick="openPopup('pop-tool')">DREAM GAMING</div>
+        <div class="card" onclick="openPopup('pop-tool')">AE SEXY</div>
+        <div class="card" onclick="openPopup('pop-tool')">WM CASINO</div>
+        <div class="card" onclick="openPopup('pop-tool')">SA GAMING</div>
+    </div>
+
+    <div id="pop-tool" class="overlay">
+        <div class="popup">
+            <span class="close" onclick="closePopup('pop-tool')">×</span>
+            <div style="margin-bottom: 20px;">
+                BÀN <button class="btn-orange" onclick="openPopup('pop-ban')" id="cur-ban">1</button>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-p" onclick="openPopup('pop-nhap')">CON</button>
+                <button class="btn-b" onclick="openPopup('pop-nhap')">CÁI</button>
+            </div>
+            <button class="btn-calc" onclick="tinhToan()">TÍNH TOÁN</button>
+            <div id="ketqua" style="margin-top: 15px; color: #39ff14; font-weight: bold;"></div>
         </div>
     </div>
 
-    <div id="lobby-screen">
-        <div class="top-bar">
-            <span>Số dư: <b id="total-xu" style="color:yellow">0</b> Xu</span>
-            <span style="font-size: 20px;">☰</span>
-        </div>
-
-        <div class="dealer-grid">
-            <div class="dealer-card" onclick="openTool()" style="background-image: url('https://i.imgur.com/8m4YvL4.png');">
-                <div class="dealer-name">DREAM GAMING</div>
-            </div>
-            <div class="dealer-card" onclick="openTool()" style="background-image: url('https://i.imgur.com/Y6K7v9s.png');">
-                <div class="dealer-name">AE SEXY</div>
-            </div>
-            <div class="dealer-card" onclick="openTool()" style="background-image: url('https://i.imgur.com/L7E1rP8.png');">
-                <div class="dealer-name">WM CASINO</div>
-            </div>
-            <div class="dealer-card" onclick="openTool()" style="background-image: url('https://i.imgur.com/9nF7A5S.png');">
-                <div class="dealer-name">SA GAMING</div>
-            </div>
+    <div id="pop-ban" class="overlay">
+        <div class="popup">
+            <span class="close" onclick="closePopup('pop-ban')">×</span>
+            <b>CHỌN SỐ BÀN</b>
+            <div class="grid-select" id="ban-list"></div>
         </div>
     </div>
 
-    <div id="tool-overlay">
-        <div class="tool-box">
-            <span class="close-btn" onclick="closeTool()">×</span>
-            
-            <div class="row">
-                <span style="font-size: 12px;">BÀN</span>
-                <button class="btn-orange">1</button>
-                <input type="text" class="input-mini" value="1">
-            </div>
+    <div id="pop-nhap" class="overlay">
+        <div class="popup">
+            <span class="close" onclick="closePopup('pop-nhap')">×</span>
+            <b>NHẬP CHUỖI KẾ QUẢ</b>
+            <p style="font-size: 10px; color: #888;">Nhập chuỗi P B (Ví dụ: PPBPPB)</p>
+            <input type="text" id="input-data" placeholder="Nhập dữ liệu bàn...">
+            <button class="btn-calc" onclick="saveData()">XÁC NHẬN</button>
+        </div>
+    </div>
 
-            <div class="row">
-                <button class="btn-action btn-blue" id="p-count">CON 0</button>
-                <button class="btn-action btn-red" id="b-count">CÁI 0</button>
-            </div>
-
-            <div class="row">
-                <button class="btn-calc" onclick="tinh()">TÍNH TOÁN</button>
-            </div>
-
-            <div id="ketqua" style="margin: 10px 0; font-weight: bold; color: #39ff14; font-size: 14px; min-height: 20px;"></div>
-
-            <div class="deposit-area">
-                <input type="number" id="nap-val" placeholder="Số xu cần nạp" style="width: 100px; padding: 5px; font-size: 10px;">
-                <button class="btn-deposit" onclick="napXu()">NẠP XU</button>
-            </div>
+    <div id="pop-xu" class="overlay">
+        <div class="popup">
+            <span class="close" onclick="closePopup('pop-xu')">×</span>
+            <b>HỆ THỐNG NẬP XU</b>
+            <input type="text" id="ma-key" placeholder="Nhập mã kích hoạt (Key)">
+            <button class="btn-calc" onclick="napMa()">XÁC NHẬN MÃ</button>
         </div>
     </div>
 
 <script>
-    let p = 0, b = 0, xu = 0;
+    let xu = 0;
 
-    function goLobby() {
-        if(!document.getElementById('user').value) return alert("Nhập User!");
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('lobby-screen').style.display = 'block';
+    function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
+    function closePopup(id) { document.getElementById(id).style.display = 'none'; }
+
+    // Tạo danh sách bàn 1-20
+    const banList = document.getElementById('ban-list');
+    for(let i=1; i<=20; i++) {
+        let b = document.createElement('div');
+        b.className = 'item-num';
+        b.innerText = i;
+        b.onclick = () => {
+            document.getElementById('cur-ban').innerText = i;
+            closePopup('pop-ban');
+        };
+        banList.appendChild(b);
     }
 
-    function openTool() {
-        document.getElementById('tool-overlay').style.display = 'flex';
+    function saveData() {
+        alert("Đã ghi nhận dữ liệu kết quả!");
+        closePopup('pop-nhap');
     }
 
-    function closeTool() {
-        document.getElementById('tool-overlay').style.display = 'none';
+    function napMa() {
+        let key = document.getElementById('ma-key').value;
+        if(key === "KJC2026") { // Mã mẫu
+            xu += 500;
+            document.getElementById('display-xu').innerText = xu;
+            alert("Nạp thành công 500 Xu!");
+            closePopup('pop-xu');
+        } else {
+            alert("Mã không chính xác!");
+        }
     }
 
-    function napXu() {
-        let val = parseInt(document.getElementById('nap-val').value);
-        if(isNaN(val) || val <= 0) return alert("Nhập số xu hợp lệ!");
-        xu += val;
-        document.getElementById('total-xu').innerText = xu;
-        alert("Đã nạp thành công " + val + " xu!");
-        document.getElementById('nap-val').value = '';
-    }
-
-    document.getElementById('p-count').onclick = function() {
-        p++; this.innerText = "CON " + p;
-    }
-    document.getElementById('b-count').onclick = function() {
-        b++; this.innerText = "CÁI " + b;
-    }
-
-    function tinh() {
-        if(xu < 10) return alert("Không đủ xu để phân tích (Cần tối thiểu 10 xu)");
-        
-        const kq = document.getElementById('ketqua');
-        kq.innerText = "HỆ THỐNG ĐANG QUÉT...";
-        
+    function tinhToan() {
+        if(xu < 50) return alert("Hết xu! Vui lòng nạp thêm.");
+        let kq = document.getElementById('ketqua');
+        kq.innerText = "ĐANG PHÂN TÍCH...";
         setTimeout(() => {
-            xu -= 10; // Mỗi lần tính trừ 10 xu
-            document.getElementById('total-xu').innerText = xu;
-            
-            let res = (Math.random() > 0.5) ? "KẾT QUẢ: PLAYER (CON)" : "KẾT QUẢ: BANKER (CÁI)";
-            kq.innerText = res;
+            xu -= 50;
+            document.getElementById('display-xu').innerText = xu;
+            kq.innerText = "DỰ ĐOÁN: " + (Math.random() > 0.5 ? "PLAYER (CON)" : "BANKER (CÁI)");
         }, 1000);
     }
 </script>
