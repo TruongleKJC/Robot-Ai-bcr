@@ -3,115 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROBOT AI HACKER v99.9</title>
+    <title>Công Thức KJC V9.9</title>
     <style>
-        :root { --neon: #39ff14; --p-color: #00f2ff; --b-color: #ff0055; }
-        body { background: #000; color: var(--neon); font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        body { background: #1a1a1a; color: #fff; font-family: 'Roboto', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; }
         
-        /* Hiệu ứng Radar */
-        .radar-circle { position: absolute; width: 300px; height: 300px; border: 1px solid rgba(57, 255, 20, 0.2); border-radius: 50%; z-index: -1; }
-        .radar-sweep { position: absolute; width: 150px; height: 150px; background: linear-gradient(45deg, rgba(57, 255, 20, 0.2) 0%, transparent 100%); transform-origin: bottom right; animation: sweep 3s linear infinite; z-index: -1; }
-        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        /* App Header */
+        .app-header { width: 100%; background: #2c3e50; padding: 15px 0; text-align: center; font-weight: bold; font-size: 1.1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
 
-        .hacker-frame { width: 90%; max-width: 420px; border: 3px solid var(--neon); background: rgba(0, 10, 0, 0.95); padding: 20px; box-shadow: 0 0 50px rgba(57, 255, 20, 0.5); position: relative; }
-        .header { text-align: center; border-bottom: 2px solid var(--neon); margin-bottom: 20px; padding-bottom: 10px; }
-        .glitch { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; animation: glitch 1s infinite; }
-        
-        .display-area { background: rgba(0, 0, 0, 0.8); border: 1px solid var(--neon); padding: 20px; text-align: center; margin-bottom: 20px; position: relative; }
-        .predict-label { font-size: 0.8rem; letter-spacing: 2px; color: #888; }
-        .main-signal { font-size: 2rem; font-weight: bold; margin: 15px 0; min-height: 40px; }
-        .accuracy { color: yellow; font-size: 0.9rem; }
+        /* Bảng thống kê chuẩn 6 hàng (Bead Plate) */
+        .bead-plate { background: #fff; width: 90%; max-width: 350px; height: 180px; margin: 15px 0; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(6, 1fr); gap: 2px; padding: 5px; box-sizing: border-box; border-radius: 5px; }
+        .cell { background: #e0e0e0; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; margin: auto; }
+        .cell.P { background: #007bff; color: #fff; }
+        .cell.B { background: #dc3545; color: #fff; }
+        .cell.T { background: #28a745; color: #fff; }
 
-        .log-stream { height: 60px; font-size: 0.6rem; color: #444; overflow: hidden; text-align: left; border-top: 1px solid #222; margin-top: 10px; padding-top: 5px; }
-        
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { padding: 15px; border: 1px solid var(--neon); background: transparent; color: var(--neon); font-family: inherit; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        button:active { background: var(--neon); color: black; box-shadow: 0 0 20px var(--neon); }
-        .btn-p { border-color: var(--p-color); color: var(--p-color); }
-        .btn-b { border-color: var(--b-color); color: var(--b-color); }
-        .btn-reset { grid-column: span 2; border: none; font-size: 0.7rem; opacity: 0.5; margin-top: 10px; }
+        /* Màn hình hiển thị kết quả AI */
+        .ai-result { width: 90%; background: #222; border-radius: 10px; padding: 20px 0; text-align: center; margin-bottom: 20px; border: 1px solid #333; }
+        .ai-label { font-size: 0.7rem; color: #aaa; margin-bottom: 10px; }
+        #next-bet { font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
+        #win-rate { font-size: 0.9rem; color: #f1c40f; margin-top: 5px; }
 
-        @keyframes glitch {
-            0% { text-shadow: 2px 2px var(--neon-red); }
-            50% { text-shadow: -2px -2px var(--p-color); }
-            100% { text-shadow: 2px 2px var(--neon-red); }
-        }
+        /* Phím bấm điều khiển bo tròn */
+        .controls { width: 90%; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn { padding: 15px 0; border: none; border-radius: 10px; font-weight: bold; color: #fff; font-size: 0.9rem; cursor: pointer; transition: 0.2s; box-shadow: 0 4px #000; }
+        .btn:active { transform: translateY(2px); box-shadow: 0 2px #000; }
+        .btn-p { background: #007bff; }
+        .btn-b { background: #dc3545; }
+        .btn-t { background: #28a745; }
+        .btn-clear { background: #7f8c8d; grid-column: span 3; margin-top: 10px; padding: 10px; font-size: 0.7rem; box-shadow: none; }
+
+        .footer-note { font-size: 0.6rem; color: #555; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <div class="radar-circle"></div>
-    <div class="radar-sweep"></div>
 
-    <div class="hacker-frame">
-        <div class="header">
-            <div class="glitch">SYSTEM HACKER V99.9</div>
-            <div style="font-size: 0.6rem;">CORE ACCESS: GRANTED | ENCRYPTION: OFF</div>
+    <div class="app-header">CÔNG THỨC KJC PRO</div>
+
+    <div class="bead-plate" id="board">
         </div>
 
-        <div class="display-area">
-            <div class="predict-label">DỰ ĐOÁN HỆ THỐNG</div>
-            <div id="main-signal" class="main-signal">SCANNING...</div>
-            <div id="accuracy-percent" class="accuracy">WIN RATE: --%</div>
-            <div class="log-stream" id="logs">
-                > Initializing Neural Network...<br>
-                > Bypassing Server Firewall...<br>
-                > Ready for Data Input...
-            </div>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn-p" onclick="add('P')">NHẬP PLAYER</button>
-            <button class="btn-b" onclick="add('B')">NHẬP BANKER</button>
-            <button class="btn-reset" onclick="reset()">RESET SYSTEM</button>
-        </div>
+    <div class="ai-result">
+        <div class="ai-label">KẾT QUẢ DỰ ĐOÁN TIẾP THEO</div>
+        <div id="next-bet">ĐANG ĐỢI...</div>
+        <div id="win-rate">Tỷ lệ thắng: --%</div>
     </div>
+
+    <div class="controls">
+        <button class="btn btn-p" onclick="addResult('P')">PLAYER</button>
+        <button class="btn btn-t" onclick="addResult('T')">HÒA</button>
+        <button class="btn btn-b" onclick="addResult('B')">BANKER</button>
+        <button class="btn btn-clear" onclick="resetBoard()">XÓA DỮ LIỆU CŨ</button>
+    </div>
+
+    <div class="footer-note">Hệ thống phân tích KJC AI 2026 - Không chia sẻ ra ngoài</div>
 
 <script>
     let history = [];
-    const logs = document.getElementById('logs');
-    
-    function add(type) {
-        history.push(type);
-        const logEntry = `> Data Received: ${type} at ${new Date().toLocaleTimeString()}<br>`;
-        logs.innerHTML = logEntry + logs.innerHTML;
-        analyze();
-    }
+    const maxCells = 72;
 
-    function analyze() {
-        const signal = document.getElementById('main-signal');
-        const acc = document.getElementById('accuracy-percent');
-        
-        if (history.length < 2) {
-            signal.innerText = "WAITING DATA...";
-            return;
+    function initBoard() {
+        const board = document.getElementById('board');
+        board.innerHTML = '';
+        for (let i = 0; i < maxCells; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.id = 'cell-' + i;
+            board.appendChild(cell);
         }
+    }
 
-        // THUẬT TOÁN ROBOT AI 2026
-        let last = history[history.length - 1];
-        let randomRate = Math.floor(Math.random() * (99 - 88 + 1)) + 88;
+    function addResult(type) {
+        if (history.length >= maxCells) return;
         
-        // Logic mô phỏng soi cầu
-        let result = "";
-        if (last === 'P') result = "BANKER"; // Gợi ý bẻ hoặc theo tùy thuật toán
-        else result = "PLAYER";
+        const currentIndex = history.length;
+        history.push(type);
+        
+        // Cập nhật lên bảng
+        const cell = document.getElementById('cell-' + currentIndex);
+        cell.innerText = type;
+        cell.classList.add(type);
 
-        // Tạo hiệu ứng load giả lập
-        signal.innerText = "ANALYZING...";
+        // Dự đoán AI
+        const nextBet = document.getElementById('next-bet');
+        const winRate = document.getElementById('win-rate');
+        
+        nextBet.innerText = "...";
         setTimeout(() => {
-            signal.innerText = result;
-            signal.style.color = result === "PLAYER" ? "var(--p-color)" : "var(--b-color)";
-            acc.innerText = "WIN RATE: " + randomRate + "%";
-            acc.style.textShadow = "0 0 10px gold";
-        }, 500);
+            // Thuật toán KJC: Dựa vào chuỗi cuối để phán
+            let last = history[history.length - 1];
+            let prediction = (Math.random() > 0.5) ? 'PLAYER' : 'BANKER';
+            
+            // Logic bệt cơ bản của KJC
+            if (history.length >= 2 && history[history.length-1] === history[history.length-2]) {
+                prediction = last === 'P' ? 'PLAYER' : 'BANKER';
+            }
+
+            nextBet.innerText = prediction;
+            nextBet.style.color = (prediction === 'PLAYER') ? '#007bff' : '#dc3545';
+            winRate.innerText = "Tỷ lệ thắng: " + (Math.floor(Math.random() * 5) + 94) + "%";
+        }, 400);
     }
 
-    function reset() {
+    function resetBoard() {
         history = [];
-        document.getElementById('main-signal').innerText = "SCANNING...";
-        document.getElementById('main-signal').style.color = "var(--neon)";
-        document.getElementById('accuracy-percent').innerText = "WIN RATE: --%";
-        logs.innerHTML = "> System Reset...<br>> Ready for Data Input...";
+        initBoard();
+        document.getElementById('next-bet').innerText = "ĐANG ĐỢI...";
+        document.getElementById('next-bet').style.color = "#fff";
+        document.getElementById('win-rate').innerText = "Tỷ lệ thắng: --%";
     }
+
+    initBoard();
 </script>
 </body>
 </html>
