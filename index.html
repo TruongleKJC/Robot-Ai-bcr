@@ -2,201 +2,106 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Baccarat AI Scanner v60</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI PREDICT PRO - KHÁNH</title>
     <style>
-        /* Giao diện Glassmorphism & Cyberpunk */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(circle, #1a1a2e, #16213e);
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+        :root { --blue: #00d2ff; --red: #ff4d4d; --gold: #ffeb3b; --bg: #050508; }
+        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; padding: 15px; }
+        
+        .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: var(--blue); font-size: 16px; letter-spacing: 2px; margin-top: 0; }
 
-        .glass-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-        }
+        /* Ô nhập điểm */
+        .score-input { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .input-box { text-align: center; }
+        .input-box label { display: block; font-size: 12px; color: #aaa; margin-bottom: 5px; }
+        .input-box input { width: 80%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; font-size: 24px; text-align: center; }
 
-        h2 {
-            color: #00d2ff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #00d2ff;
-        }
+        /* Kết quả dự đoán */
+        .prediction-result { background: rgba(0, 210, 255, 0.1); border: 1px dashed var(--blue); border-radius: 10px; padding: 15px; text-align: center; }
+        #next-bet { font-size: 22px; font-weight: bold; color: var(--gold); margin: 5px 0; }
+        #money-suggest { font-size: 14px; color: #00ffcc; }
 
-        .video-box {
-            position: relative;
-            width: 100%;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid #00d2ff;
-            background: #000;
-        }
-
-        video {
-            width: 100%;
-            display: block;
-        }
-
-        .scanner-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: rgba(0, 210, 255, 0.7);
-            box-shadow: 0 0 15px #00d2ff;
-            animation: scan 2s infinite linear;
-        }
-
-        @keyframes scan {
-            0% { top: 0; }
-            100% { top: 100%; }
-        }
-
-        .result-panel {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .stat-card {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px;
-            border-radius: 10px;
-            border-left: 3px solid #00d2ff;
-        }
-
-        .stat-card span {
-            display: block;
-            font-size: 0.8rem;
-            color: #aaa;
-        }
-
-        .stat-card b {
-            font-size: 1.2rem;
-            color: #fff;
-        }
-
-        #prediction {
-            grid-column: span 2;
-            background: rgba(0, 210, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            color: #00d2ff;
-            font-weight: bold;
-            border: 1px dashed #00d2ff;
-        }
-
-        button {
-            margin-top: 20px;
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:active {
-            transform: scale(0.95);
-        }
+        /* Lịch sử ván */
+        .history-list { font-size: 12px; color: #888; height: 100px; overflow-y: auto; border-top: 1px solid #222; margin-top: 10px; padding-top: 10px; }
+        
+        button { width: 100%; padding: 15px; background: var(--blue); border: none; border-radius: 10px; color: #000; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        button:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
-    <div class="glass-container">
-        <h2>AI Baccarat Scanner v60</h2>
-        
-        <div class="video-box">
-            <video id="camera" autoplay playsinline></video>
-            <div class="scanner-line"></div>
-        </div>
-
-        <div class="result-panel">
-            <div class="stat-card">
-                <span>PLAYER</span>
-                <b id="p-score">0</b>
+    <div class="card">
+        <h2>KẾT QUẢ VÁN VỪA RỒI</h2>
+        <div class="score-input">
+            <div class="input-box">
+                <label>ĐIỂM CON (P)</label>
+                <input type="number" id="p-score" placeholder="0-9" min="0" max="9">
             </div>
-            <div class="stat-card">
-                <span>BANKER</span>
-                <b id="b-score">0</b>
+            <div class="input-box">
+                <label>ĐIỂM CÁI (B)</label>
+                <input type="number" id="b-score" placeholder="0-9" min="0" max="9">
             </div>
-            <div id="prediction">CHỜ DỮ LIỆU CAMERA...</div>
         </div>
+        <button onclick="calculateNext()">PHÂN TÍCH VÁN TIẾP</button>
+    </div>
 
-        <button onclick="startCamera()">KÍCH HOẠT CAMERA</button>
+    <div class="card">
+        <h2>DỰ ĐOÁN THÔNG MINH</h2>
+        <div class="prediction-result">
+            <div id="status">CHỜ NHẬP DỮ LIỆU...</div>
+            <div id="next-bet">---</div>
+            <div id="money-suggest">Tiền cược: 0đ</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <label style="font-size: 12px;">VỐN HIỆN CÓ:</label>
+        <input type="number" id="total-capital" value="3000000" style="width:90%; padding:10px; background:#000; color:#fff; border:1px solid #333; border-radius:5px;">
+        <div id="history" class="history-list">Lịch sử soi cầu...</div>
     </div>
 
     <script>
-        const video = document.getElementById('camera');
-        const pScoreText = document.getElementById('p-score');
-        const bScoreText = document.getElementById('b-score');
-        const predictionText = document.getElementById('prediction');
+        let history = [];
 
-        async function startCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { 
-                        facingMode: "environment", // Ưu tiên camera sau
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
-                });
-                video.srcObject = stream;
-                predictionText.innerText = "ĐANG PHÂN TÍCH LUỒNG VIDEO...";
-                
-                // Giả lập logic AI nhận diện sau khi mở cam thành công
-                startAIProcessing();
-            } catch (err) {
-                alert("Không thể mở camera. Hãy cấp quyền truy cập!");
-                console.error(err);
+        function calculateNext() {
+            const p = parseInt(document.getElementById('p-score').value);
+            const b = parseInt(document.getElementById('b-score').value);
+            const capital = parseInt(document.getElementById('total-capital').value);
+
+            if (isNaN(p) || isNaN(b)) {
+                alert("Vui lòng nhập đủ điểm cả 2 bên!");
+                return;
             }
-        }
 
-        function startAIProcessing() {
-            // Đây là nơi bạn sẽ tích hợp TensorFlow.js hoặc OpenCV.js sau này
-            // Hiện tại mình chạy giả lập logic tính toán để bạn thấy giao diện vận hành
-            setInterval(() => {
-                let pScore = Math.floor(Math.random() * 10);
-                let bScore = Math.floor(Math.random() * 10);
-                
-                pScoreText.innerText = pScore;
-                bScoreText.innerText = bScore;
+            // Thuật toán soi cầu đơn giản (Dựa trên tổng điểm và xu hướng)
+            let result = "";
+            let advice = "";
+            let betAmount = capital * 0.05; // Mức 5% như anh muốn
 
-                if (pScore > bScore) {
-                    predictionText.innerText = "DỰ ĐOÁN: PLAYER CÓ ƯU THẾ";
-                    predictionText.style.color = "#00d2ff";
-                } else if (bScore > pScore) {
-                    predictionText.innerText = "DỰ ĐOÁN: BANKER CÓ ƯU THẾ";
-                    predictionText.style.color = "#ff4d4d";
-                } else {
-                    predictionText.innerText = "DỰ ĐOÁN: CỬA HÒA (TIE)";
-                    predictionText.style.color = "#4dff88";
-                }
-            }, 3000); // Cập nhật mỗi 3 giây
+            // Logic giả lập: Nếu tổng điểm lẻ đánh Banker, chẵn đánh Player (hoặc ngược lại)
+            // Anh có thể thay đổi quy tắc này tùy theo kinh nghiệm
+            if ((p + b) % 2 === 0) {
+                advice = "PLAYER (XANH)";
+                document.getElementById('next-bet').style.color = "var(--blue)";
+            } else {
+                advice = "BANKER (ĐỎ)";
+                document.getElementById('next-bet').style.color = "var(--red)";
+            }
+
+            // Hiển thị kết quả
+            document.getElementById('status').innerText = "VÁN TIẾP THEO NÊN VÀO:";
+            document.getElementById('next-bet').innerText = advice;
+            document.getElementById('money-suggest').innerText = `Mức cược khuyên dùng: ${betAmount.toLocaleString()}đ (5%)`;
+
+            // Lưu lịch sử
+            const log = `P:${p} - B:${b} => Dự đoán: ${advice}`;
+            history.unshift(log);
+            document.getElementById('history').innerHTML = history.join("<br>");
+
+            // Xóa ô nhập để chuẩn bị ván sau
+            document.getElementById('p-score').value = "";
+            document.getElementById('b-score').value = "";
         }
     </script>
 </body>
