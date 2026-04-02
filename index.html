@@ -2,107 +2,136 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI PREDICT PRO - KHÁNH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ORACLE V30 - MD5 EDITION</title>
     <style>
-        :root { --blue: #00d2ff; --red: #ff4d4d; --gold: #ffeb3b; --bg: #050508; }
-        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; padding: 15px; }
-        
-        .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        h2 { text-align: center; color: var(--blue); font-size: 16px; letter-spacing: 2px; margin-top: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Anta&family=Oswald:wght@500;700&display=swap');
+        :root { --tai: #ff4d4d; --xiu: #4d94ff; --t: #00ff88; --bg: #050505; --glass: rgba(20, 20, 25, 0.95); }
+        * { box-sizing: border-box; font-family: 'Anta', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%); }
 
-        /* Ô nhập điểm */
-        .score-input { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .input-box { text-align: center; }
-        .input-box label { display: block; font-size: 12px; color: #aaa; margin-bottom: 5px; }
-        .input-box input { width: 80%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; font-size: 24px; text-align: center; }
+        .app-container { height: 100vh; display: flex; flex-direction: column; padding: 15px; }
+        .glass-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; margin-bottom: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
 
-        /* Kết quả dự đoán */
-        .prediction-result { background: rgba(0, 210, 255, 0.1); border: 1px dashed var(--blue); border-radius: 10px; padding: 15px; text-align: center; }
-        #next-bet { font-size: 22px; font-weight: bold; color: var(--gold); margin: 5px 0; }
-        #money-suggest { font-size: 14px; color: #00ffcc; }
+        /* HUD Stats */
+        .hud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+        .hud-item { background: rgba(255,255,255,0.02); padding: 8px; border-radius: 12px; text-align: center; border: 1px solid #111; }
+        .hud-label { font-size: 0.6rem; color: #555; display: block; margin-bottom: 2px; }
+        .hud-val { font-size: 0.9rem; font-weight: bold; color: var(--t); }
 
-        /* Lịch sử ván */
-        .history-list { font-size: 12px; color: #888; height: 100px; overflow-y: auto; border-top: 1px solid #222; margin-top: 10px; padding-top: 10px; }
-        
-        button { width: 100%; padding: 15px; background: var(--blue); border: none; border-radius: 10px; color: #000; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        button:active { transform: scale(0.98); }
+        /* Main Predict Display */
+        .main-display { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .predict-circle { 
+            width: 200px; height: 200px; border-radius: 50%; border: 4px solid #111; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle, #0f0f1b 0%, #050505 100%);
+            box-shadow: 0 0 50px rgba(0,0,0,1); transition: 0.5s;
+        }
+        #res-text { font-family: 'Oswald'; font-size: 5rem; margin: 0; line-height: 1; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        #res-pct { font-size: 1.5rem; font-weight: bold; color: #444; }
+
+        /* MD5 Hash Input Simulation */
+        .hash-box { width: 100%; font-size: 0.6rem; color: #333; text-align: center; margin: 10px 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: monospace; }
+
+        /* Input Buttons */
+        .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-top: auto; }
+        .btn { padding: 20px; border-radius: 15px; border: none; font-size: 1.3rem; font-weight: bold; cursor: pointer; font-family: 'Oswald'; transition: 0.2s; }
+        .btn-tai { background: var(--tai); color: #fff; box-shadow: 0 5px 15px rgba(255,77,77,0.3); }
+        .btn-xiu { background: var(--xiu); color: #fff; box-shadow: 0 5px 15px rgba(77,148,255,0.3); }
+        .btn:active { transform: scale(0.95); }
+
+        /* History Dots */
+        .history-row { display: flex; justify-content: center; gap: 6px; margin: 15px 0; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: #111; border: 1px solid #222; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>KẾT QUẢ VÁN VỪA RỒI</h2>
-        <div class="score-input">
-            <div class="input-box">
-                <label>ĐIỂM CON (P)</label>
-                <input type="number" id="p-score" placeholder="0-9" min="0" max="9">
-            </div>
-            <div class="input-box">
-                <label>ĐIỂM CÁI (B)</label>
-                <input type="number" id="b-score" placeholder="0-9" min="0" max="9">
-            </div>
+<div class="app-container">
+    <div class="hud">
+        <div class="hud-item"><span class="hud-label">PHIÊN</span><span class="hud-val" id="session-id">#88271</span></div>
+        <div class="hud-item"><span class="hud-label">TỈ LỆ THẮNG</span><span class="hud-val" id="wr">0%</span></div>
+        <div class="hud-item"><span class="hud-label">MD5 HASH</span><span class="hud-val" style="color:var(--t)">ACTIVE</span></div>
+    </div>
+
+    <div class="main-display">
+        <div class="hash-box" id="hash-str">d41d8cd98f00b204e9800998ecf8427e</div>
+        <div class="predict-circle" id="circle">
+            <p id="res-text">?</p>
+            <span id="res-pct">READY</span>
         </div>
-        <button onclick="calculateNext()">PHÂN TÍCH VÁN TIẾP</button>
+        <p id="advice" style="margin-top: 20px; font-size: 0.8rem; color: #444; letter-spacing: 2px;">ĐANG ĐỢI DỮ LIỆU PHIÊN...</p>
     </div>
 
-    <div class="card">
-        <h2>DỰ ĐOÁN THÔNG MINH</h2>
-        <div class="prediction-result">
-            <div id="status">CHỜ NHẬP DỮ LIỆU...</div>
-            <div id="next-bet">---</div>
-            <div id="money-suggest">Tiền cược: 0đ</div>
-        </div>
+    <div class="history-row" id="history">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
     </div>
 
-    <div class="card">
-        <label style="font-size: 12px;">VỐN HIỆN CÓ:</label>
-        <input type="number" id="total-capital" value="3000000" style="width:90%; padding:10px; background:#000; color:#fff; border:1px solid #333; border-radius:5px;">
-        <div id="history" class="history-list">Lịch sử soi cầu...</div>
+    <div class="control-grid">
+        <button class="btn btn-tai" onclick="analyze(0)">TÀI</button>
+        <button class="btn btn-xiu" onclick="analyze(1)">XỈU</button>
     </div>
 
-    <script>
-        let history = [];
+    <div style="text-align: center; margin-top: 15px; font-size: 0.6rem; color: #222;">
+        ORACLE AI MD5 ENGINE v30.0 - BY ADMIN
+    </div>
+</div>
 
-        function calculateNext() {
-            const p = parseInt(document.getElementById('p-score').value);
-            const b = parseInt(document.getElementById('b-score').value);
-            const capital = parseInt(document.getElementById('total-capital').value);
+<script>
+    let logs = []; let wins = 0; let total = 0; let lastPredict = '';
 
-            if (isNaN(p) || isNaN(b)) {
-                alert("Vui lòng nhập đủ điểm cả 2 bên!");
-                return;
-            }
+    function analyze(v) {
+        const resText = document.getElementById('res-text');
+        const resPct = document.getElementById('res-pct');
+        const circle = document.getElementById('circle');
 
-            // Thuật toán soi cầu đơn giản (Dựa trên tổng điểm và xu hướng)
-            let result = "";
-            let advice = "";
-            let betAmount = capital * 0.05; // Mức 5% như anh muốn
-
-            // Logic giả lập: Nếu tổng điểm lẻ đánh Banker, chẵn đánh Player (hoặc ngược lại)
-            // Anh có thể thay đổi quy tắc này tùy theo kinh nghiệm
-            if ((p + b) % 2 === 0) {
-                advice = "PLAYER (XANH)";
-                document.getElementById('next-bet').style.color = "var(--blue)";
-            } else {
-                advice = "BANKER (ĐỎ)";
-                document.getElementById('next-bet').style.color = "var(--red)";
-            }
-
-            // Hiển thị kết quả
-            document.getElementById('status').innerText = "VÁN TIẾP THEO NÊN VÀO:";
-            document.getElementById('next-bet').innerText = advice;
-            document.getElementById('money-suggest').innerText = `Mức cược khuyên dùng: ${betAmount.toLocaleString()}đ (5%)`;
-
-            // Lưu lịch sử
-            const log = `P:${p} - B:${b} => Dự đoán: ${advice}`;
-            history.unshift(log);
-            document.getElementById('history').innerHTML = history.join("<br>");
-
-            // Xóa ô nhập để chuẩn bị ván sau
-            document.getElementById('p-score').value = "";
-            document.getElementById('b-score').value = "";
+        // Kiểm tra kết quả ván trước
+        if(lastPredict !== '') {
+            total++;
+            if(lastPredict === (v === 0 ? 'TÀI' : 'XỈU')) wins++;
+            document.getElementById('wr').innerText = Math.round((wins/total)*100) + "%";
+            document.getElementById('session-id').innerText = "#" + (88271 + total);
         }
-    </script>
+
+        // Cập nhật lịch sử
+        logs.push(v);
+        if(logs.length > 8) logs.shift();
+        renderHistory();
+
+        // Giả lập quét Hash MD5
+        resText.innerText = "...";
+        resText.style.color = "#222";
+        document.getElementById('advice').innerText = "DECRYPTING MD5 HASH...";
+        document.getElementById('hash-str').innerText = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+
+        setTimeout(() => {
+            const prob = Math.floor(Math.random() * 21 + 75); // 75% - 95%
+            const side = Math.random() > 0.5 ? 0 : 1;
+            lastPredict = side === 0 ? 'TÀI' : 'XỈU';
+            const color = side === 0 ? 'var(--tai)' : 'var(--xiu)';
+
+            resText.innerText = lastPredict;
+            resText.style.color = color;
+            resPct.innerText = prob + "%";
+            resPct.style.color = color;
+            
+            circle.style.borderColor = color;
+            circle.style.boxShadow = `0 0 50px ${color}33`;
+            
+            document.getElementById('advice').innerText = prob > 85 ? "LỆNH TỰ TIN - VÀO TIỀN" : "CẦU BIẾN ĐỘNG - NHẸ TAY";
+            document.getElementById('advice').style.color = color;
+        }, 800);
+    }
+
+    function renderHistory() {
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((d, i) => {
+            d.style.background = '#111';
+            if(logs[i] !== undefined) {
+                d.style.background = logs[i] === 0 ? 'var(--tai)' : 'var(--xiu)';
+            }
+        });
+    }
+</script>
 </body>
 </html>
