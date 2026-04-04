@@ -1,137 +1,202 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ORACLE V30 - MD5 EDITION</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Anta&family=Oswald:wght@500;700&display=swap');
-        :root { --tai: #ff4d4d; --xiu: #4d94ff; --t: #00ff88; --bg: #050505; --glass: rgba(20, 20, 25, 0.95); }
-        * { box-sizing: border-box; font-family: 'Anta', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg); color: #fff; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI tài xỉu Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        .app-container { height: 100vh; display: flex; flex-direction: column; padding: 15px; }
-        .glass-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; margin-bottom: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-
-        /* HUD Stats */
-        .hud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
-        .hud-item { background: rgba(255,255,255,0.02); padding: 8px; border-radius: 12px; text-align: center; border: 1px solid #111; }
-        .hud-label { font-size: 0.6rem; color: #555; display: block; margin-bottom: 2px; }
-        .hud-val { font-size: 0.9rem; font-weight: bold; color: var(--t); }
-
-        /* Main Predict Display */
-        .main-display { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .predict-circle { 
-            width: 200px; height: 200px; border-radius: 50%; border: 4px solid #111; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: radial-gradient(circle, #0f0f1b 0%, #050505 100%);
-            box-shadow: 0 0 50px rgba(0,0,0,1); transition: 0.5s;
-        }
-        #res-text { font-family: 'Oswald'; font-size: 5rem; margin: 0; line-height: 1; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        #res-pct { font-size: 1.5rem; font-weight: bold; color: #444; }
-
-        /* MD5 Hash Input Simulation */
-        .hash-box { width: 100%; font-size: 0.6rem; color: #333; text-align: center; margin: 10px 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: monospace; }
-
-        /* Input Buttons */
-        .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-top: auto; }
-        .btn { padding: 20px; border-radius: 15px; border: none; font-size: 1.3rem; font-weight: bold; cursor: pointer; font-family: 'Oswald'; transition: 0.2s; }
-        .btn-tai { background: var(--tai); color: #fff; box-shadow: 0 5px 15px rgba(255,77,77,0.3); }
-        .btn-xiu { background: var(--xiu); color: #fff; box-shadow: 0 5px 15px rgba(77,148,255,0.3); }
-        .btn:active { transform: scale(0.95); }
-
-        /* History Dots */
-        .history-row { display: flex; justify-content: center; gap: 6px; margin: 15px 0; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; background: #111; border: 1px solid #222; }
-    </style>
+<style>
+body{
+  background:#111;
+  color:#fff;
+  font-family:sans-serif;
+  text-align:center;
+}
+.card{
+  background:#1e1e1e;
+  padding:12px;
+  margin:10px;
+  border-radius:10px;
+}
+button{
+  padding:10px 15px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  background:#facc15;
+  color:#000;
+  font-weight:bold;
+}
+input,select{
+  padding:5px;
+  margin:5px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="app-container">
-    <div class="hud">
-        <div class="hud-item"><span class="hud-label">PHIÊN</span><span class="hud-val" id="session-id">#88271</span></div>
-        <div class="hud-item"><span class="hud-label">TỈ LỆ THẮNG</span><span class="hud-val" id="wr">0%</span></div>
-        <div class="hud-item"><span class="hud-label">MD5 HASH</span><span class="hud-val" style="color:var(--t)">ACTIVE</span></div>
-    </div>
+<h2>🤖 AI TÀI XỈU PRO</h2>
 
-    <div class="main-display">
-        <div class="hash-box" id="hash-str">d41d8cd98f00b204e9800998ecf8427e</div>
-        <div class="predict-circle" id="circle">
-            <p id="res-text">?</p>
-            <span id="res-pct">READY</span>
-        </div>
-        <p id="advice" style="margin-top: 20px; font-size: 0.8rem; color: #444; letter-spacing: 2px;">ĐANG ĐỢI DỮ LIỆU PHIÊN...</p>
-    </div>
-
-    <div class="history-row" id="history">
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
-    </div>
-
-    <div class="control-grid">
-        <button class="btn btn-tai" onclick="analyze(0)">TÀI</button>
-        <button class="btn btn-xiu" onclick="analyze(1)">XỈU</button>
-    </div>
-
-    <div style="text-align: center; margin-top: 15px; font-size: 0.6rem; color: #222;">
-        ORACLE AI MD5 ENGINE v30.0 - BY ADMIN
-    </div>
+<div class="card">
+Vốn: <input id="money" value="1000">
+Cược gốc: <input id="baseBet" value="10"><br>
+<select id="strategy">
+<option>Martingale</option>
+<option>Fibonacci</option>
+<option>AI</option>
+</select>
 </div>
 
+<div class="card">
+<button onclick="manual('T')">TÀI</button>
+<button onclick="manual('X')">XỈU</button><br>
+<button onclick="startAuto()">▶ AUTO</button>
+<button onclick="stopAuto()">⏹ STOP</button>
+</div>
+
+<div class="card" id="log">---</div>
+
+<canvas id="chart"></canvas>
+
 <script>
-    let logs = []; let wins = 0; let total = 0; let lastPredict = '';
+let history=[];
+let moneyHistory=[];
+let running=false;
 
-    function analyze(v) {
-        const resText = document.getElementById('res-text');
-        const resPct = document.getElementById('res-pct');
-        const circle = document.getElementById('circle');
+let bet=10;
+let fib=[1,1,2,3,5,8,13,21,34];
+let fibIndex=0;
 
-        // Kiểm tra kết quả ván trước
-        if(lastPredict !== '') {
-            total++;
-            if(lastPredict === (v === 0 ? 'TÀI' : 'XỈU')) wins++;
-            document.getElementById('wr').innerText = Math.round((wins/total)*100) + "%";
-            document.getElementById('session-id').innerText = "#" + (88271 + total);
-        }
+// ===== FAKE API =====
+async function fakeAPI(){
+  return new Promise(res=>{
+    setTimeout(()=>{
+      res(Math.random()<0.5?'T':'X');
+    },300);
+  });
+}
 
-        // Cập nhật lịch sử
-        logs.push(v);
-        if(logs.length > 8) logs.shift();
-        renderHistory();
+// ===== AI =====
+function detectPattern(){
+  let h=history.slice(-4).join('');
+  if(h==='TTTT') return 'betT';
+  if(h==='XXXX') return 'betX';
+  if(h==='TXTX') return 'pingpong';
+  if(h==='TTXX') return '22';
+  return 'random';
+}
 
-        // Giả lập quét Hash MD5
-        resText.innerText = "...";
-        resText.style.color = "#222";
-        document.getElementById('advice').innerText = "DECRYPTING MD5 HASH...";
-        document.getElementById('hash-str').innerText = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+function probability(){
+  let t=history.filter(x=>x==='T').length;
+  let x=history.length - t;
+  return {
+    t: t/(history.length||1),
+    x: x/(history.length||1)
+  };
+}
 
-        setTimeout(() => {
-            const prob = Math.floor(Math.random() * 21 + 75); // 75% - 95%
-            const side = Math.random() > 0.5 ? 0 : 1;
-            lastPredict = side === 0 ? 'TÀI' : 'XỈU';
-            const color = side === 0 ? 'var(--tai)' : 'var(--xiu)';
+function predict(){
+  let pattern=detectPattern();
+  let prob=probability();
 
-            resText.innerText = lastPredict;
-            resText.style.color = color;
-            resPct.innerText = prob + "%";
-            resPct.style.color = color;
-            
-            circle.style.borderColor = color;
-            circle.style.boxShadow = `0 0 50px ${color}33`;
-            
-            document.getElementById('advice').innerText = prob > 85 ? "LỆNH TỰ TIN - VÀO TIỀN" : "CẦU BIẾN ĐỘNG - NHẸ TAY";
-            document.getElementById('advice').style.color = color;
-        }, 800);
-    }
+  let scoreT=0;
+  let scoreX=0;
 
-    function renderHistory() {
-        const dots = document.querySelectorAll('.dot');
-        dots.forEach((d, i) => {
-            d.style.background = '#111';
-            if(logs[i] !== undefined) {
-                d.style.background = logs[i] === 0 ? 'var(--tai)' : 'var(--xiu)';
-            }
-        });
-    }
+  if(pattern==='betT') scoreT+=2;
+  if(pattern==='betX') scoreX+=2;
+
+  if(pattern==='pingpong'){
+    let last=history.slice(-1)[0];
+    return last==='T'?'X':'T';
+  }
+
+  scoreT+=prob.t;
+  scoreX+=prob.x;
+
+  return scoreT>scoreX?'T':'X';
+}
+
+// ===== GAME =====
+async function play(choice){
+  let result = await fakeAPI();
+
+  let money=+document.getElementById('money').value;
+  let base=+document.getElementById('baseBet').value;
+  let strat=document.getElementById('strategy').value;
+
+  let win = choice===result;
+
+  if(win){
+    money+=bet;
+    if(strat==='Martingale') bet=base;
+    if(strat==='Fibonacci') fibIndex=Math.max(0,fibIndex-2);
+  }else{
+    money-=bet;
+    if(strat==='Martingale') bet*=2;
+    if(strat==='Fibonacci') fibIndex++;
+  }
+
+  if(strat==='Fibonacci'){
+    if(fibIndex >= fib.length) fibIndex = fib.length-1;
+    bet=fib[fibIndex]*base;
+  }
+
+  // AI vốn
+  if(strat==='AI'){
+    if(win) bet = base*1.2;
+    else bet = base*0.8;
+  }
+
+  // chống cháy
+  if(money < base*5){
+    stopAuto();
+    alert("⚠️ Sắp cháy!");
+  }
+
+  document.getElementById('money').value=money;
+
+  history.push(result);
+  moneyHistory.push(money);
+
+  document.getElementById('log').innerHTML =
+    KQ: ${result} | Đoán: ${choice} | Bet: ${bet} | Vốn: ${money};
+
+  updateChart();
+}
+
+// ===== AUTO =====
+function autoRun(){
+  if(!running) return;
+  let p = predict();
+  play(p);
+  setTimeout(autoRun,1500);
+}
+
+function startAuto(){running=true;autoRun();}
+function stopAuto(){running=false;}
+function manual(c){play(c);}
+
+// ===== CHART =====
+let ctx=document.getElementById('chart');
+let chart=new Chart(ctx,{
+  type:'line',
+  data:{
+    labels:[],
+    datasets:[{
+      label:'Vốn',
+      data:[]
+    }]
+  }
+});
+
+function updateChart(){
+  chart.data.labels.push(history.length);
+  chart.data.datasets[0].data = moneyHistory;
+  chart.update();
+}
 </script>
+
 </body>
 </html>
