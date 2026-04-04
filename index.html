@@ -1,9 +1,89 @@
-AI Tài Xỉu Pro body { font-family: Arial; background:#0f172a; color:#fff; text-align:center; } .box { margin:20px auto; padding:20px; background:#1e293b; border-radius:15px; width:90%; max-width:400px; } button { padding:10px 20px; border:none; border-radius:10px; background:#22c55e; color:#fff; font-size:16px; } input { padding:10px; border-radius:10px; border:none; width:80%; margin-top:10px; } 
-🤖 AI Tài Xỉu Pro
-Nhập kết quả (T/X)
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOOL TX - KHÁNH DUY v1.0</title>
+    <style>
+        body { background: #121212; color: #fff; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 400px; margin: auto; border: 2px solid #ff4d4d; padding: 15px; border-radius: 15px; box-shadow: 0 0 15px #ff4d4d; }
+        h2 { color: #ff4d4d; text-shadow: 0 0 5px #fff; }
+        .history { background: #1e1e1e; padding: 10px; border-radius: 8px; min-height: 40px; margin: 15px 0; word-break: break-all; color: #00ffcc; font-weight: bold; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; }
+        button { padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .btn-tai { background: #ff4d4d; color: white; }
+        .btn-xiu { background: #4d79ff; color: white; }
+        .btn-reset { background: #555; color: white; margin-top: 15px; padding: 10px 20px; font-size: 14px; }
+        #result { margin-top: 20px; font-size: 20px; font-weight: bold; color: #ffff00; min-height: 30px; }
+        .note { font-size: 12px; color: #888; margin-top: 20px; }
+    </style>
+</head>
+<body>
 
+<div class="container">
+    <h2>TOOL TX - KHÁNH DUY</h2>
+    <div id="history-box" class="history">Lịch sử: Đang đợi...</div>
+    
+    <div class="btn-group">
+        <button class="btn-tai" onclick="addNode('T')">TÀI</button>
+        <button class="btn-xiu" onclick="addNode('X')">XỈU</button>
+    </div>
+    
+    <div id="result">Hệ thống đang sẵn sàng...</div>
+    
+    <button class="btn-reset" onclick="resetTool()">LÀM MỚI</button>
+    
+    <div class="note">
+        * Chiến thuật: 500k chia 8 Ca (Mỗi ca thắng 62k).<br>
+        * Quy tắc: Đỏ Đánh - Xanh Nghỉ.
+    </div>
+</div>
 
-Phân tích 
-Quản lý vốn
-Tính 
-function analyze() { let input = document.getElementById('input').value.trim().split(' '); if(input.length < 3){ document.getElementById('result').innerText = "Nhập ít nhất 3 kết quả"; return; } let last = input.slice(-3); let prediction = ""; if(last[0] === last[1] && last[1] === last[2]){ prediction = last[2] === 'T' ? 'X' : 'T'; } else { prediction = last[last.length-1]; } document.getElementById('result').innerText = "Dự đoán: " + prediction; } function calc(){ let money = parseFloat(document.getElementById('money').value); let bet = parseFloat(document.getElementById('bet').value); if(!money || !bet){ document.getElementById('moneyResult').innerText = "Nhập đủ thông tin"; return; } let rounds = Math.floor(money / bet); document.getElementById('moneyResult').innerText = "Chơi được: " + rounds + " lần"; }
+<script>
+    let history = [];
+
+    function addNode(val) {
+        history.push(val);
+        if (history.length > 15) history.shift();
+        updateUI();
+    }
+
+    function updateUI() {
+        const box = document.getElementById('history-box');
+        const res = document.getElementById('result');
+        
+        box.innerHTML = "Lịch sử: " + history.join(' - ');
+
+        if (history.length < 3) {
+            res.innerHTML = "Nhập thêm " + (3 - history.length) + " ván...";
+            return;
+        }
+
+        // Logic phân tích cầu
+        let last = history[history.length - 1];
+        let prev = history[history.length - 2];
+        let pprev = history[history.length - 3];
+
+        // Bắt cầu bệt
+        if (last === prev && prev === pprev) {
+            res.innerHTML = "DỰ BÁO: Cầu Bệt " + (last === 'T' ? 'TÀI' : 'XỈU') + "!";
+        } 
+        // Bắt cầu 1-1
+        else if (last !== prev && prev !== pprev) {
+            res.innerHTML = "DỰ BÁO: Cầu 1-1. Đánh " + (last === 'T' ? 'XỈU' : 'TÀI');
+        } 
+        // Cầu nhảy
+        else {
+            res.innerHTML = "DỰ BÁO: Cầu nhảy. Quan sát thêm!";
+        }
+    }
+
+    function resetTool() {
+        history = [];
+        document.getElementById('history-box').innerHTML = "Lịch sử: Đang đợi...";
+        document.getElementById('result').innerHTML = "Hệ thống đã reset.";
+    }
+</script>
+
+</body>
+</html>
