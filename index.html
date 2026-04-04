@@ -3,87 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOOL TX - KHÁNH DUY v1.0</title>
+    <title>AI MD5 v60.0 - KHÁNH DUY</title>
     <style>
-        body { background: #121212; color: #fff; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        .container { max-width: 400px; margin: auto; border: 2px solid #ff4d4d; padding: 15px; border-radius: 15px; box-shadow: 0 0 15px #ff4d4d; }
-        h2 { color: #ff4d4d; text-shadow: 0 0 5px #fff; }
-        .history { background: #1e1e1e; padding: 10px; border-radius: 8px; min-height: 40px; margin: 15px 0; word-break: break-all; color: #00ffcc; font-weight: bold; }
-        .btn-group { display: flex; gap: 10px; justify-content: center; }
-        button { padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; }
-        .btn-tai { background: #ff4d4d; color: white; }
-        .btn-xiu { background: #4d79ff; color: white; }
-        .btn-reset { background: #555; color: white; margin-top: 15px; padding: 10px 20px; font-size: 14px; }
-        #result { margin-top: 20px; font-size: 20px; font-weight: bold; color: #ffff00; min-height: 30px; }
-        .note { font-size: 12px; color: #888; margin-top: 20px; }
+        body { background: #0b0b0b; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 10px; }
+        .container { max-width: 450px; margin: auto; border: 1px solid #00ffcc; padding: 20px; border-radius: 20px; box-shadow: 0 0 20px #00ffcc33; }
+        h2 { color: #00ffcc; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
+        .status { font-size: 12px; color: #00ff00; margin-bottom: 20px; animation: blink 1.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        
+        input { width: 90%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a1a1a; color: #fff; margin-bottom: 15px; font-size: 14px; }
+        button { width: 95%; padding: 15px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .btn-predict { background: linear-gradient(90deg, #00ffcc, #0099ff); color: #000; margin-bottom: 15px; }
+        
+        #ai-result { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 5px solid #ffcc00; margin: 15px 0; }
+        .prediction { font-size: 24px; font-weight: bold; color: #ffff00; }
+        
+        .capital-box { background: #222; padding: 10px; border-radius: 10px; margin-top: 20px; font-size: 14px; text-align: left; }
+        .target { color: #00ffcc; font-weight: bold; }
+        
+        .footer { font-size: 11px; color: #666; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>TOOL TX - KHÁNH DUY</h2>
-    <div id="history-box" class="history">Lịch sử: Đang đợi...</div>
-    
-    <div class="btn-group">
-        <button class="btn-tai" onclick="addNode('T')">TÀI</button>
-        <button class="btn-xiu" onclick="addNode('X')">XỈU</button>
-    </div>
-    
-    <div id="result">Hệ thống đang sẵn sàng...</div>
-    
-    <button class="btn-reset" onclick="resetTool()">LÀM MỚI</button>
-    
-    <div class="note">
-        * Chiến thuật: 500k chia 8 Ca (Mỗi ca thắng 62k).<br>
-        * Quy tắc: Đỏ Đánh - Xanh Nghỉ.
-    </div>
-</div>
-
-<script>
-    let history = [];
-
-    function addNode(val) {
-        history.push(val);
-        if (history.length > 15) history.shift();
-        updateUI();
-    }
-
-    function updateUI() {
-        const box = document.getElementById('history-box');
-        const res = document.getElementById('result');
-        
-        box.innerHTML = "Lịch sử: " + history.join(' - ');
-
-        if (history.length < 3) {
-            res.innerHTML = "Nhập thêm " + (3 - history.length) + " ván...";
-            return;
-        }
-
-        // Logic phân tích cầu
-        let last = history[history.length - 1];
-        let prev = history[history.length - 2];
-        let pprev = history[history.length - 3];
-
-        // Bắt cầu bệt
-        if (last === prev && prev === pprev) {
-            res.innerHTML = "DỰ BÁO: Cầu Bệt " + (last === 'T' ? 'TÀI' : 'XỈU') + "!";
-        } 
-        // Bắt cầu 1-1
-        else if (last !== prev && prev !== pprev) {
-            res.innerHTML = "DỰ BÁO: Cầu 1-1. Đánh " + (last === 'T' ? 'XỈU' : 'TÀI');
-        } 
-        // Cầu nhảy
-        else {
-            res.innerHTML = "DỰ BÁO: Cầu nhảy. Quan sát thêm!";
-        }
-    }
-
-    function resetTool() {
-        history = [];
-        document.getElementById('history-box').innerHTML = "Lịch sử: Đang đợi...";
-        document.getElementById('result').innerHTML = "Hệ thống đã reset.";
-    }
-</script>
-
-</body>
-</html>
+    <h2>AI MD5 v
